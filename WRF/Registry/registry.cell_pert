@@ -1,0 +1,55 @@
+#########################
+# Domingo Munoz-Esparza #
+#########################
+# initial conditions
+rconfig   logical stretch_grid     namelist,domains      1         .false.      r    "stretching flag: ==0, dz=cte; ==1, dz=changes with z"
+rconfig logical initial_pert       namelist,dynamics       max_domains    .false.  -       "flag to activate temperature perturbations near the boundaries"
+rconfig real    amp_pert_initial   namelist,dynamics       max_domains     0.1     -       "amplitude of the temperature perturbation"
+rconfig integer pertz_gp_initial   namelist,dynamics       max_domains     4       -       "number of vertical grid points for initial temperature perturbation"
+# cell perturbation method
+rconfig logical cell_pert         namelist,dynamics       max_domains    .false.  -       "flag to activate cell-based perturbation"
+rconfig logical cell_pert_2d         namelist,dynamics       max_domains    .false.  -       "flag to activate cell-based perturbation along 2 boundaries (south and west)"
+rconfig real    cell_pert_amp   namelist,dynamics       max_domains     0.1     -       "maximum amplitude for the potential temperature perturbations"
+rconfig logical pert_timestep            namelist,dynamics       max_domains    .false.  -       "flag to activate temperature perturbations at a given time step frequency"
+rconfig integer pert_nts                  namelist,dynamics       max_domains     150     -       "number of time steps after which perturbations are seeded, 1/f_p"
+rconfig integer cell_gppc       namelist,dynamics       max_domains     8       -       "number of grid points conforming the cell" 
+rconfig integer cell_nbcx       namelist,dynamics       max_domains     3       -       "number of cells normal to x-boundary"
+rconfig integer cell_nbcy       namelist,dynamics       max_domains     3       -       "number of cells normal to y-boundary"
+rconfig integer cell_zbottom         namelist,dynamics       max_domains     4       -       "z-grid point where the perturbation start"
+rconfig integer cell_ztop         namelist,dynamics       max_domains     4       -       "z-grid point where the perturbations end"
+state   real    Pxy          ikj          dyn_em                         1        -       -      "Pxy" "Potential temperature perturbation field" "K"
+# time-varying parameters for the cell perturbation method
+rconfig logical cell_tvcp             namelist,dynamics       max_domains    .false.  -      "flag to activate time-varying cell perturbation parameters"
+state   integer kpert_tvcp      -     dyn_em                  max_domains     -       i5r    "kpert_tvcp" "time-varying maximum vertical grid point to perturb" "-"
+state   real    dthpert_tvcp    -     dyn_em                  max_domains     -       i5r    "dthpert_tvcp" "time-varying potential temperature perturbation magnitude" "-"
+# dynamic backscatter coefficient
+rconfig logical nba_dyn_cb                    namelist,dynamics       max_domains    .false.  -       "flag to activate dynamic Cb coefficient for NBA"
+rconfig integer nba_cb_zs                 namelist,dynamics       max_domains     1      -       "vertical grid point above which dynamic Cb is calculated"
+rconfig integer nba_cb_ze                 namelist,dynamics       max_domains     30      -       "vertical grid point below which dynamic Cb is calculated"
+state   real    l_star3      ikj          dyn_em                         1        -       -      "l_star3" "NBA buoyancy and shear corrected length scale" "m"
+state   real    cb_yo        ikj          dyn_em                         1        -       -      "cb_yo" "dynamic backscatter coefficient for NBA model" "-"
+state   real    cs_yo        ikj          dyn_em                         1        -       -      "cs_yo" "dynamic c_s coefficient for NBA model" "-"
+state   real    c1_yo        ikj          dyn_em                         1        -       -      "c1_yo" "dynamic c_1 coefficient for NBA model" "-"
+state   real    c2_yo        ikj          dyn_em                         1        -       -      "c2_yo" "dynamic c_2 coefficient for NBA model" "-"
+state   real    ce_yo        ikj          dyn_em                         1        -       -      "ce_yo" "dynamic c_e coefficient for NBA model" "-"
+state   real    c3_yo        ikj          dyn_em                         1        -       -      "c3_yo" "dynamic c_3 coefficient for NBA model" "-"
+# space dependent Smagorinsky length scale
+rconfig logical smag_length               namelist,dynamics       max_domains    .false.  -      "flag to activate space dependent Smagorinsky length scale to use with NBA model"
+rconfig logical smag_length_2d               namelist,dynamics       max_domains    .false.  -      "flag to activate space dependent Smagorinsky length scale along 2 boundaries (south and west)"
+state   real    l_smag       ikj          dyn_em                         1        -       -      "l_smag" "Horizontal length scale for Smagorinsky part" "m"
+rconfig logical smag_length_opt               namelist,dynamics       max_domains    .false.  -      "flag to choose between uniform l_min (=1) or progressively decreasing l_min (=2) near the boundaries, x < gp1"
+rconfig real    l_smag_min                namelist,dynamics       max_domains     10      -       "minimum allowed Smagorinsky length scale"
+rconfig integer l_smag_gp1                namelist,dynamics       max_domains     20      -       "number of normal grid points keeping l_smag_min"
+rconfig integer l_smag_gp2                namelist,dynamics       max_domains     10      -       "number of normal grid points to recover l_nest after l_smag_min ends"
+rconfig integer l_smag_gpzs                namelist,dynamics       max_domains     1      -       "vertical grid point above which the reduced Smagorinsky length scale is applied"
+rconfig integer l_smag_gpze                namelist,dynamics       max_domains     30      -       "vertical grid point below which the reduced Smagorinsky length scale is applied"
+# surface layer scheme for LES
+package   lessfcscheme  sf_sfclay_physics==12       -             -
+rconfig logical isfctemp              namelist,dynamics       max_domains    .false.  -      "flag to activate temperature option for the surface layer LES routine"
+state   real    cdles        ij          dyn_em               max_domains     -       -      "cdles" "surface exchange coefficient for momentum from LES surface layer scheme" "-"
+state   real    chles        ij          dyn_em               max_domains     -       -      "chles" "surface exchange coefficient for heat from LES surface layer scheme" "-"
+state   real    cqles        ij          dyn_em               max_domains     -       -      "cqles" "surface exchange coefficient for moisture from LES surface layer scheme" "-"
+rconfig real    surface_hfx           namelist,dynamics       max_domains     0       -       "surface heat flux to be used by the LES surface layer scheme"
+#########################
+halo      HALO_EM_PXY       dyn_em 8:Pxy
+period    PERIOD_EM_PXY     dyn_em 3:Pxy

@@ -126,7 +126,10 @@
 
 !  CCN for MP=18 initializatio
    REAL :: ccn_max_val
-
+!! ADDED BY MSG FOR CPM
+   INTEGER :: npx, npy, npz_s, npz_e, np1, np2, npt, x0, x1, x2, xt, Dx1, Dx2,ig, jg, Dx, k_top_pert
+   REAL :: rand_t, L_parent, L_nest, L_min, DL1, DL2, L1, L2, L3, r, Li, piy, DL
+!!
    REAL :: max_mf, max_rot_angle
    CALL get_ijk_from_grid ( grid ,                              &
                            ids, ide, jds, jde, kds, kde,        &
@@ -596,9 +599,26 @@
    ENDIF
    IF(.not.config_flags%restart)THEN
 !  if this is for a nested domain, the defined/interpolated fields are the _2
-     IF ( first_trip_for_this_domain ) THEN
+     IF ( first_trip_for_this_domain  .AND. config_flags%initial_pert  ) THEN !! MSG ADDED TO IF STATEMENT FOR CPM '.AND. config_flags%initial_pert' 
 ! data that is expected to be zero must be explicitly initialized as such
 !    grid%h_diabatic = 0.
+
+!! ADDED BY MSG FOR CPM
+! initial random perturbations of theta 
+       k_top_pert=min(config_flags%pertz_gp_initial,kte-1)
+       DO j = jts,min(jte,jde-1)
+       DO k = kts,k_top_pert
+       DO i = its, min(ite,ide-1)
+           IF ( grid%imask_nostag(i,j) .EQ. 1 ) THEN
+             call random_number (rand_t)
+             grid%t_2(i,k,j)=grid%t_2(i,k,j)+config_flags%amp_pert_initial*((rand_t*2)-1)
+             grid%t_1(i,k,j)=grid%t_2(i,k,j)
+           ENDIF
+       ENDDO
+       ENDDO
+       ENDDO
+!!
+
        DO j = jts,min(jte,jde-1)
        DO k = kts,kte-1
        DO i = its, min(ite,ide-1)

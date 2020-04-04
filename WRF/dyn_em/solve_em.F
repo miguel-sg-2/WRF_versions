@@ -79,6 +79,15 @@ SUBROUTINE solve_em ( grid , config_flags  &
    USE module_avgflx_em, ONLY : zero_avgflx, upd_avgflx
    USE module_cpl, ONLY : coupler_on, cpl_settime, cpl_store_input
 
+!! ADDED BY MSG FOR CPM
+#ifdef DM_PARALLEL
+   USE module_dm
+   USE module_comm_dm, ONLY : &
+                           HALO_EM_PXY_sub   &
+                          ,PERIOD_EM_PXY_sub
+#endif
+!!
+
    IMPLICIT NONE
 
    !  Input data.
@@ -117,7 +126,15 @@ SUBROUTINE solve_em ( grid , config_flags  &
    LOGICAL                         :: specified_bdy, channel_bdy
 
    REAL                            :: t_new, time_duration_of_lbcs
-   
+  
+!! ADDED BY MSG FOR CPM
+   INTEGER   :: b_dist, b_limit, itf, jtf, ibs, ibe, jbs, jbe
+
+   INTEGER :: cs, nbcx, nbcy, nbcz_s, nbcz_e, npx, npy, ncxt, ncyt, opp_x, opp_y, indf_x, &
+   indf_y, ktf, kts, ncx, ncy, ncz, isc, jsc
+
+   REAL :: rand_valtemp, cpert_amp
+!! 
    ! Changes in tendency at this timestep
    real ,DIMENSION(grid%sm31:grid%em31,grid%sm32:grid%em32,grid%sm33:grid%em33) :: h_tendency, &
                                                                                    z_tendency
@@ -3351,6 +3368,273 @@ BENCH_END(bc_end_tim)
 
    END DO Runge_Kutta_loop
 !  grid%dmudt=grid%mu_2 - grid%mu_1
+
+
+!! ADDED BY MSG
+!*****************************************************************************
+! Cell perturbation method (Implemented by Domingo Munoz-Esparza) DME
+! Munoz-Esparza et al., Boundary-Layer Meteorology 2014, vol. 153, pp 409-440
+! Munoz-Esparza et al., Physics of Fluids 2015, vol. 27, 035102
+! ********************************* START ************************************
+!*****************************************************************************
+IF ( config_flags%cell_pert .AND. config_flags%pert_timestep ) THEN
+  IF ( MOD(grid%itimestep, config_flags%pert_nts) .EQ. 0. ) THEN
+    PRINT *, 'MSG IS RUNNING CELL PERT'
+    PRINT *,'MOD=', MOD(grid%itimestep, config_flags%pert_nts)
+    PRINT *,'Time step=', grid%itimestep
+    PRINT *,'Time step perturbation=', grid%pert_nts
+    IF ( config_flags%cell_tvcp ) THEN
+      nbcz_e = grid%kpert_tvcp
+    ELSE
+      nbcz_e = config_flags%cell_ztop
+    ENDIF
+    PRINT *,'Highest vertical grid point perturbed =', nbcz_e
+    !*******************************!
+    !*** Cell-based perturbation ***!
+    !*******************************!
+    cs = config_flags%cell_gppc
+    nbcx = config_flags%cell_nbcx
+    nbcy = config_flags%cell_nbcy
+    nbcz_s = config_flags%cell_zbottom
+    npx = ide-1
+    npy = jde-1
+    ncxt = npx/cs
+    ncyt = npy/cs
+    opp_x = (ncyt-nbcx)*cs
+    opp_y = (ncxt-nbcy)*cs
+    !
+    !*** 3d-array initialization (start) ***!
+    !
+    DO ij = 1, grid%num_tiles
+          its = grid%i_start(ij)
+          ite = grid%i_end(ij)
+          jts = grid%j_start(ij)
+          jte = grid%j_end(ij)
+          kts = k_start
+          ktf = k_end
+          DO i = its, ite
+            DO j = jts, jte
+              DO k = kts, ktf
+                grid%Pxy(i,k,j) = 0.
+              ENDDO
+            ENDDO
+          ENDDO
+    ENDDO
+    !
+    !*** 3d-array initialization (end) ***!
+    !
+    !*** random 3d-array fill in ***!
+    !
+    DO ij = 1, grid%num_tiles ! START TILE-LOOP
+    ! set indexes (start) !
+    its = grid%i_start(ij)
+    ite = grid%i_end(ij)
+    jts = grid%j_start(ij)
+    jte = grid%j_end(ij)
+    ! set indexes (end) !
+    DO ncz = nbcz_s, nbcz_e
+      DO ncx = 1, npx ! its, ite
+        IF ( MOD(ncx-1, cs) .EQ. 0. ) THEN
+          DO ncy = 1, npy ! jts, jte
+            IF ( MOD(ncy-1, cs) .EQ. 0. ) THEN
+            call random_number (rand_valtemp)
+              DO isc = ncx, min(ncx+cs-1,ite)
+                DO jsc = ncy, min(ncy+cs-1,jte)
+                  IF ( (ncx .GE. its) .AND. (ncx .LE. ite) .AND. (ncy .GE. jts) .AND. (ncy .LE. jte)  ) THEN
+                    grid%Pxy(isc,ncz,jsc) = (( rand_valtemp * 2 ) - 1)
+                  ELSE
+                  ENDIF
+                ENDDO
+              ENDDO
+            ENDIF
+          ENDDO
+        ENDIF
+      ENDDO
+    ENDDO
+    ENDDO
+
+#ifdef DM_PARALLEL
+#      include "HALO_EM_PXY.inc"
+#      include "PERIOD_EM_PXY.inc"
+#endif
+    DO ij = 1, grid%num_tiles ! START TILE-LOOP
+    ! set indexes (start) !
+    its = grid%i_start(ij)
+    ite = grid%i_end(ij)
+    jts = grid%j_start(ij)
+    jte = grid%j_end(ij)
+    ! set indexes (end) !
+    DO ncz = nbcz_s, nbcz_e
+      IF ( ( MOD(its-1, cs) .NE. 0. ) .AND. ( MOD(jts-1, cs) .EQ. 0. ) )THEN ! case 4 dibujo
+       indf_x = cs - MOD(its-1,cs) -1
+        DO isc = its, its + indf_x
+          DO jsc = jts, jte
+            grid%Pxy(isc,ncz,jsc) = grid%Pxy(its-1,ncz,jsc)
+          ENDDO
+        ENDDO
+      ELSEIF ( ( MOD(its-1, cs) .EQ. 0. ) .AND. ( MOD(jts-1, cs) .NE. 0. ) )THEN ! case 1 dibujo 
+        indf_y = cs - MOD(jts-1,cs) -1
+        DO jsc = jts, jts + indf_y
+          DO isc = its, ite
+            grid%Pxy(isc,ncz,jsc) = grid%Pxy(isc,ncz,jts-1)
+          ENDDO
+        ENDDO
+      ELSEIF ( ( MOD(its-1, cs) .NE. 0. ) .AND. ( MOD(jts-1, cs) .NE. 0. ) )THEN ! case 2 dibujo 
+        indf_x = cs - MOD(its-1,cs) -1
+        indf_y = cs - MOD(jts-1,cs) -1
+        DO isc = its, its + indf_x
+          DO jsc = jts, jts + indf_y
+            grid%Pxy(isc,ncz,jsc) = grid%Pxy(its-1,ncz,jts-1)
+          ENDDO
+        ENDDO
+        DO isc = its + indf_x +1 , ite
+         DO jsc = jts, jts + indf_y
+           grid%Pxy(isc,ncz,jsc) = grid%Pxy(isc,ncz,jts-1)
+          ENDDO
+        ENDDO
+        DO jsc = jts + indf_y +1 , jte
+          DO isc = its, its + indf_x
+            grid%Pxy(isc,ncz,jsc) = grid%Pxy(its-1,ncz,jsc)
+          ENDDO
+        ENDDO
+      ENDIF
+    ENDDO
+    ENDDO
+  IF ( .NOT. config_flags%cell_pert_2d ) THEN
+    PRINT *,'DOING CELL PERT 4 BOUNDARIES'
+    IF ( config_flags%cell_tvcp ) THEN
+      cpert_amp = grid%dthpert_tvcp
+      PRINT *,'Perturbation amplitude = ',cpert_amp,' K'
+    ELSE
+      cpert_amp = config_flags%cell_pert_amp
+      PRINT *,'Perturbation amplitude = ',cpert_amp,' K'
+    ENDIF
+    DO ij = 1, grid%num_tiles ! START TILE-LOOP
+      ! set indexes (start) !
+      its = grid%i_start(ij)
+      ite = grid%i_end(ij)
+      jts = grid%j_start(ij)
+      jte = grid%j_end(ij)
+      ibs = ids
+      ibe = ide-1
+      itf = min(ite,ide-1)
+      jbs = jds
+      jbe = jde-1
+      jtf = min(jte,jde-1)
+      nbcz_s = config_flags%cell_zbottom
+      ! set indexes (end) !
+      !
+      !*** near start y-boundary ***!
+      IF (jts - jbs .lt. cs*nbcx) THEN
+        DO j = jts, min(jtf,jbs+cs*nbcx-1)
+          b_dist = j - jbs
+          b_limit = b_dist
+          DO k = nbcz_s, nbcz_e
+            DO i = max(its,b_limit+ibs), min(itf,ibe-b_limit)
+              grid%t_2(i,k,j) = grid%t_2(i,k,j) + grid%Pxy(i,k,j) * cpert_amp
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+      !*** near end y-boundary ***!
+      IF (jbe - jtf .lt. cs*nbcx) THEN
+        DO j = max(jts,jbe-cs*nbcx+1), jtf
+          b_dist = jbe - j
+          b_limit = b_dist
+          DO k = nbcz_s, nbcz_e
+            DO i = max(its,b_limit+ibs), min(itf,ibe-b_limit)
+              grid%t_2(i,k,j) = grid%t_2(i,k,j) + grid%Pxy(i,k,j) * cpert_amp
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+      !*** near start x-boundary ***!
+      IF (its - ibs .lt. cs*nbcy) THEN
+        DO i = its, min(itf,ibs+cs*nbcy-1)
+          b_dist = i - ibs
+          DO k = nbcz_s, nbcz_e
+            DO j = max(jts,b_dist+jbs+1), min(jtf,jbe-b_dist-1)
+              grid%t_2(i,k,j) = grid%t_2(i,k,j) + grid%Pxy(i,k,j) * cpert_amp
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+      !*** near end x-boundary ***!
+      IF (ibe - itf .lt. cs*nbcy) THEN
+        DO i = max(its,ibe-cs*nbcy+1), itf
+          b_dist = ibe - i
+          DO k = nbcz_s, nbcz_e
+            DO j = max(jts,b_dist+jbs+1), min(jtf,jbe-b_dist-1)
+              grid%t_2(i,k,j) = grid%t_2(i,k,j) + grid%Pxy(i,k,j) * cpert_amp
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+    ENDDO ! END TILE-LOOP
+  ELSE IF ( config_flags%cell_pert_2d ) THEN ! Perturbations applied along south and west boundaries
+    PRINT *,'DOING CELL PERT TWO BOUNDARIES'
+    IF ( config_flags%cell_tvcp ) THEN
+      cpert_amp = grid%dthpert_tvcp
+      PRINT *,'Perturbation amplitude = ',cpert_amp,' K'
+    ELSE
+      cpert_amp = config_flags%cell_pert_amp
+      PRINT *,'Perturbation amplitude = ',cpert_amp,' K'
+    ENDIF
+    DO ij = 1, grid%num_tiles ! START TILE-LOOP
+      ! set indexes (start) !
+      its = grid%i_start(ij)
+      ite = grid%i_end(ij)
+      jts = grid%j_start(ij)
+      jte = grid%j_end(ij)
+      ibs = ids
+      ibe = ide-1
+      itf = min(ite,ide-1)
+      jbs = jds
+      jbe = jde-1
+      jtf = min(jte,jde-1)
+      nbcz_s = config_flags%cell_zbottom
+      ! set indexes (end) !
+      !
+      !*** near start y-boundary ***!
+      IF (jts - jbs .lt. cs*nbcx) THEN
+        DO j = jts, min(jtf,jbs+cs*nbcx-1)
+          b_dist = j - jbs
+          b_limit = b_dist
+          DO k = nbcz_s, nbcz_e
+            DO i = max(its,b_limit+ibs), min(itf,ibe)
+              grid%t_2(i,k,j) = grid%t_2(i,k,j) + grid%Pxy(i,k,j) * cpert_amp
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+      !*** near start x-boundary ***!
+      IF (its - ibs .lt. cs*nbcy) THEN
+        DO i = its, min(itf,ibs+cs*nbcy-1)
+          b_dist = i - ibs
+          DO k = nbcz_s, nbcz_e
+            DO j = max(jts,b_dist+jbs+1), min(jtf,jbe)
+              grid%t_2(i,k,j) = grid%t_2(i,k,j) + grid%Pxy(i,k,j) * cpert_amp
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+    ENDDO ! END TILE-LOOP
+  ELSE
+  ENDIF
+  ELSE
+  ENDIF
+ELSE
+PRINT *,'MSG MADE CPM run'
+ENDIF
+
+
+!*****************************************************************************
+! Cell perturbation method (Implemented by Domingo Munoz-Esparza) DME
+! Munoz-Esparza et al., Boundary-Layer Meteorology 2014, vol. 153, pp 409-440
+! Munoz-Esparza et al., Physics of Fluids 2015, vol. 27, 035102
+! ********************************* END **************************************
+!*****************************************************************************
+!!
 
 #if ( WRFPLUS != 1 )
    IF      ( config_flags%traj_opt .EQ. UM_TRAJECTORY ) THEN
