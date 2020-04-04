@@ -294,6 +294,9 @@ MODULE module_state_description
   INTEGER, PARAMETER :: skip_trad_fields = 0
   INTEGER, PARAMETER :: do_trad_fields = 1
   INTEGER, PARAMETER :: lessfcscheme = 12
+  INTEGER, PARAMETER :: noturbine = 0
+  INTEGER, PARAMETER :: genactdisk2 = 2
+  INTEGER, PARAMETER :: genactdisk3 = 3
   INTEGER, PARAMETER :: tracer_test1 = 2
   INTEGER, PARAMETER :: restofwrf = 0
   INTEGER, PARAMETER :: realonly = 1
