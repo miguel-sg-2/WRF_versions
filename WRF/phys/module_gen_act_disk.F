@@ -714,7 +714,6 @@ endif
   ENDIF
 !PRINT*,'Starting part 3.2'
   DO n = 1, n_turbines
-    PRINT*,'should repeat',n_turbines,' times, this is for turbine ',n
     IF (inflow_on_patch(n) .EQ. 1 ) THEN
  !     PRINT*,'inflow patch for turbine ',n
       theta =  theta_turbine(n)*pi/180.0
@@ -865,7 +864,7 @@ endif
           acc_yaw_err(n) = acc_yaw_err(n) + yaw_err
 
         ELSE ! turbine is yawing or ready to start
-         PRINT *,"Turbine is yawing (MSG), theta turbine is",theta_turbine(n)
+         ! PRINT *,"Turbine is yawing (MSG), theta turbine is",theta_turbine(n)
          yaw_new = d0t_avg !calculated above
          yaw_inc = yaw_rate*dt
 
@@ -901,8 +900,7 @@ endif
 
       theta =  theta_turbine(n)*pi/180.0
   !    print*,'current wind speed is:',v0t_avg,', cut in speed is:',cutinspd(n),', and cut out speed is:',cutoutspd(n)
-  ! MSG ! IF ( (v0t_avg .lt. cutinspd(n)) .or. (v0t_avg .gt. cutoutspd(n)) ) GOTO 200 
-      IF ( (v0t_avg .lt. 3 ) .or. (v0t_avg .gt. 25) ) goto 200  !!! ADDED BY MSG WHILE I DETERMINE WHY CUTIN AND CUTOUT SPEEDS ARE BEING INITIALIZED TO ZERO
+      IF ( (v0t_avg .lt. cutinspd(n)) .or. (v0t_avg .gt. cutoutspd(n)) ) GOTO 200 
       operate = 1.0
       
       !Use time average velocity at hub location for rpm and pitch
@@ -1332,7 +1330,7 @@ endif
       ENDDO       ! i loop
 
     ENDIF !turbine_on_patch = 1
-  !  print*,'finished looping turbine ',n,' producing power:',turb_power_local(n)
+    print*,'finished looping turbine ',n,' producing power:',turb_power_local(n)
 200 CONTINUE !time-averaged inflow is < cutin or > cutout speed
     
     if (operate .eq. 1.0) then

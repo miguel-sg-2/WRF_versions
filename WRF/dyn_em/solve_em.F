@@ -3623,7 +3623,7 @@ IF ( config_flags%cell_pert .AND. config_flags%pert_timestep ) THEN
   ENDIF
   ELSE
   ENDIF
-PRINT *,'MSG MADE CPM run'
+! PRINT *,'MSG MADE CPM run'
 ELSE
 ENDIF
 
