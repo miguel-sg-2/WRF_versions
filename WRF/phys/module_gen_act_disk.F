@@ -346,7 +346,7 @@ USE module_gad_ge16, ONLY: calc_rpm_ge16, calc_pitch_ge16, calc_fnft_ge16
 ! 0. Set turbine parameters (to be assigned via auxiliary input file in future version)
 !____________________________________________________________________________________________________________________________
 
- PRINT *,'Starting GAD routine'
+! PRINT *,'Starting GAD routine'
 
   hoff = 5.0 ! hub offset
   yaw_rate = 2.0 !degrees per second
@@ -378,7 +378,7 @@ USE module_gad_ge16, ONLY: calc_rpm_ge16, calc_pitch_ge16, calc_fnft_ge16
 if (dum .LT. 0.0001) then
    print*,'use dum variable to read files'
 else
-   print*,'dum variable is',dum
+   ! print*,'dum variable is',dum
 endif
 
 ! print*,'dum variable is equal to',dum,'after loop'
@@ -1330,7 +1330,7 @@ endif
       ENDDO       ! i loop
 
     ENDIF !turbine_on_patch = 1
-    print*,'finished looping turbine ',n,' producing power:',turb_power_local(n)
+!    print*,'finished looping turbine ',n,' producing power:',turb_power_local(n)
 200 CONTINUE !time-averaged inflow is < cutin or > cutout speed
     
     if (operate .eq. 1.0) then
