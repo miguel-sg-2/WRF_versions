@@ -70,8 +70,45 @@ Notes: -ROTOR_DIAMETER includes hub
 
 ---Relevant citations for WRF-CPM---------------------------------------------------------------------------------------
 
+Muñoz-Esparza, D., Kosović, B., Mirocha, J.D., and van Beeck, J. (2014) Bridging the Transition from Mesoscale to 
+Microscale Turbulence in Numerical Weather Prediction Models. Boundary-Layer Meteorol, 153, 409–440. 
+doi:10.1007/s10546-014-9956-9.
+
+Muñoz-Esparza, D., Kosović, B., van Beeck, J., and Mirocha, J.D. (2015) A stochastic perturbation method to generate 
+inflow turbulence in large-eddy simulation models: Application to neutrally stratified atmospheric boundary layers. 
+Physics of Fluids, 27, 035102. doi:10.1063/1.4913572.
+
+Muñoz-Esparza, D., Lundquist, J.K., Sauer, J.A., Kosović, B., and Linn, R.R. (2017) Coupled mesoscale-LES modeling of a
+diurnal cycle during the CWEX-13 field campaign: From weather to boundary-layer eddies. Journal of Advances in Modeling 
+Earth Systems, 9, 1572–1594. doi:10.1002/2017MS000960.
+
+Mazzaro, L.J., Muñoz‐Esparza, D., Lundquist, J.K., and Linn, R.R. (2017) Nested mesoscale‐to‐LES modeling of the 
+atmospheric boundary layer in the presence of under‐resolved convective structures. J. Adv. Model. Earth Syst., 9, 
+1795–1810. doi:10.1002/2017MS000912.
+
 ---WRF-CPM files--------------------------------------------------------------------------------------------------------
 
+WRF/Registry/registry.cell_pert         #Registry file for CPM code
+WRF/dyn_em/start_em.F                   #CPM code for initial perturbations included in WRF/dyn_em/start_em.F
+WRF/dyn_em/solve_em.F                   #CPM code included in WRF/dyn_em/solve_em.F
+
 ---Notes on WRF-CPM usage-----------------------------------------------------------------------------------------------
+
+
+Namelist variables (see WRF/Registry/registry.cell_pert for complete set of variables):
+
+initial_pert       = activates temperature perturbations near the boundaries for initial perturbation
+amp_pert_initial   = amplitude of the initial temperature perturbation
+pertz_gp_initial   = number of vertical grid points for initial temperature perturbation
+cell_pert          = activates cell-based perturbation
+cell_pert_amp      = maximum amplitude for the potential temperature perturbations
+pert_timestep      = activates temperature perturbations at a given time step frequency
+pert_nts           = number of time steps after which perturbations are seeded (1/f_p)
+cell_zbottom       = z-grid point where the perturbation starts
+cell_ztop          = z-grid point where the perturbations ends
+
+Notes: -The amplitude of the potential temperature perturbations should be obtained for Ec = 0.16 
+        (Muñoz-Esparza et al., 2015)
+       -The time step for the perturbations should roughly satisfy /Gamma = 1 (Muñoz-Esparza et al., 2015)
 
 ------------------------------------------------------------------------------------------------------------------------
