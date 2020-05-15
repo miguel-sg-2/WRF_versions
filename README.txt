@@ -53,7 +53,7 @@ turb_loc_in_latlon = if T, turbine location in windturb_spec is specified in lat
 windturb_spec      = name of text file used to specify turbine parameters. 
                      data is given as follows, space delimited, one row per turbine:
 
-X[m]/LON Y[m]/LAT HUB_HEIGHT[m] ROTOR_DIAMETER[m] BLADE_LENGTH[m] THETA_TURBINE[deg.] CUTIN_SPEED[m/s] CUTOUT_SPEED[m/s]
+Y[m]/LAT X[m]/LON HUB_HEIGHT[m] ROTOR_DIAMETER[m] BLADE_LENGTH[m] THETA_TURBINE[deg.] CUTIN_SPEED[m/s] CUTOUT_SPEED[m/s]
 
 Notes: -ROTOR_DIAMETER includes hub
        -BLADE_LENGTH does not include hub
