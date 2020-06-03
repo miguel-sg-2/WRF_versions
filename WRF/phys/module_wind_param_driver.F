@@ -9,6 +9,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                               ru_tendf, rv_tendf, rw_tendf, &
                               u_2, v_2, w_2, rdzw,          &
                               muu, muv, mut,                &
+                              c1h, c2h, c1f, c2f,           & !RSA
                               dx, dy, dt,                   & !JDM May 2, 2013
                               x_turbine,                    &
                               y_turbine,                    &
@@ -79,7 +80,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
       hgt
 
   REAL, DIMENSION( kms:kme) ,         INTENT( IN  ) &
-  :: fnm, fnp
+  :: fnm, fnp, c1h, c2h, c1f, c2f
 
   REAL, DIMENSION( n_turbines ),                 INTENT( INOUT ) &
   :: x_turbine       & !                         (m)
@@ -169,6 +170,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                          rotrate, power,                   &
                          u_2, v_2, w_2,                    & 
                          muu, muv, mut,                    & 
+                         c1h, c2h, c1f, c2f,               & !RSA
                          rdzw, dx, dy, dt,                 & !JDM May 2, 2013
                          v0t, d0t, itimestep,              & !JDM May 2, 2013
                          xlat_v, xlong_u, hgt,             & !RSA

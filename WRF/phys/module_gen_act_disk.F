@@ -42,6 +42,7 @@ USE module_gad_nrel5, ONLY: calc_rpm_nrel5, calc_pitch_nrel5, calc_fnft_nrel5
                             rotrate, power,               &
                             u, v, w,                      &
                             muu, muv, mut,                &
+                            c1h, c2h, c1f, c2f,           & !RSA
                             rdzw,  dx, dy, dt,            &
                             v0t, d0t, itimestep,          &
                             xlat_v, xlong_u, hgt,         & !RSA
@@ -153,8 +154,9 @@ USE module_gad_nrel5, ONLY: calc_rpm_nrel5, calc_pitch_nrel5, calc_fnft_nrel5
    , hgt           ! RSA terrain height          (m)
 
   REAL, DIMENSION( kms:kme ),                    INTENT( IN  ) &
-  :: fnm, fnp      ! RSA for v0_w calculation
-
+  :: fnm, fnp,   & ! RSA for v0_w calculation
+     c1h, c2h,   & ! RSA for tendency calculation in v4.0
+     c1f, c2f      ! ...
   REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT( IN  ) &
   :: rdzw          !inverse vertical grid spacing at w-nodes (m-1)
 
@@ -1021,7 +1023,7 @@ endif
                       ft = 0.0 !NM no tangential force
                       acc_u = (1.0/adenom)*exp(-(dru(i,j)**2)/bdenom) !NM 1-D !Gaussian
                       fx = fn*cos(theta) !NM to x direction
-                      ru_tendf(i,k,j) = ru_tendf(i,k,j) - muu(i,j)*acc_u*cnst*fx !NM
+                      ru_tendf(i,k,j) = ru_tendf(i,k,j) - (c1h(k)*muu(i,j)+c2h(k))*acc_u*cnst*fx !NM
                    ENDIF
                 ENDIF
 
@@ -1033,7 +1035,7 @@ endif
                       ft = 0.0 !NM no tangential force
                       acc_v = (1.0/adenom)*exp(-(drv(i,j)**2)/bdenom) !NM 1-D !Gaussian
                       fy = fn*sin(theta) !NM to x direction
-                      rv_tendf(i,k,j) = rv_tendf(i,k,j) - muv(i,j)*acc_v*cnst*fy !NM
+                      rv_tendf(i,k,j) = rv_tendf(i,k,j) - (c1h(k)*muv(i,j)+c2h(k))*acc_v*cnst*fy !NM
                   ENDIF
                 ENDIF
              ENDIF !cdt > 0
@@ -1055,7 +1057,7 @@ endif
                 fx = fn*cos(theta) 
  
                 ru_tendf(i,k,j) = ru_tendf(i,k,j) &
-                                  - muu(i,j)*acc_u*cnst*fx
+                                  - (c1h(k)*muu(i,j)+c2h(k))*acc_u*cnst*fx
 
 !JDM	        thrust(i,k,j) = thrust(i,k,j)-fn*cos(theta)*acc_u     		
                 !!thrust everywhere is equal to current thrust plus force distribution due to gaussian times normal force
@@ -1125,7 +1127,7 @@ endif
 !print*,'fn,ft,fx,accu',fn,ft,fx,acc_u
 
               ru_tendf(i,k,j) = ru_tendf(i,k,j) &
-                                 - muu(i,j)*acc_u*cnst*fx
+                                 - (c1h(k)*muu(i,j)+c2h(k))*acc_u*cnst*fx
 
               ! wp_ts(i,k,j) = -1.0*muu(i,j)*acc_u*cnst*fx
 
@@ -1145,7 +1147,7 @@ endif
            fy = fn*sin(theta) 
 
            rv_tendf(i,k,j) = rv_tendf(i,k,j) &
-                                   - muv(i,j)*acc_v*cnst*fy
+                                   - (c1h(k)*muv(i,j)+c2h(k))*acc_v*cnst*fy
 
         ELSE !GAD-------------------------------------------------------------------------------------------------	
 
@@ -1204,7 +1206,7 @@ endif
 !JDM TEST SIGN 12/2014      fy = -ft*cos(zeta)*sin(tilt)*sin(theta)
 
                 rv_tendf(i,k,j) = rv_tendf(i,k,j) &
-                                  - muv(i,j)*acc_v*cnst*fy
+                                  - (c1h(k)*muv(i,j)+c2h(k))*acc_v*cnst*fy
 
 !JDM            wp_ts(i,k,j) = -1.0*muv(i,j)*acc_v*cnst*fy
 
@@ -1266,7 +1268,7 @@ endif
 !JDM TEST SIGN      fz = -ft*cos(zeta)*cos(tilt) 
 
               rw_tendf(i,k,j) = rw_tendf(i,k,j)  &
-                              - mut(i,j)*acc_w*cnst*fz
+                              - (c1f(k)*mut(i,j)+c2f(k))*acc_w*cnst*fz
 
 !JDM          wp_ts(i,k,j) = -1.0*mut(i,j)*acc_w*cnst*fz
  

@@ -594,21 +594,18 @@ BENCH_START(wind_param_driver_tim)
                                   ru_tendf, rv_tendf, rw_tendf,                &
                                   grid%u_2, grid%v_2,  grid%w_2, grid%rdzw,    &
                                   grid%muu, grid%muv,  grid%mut,               &
+                                  grid%c1h, grid%c2h, grid%c1f, grid%c2f,      & !RSA
                                   grid%dx,  grid%dy,   grid%dt,                &
                                   grid%x_turbine,                              &
                                   grid%y_turbine,                              &
-                                  grid%x_inflow,                               &
-!RSA
-                                  grid%y_inflow,                               &
-!RSA
+                                  grid%x_inflow,                               & !RSA
+                                  grid%y_inflow,                               & !RSA
                                   grid%hub_height,                             &
                                   grid%rotor_diameter,                         &
                                   grid%blade_length,                           &
                                   grid%theta_turbine,                          &
-                                  grid%cutinspd, grid%cutoutspd,               &
-!RSA
-                                  grid%turb_power,                             &
-!RSA
+                                  grid%cutinspd, grid%cutoutspd,               & !RSA
+                                  grid%turb_power,                             & !RSA
                                   grid%acc_yaw_err,                            &
                                   grid%wp_acc_u, grid%wp_acc_v, grid%wp_acc_w, &
                                   grid%wp_ts,                                  &
@@ -617,10 +614,8 @@ BENCH_START(wind_param_driver_tim)
                                   config_flags%n_turbines,                     &
                                   config_flags%n_timeseries,                   &
                                   grid%v0t, grid%d0t, grid%itimestep,          &
-                                  grid%xlat_v, grid%xlong_u, grid%ht,          &
-!RSA
-                                  grid%fnm, grid%fnp,                          &
-!RSA
+                                  grid%xlat_v, grid%xlong_u, grid%ht,          & !RSA
+                                  grid%fnm, grid%fnp,                          & !RSA
                                   ids, ide, jds, jde, kds, kde,                &
                                   ims, ime, jms, jme, kms, kme,                &
                                   ips, ipe, jps, jpe, kps, kpe,                &
