@@ -599,6 +599,20 @@ CONTAINS
 
       END DO
    END DO
+! MMC (surf layer): Compute Coriolis terms from specified latitude
+IF ( config_flags%spec_ideal .GT. 0 ) THEN
+
+    DO j = jts, jte
+      DO i = its, ite
+
+        grid%e(i,j)     = 2*EOMEG*COS(config_flags%spec_lat*degrad)
+        grid%f(i,j)     = 2*EOMEG*SIN(config_flags%spec_lat*degrad)
+
+      END DO
+   END DO
+
+ENDIF
+
 
    END SELECT ideal_landmap
 
@@ -655,8 +669,11 @@ CONTAINS
        IF (model_config_rec%eta_levels(1) .EQ. -1) THEN !we do not have eta_levels from namelist
    IF (stretch_grid) THEN ! exponential stretch for eta (nearly constant dz)
      DO k=1, kde
-      grid%znw(k) = (exp(-(k-1)/float(kde-1)/z_scale) - exp(-1./z_scale))/ &
-                                (1.-exp(-1./z_scale))
+         grid%znw(k) = (exp(-(k-1)/float(kde-1)/z_scale) - exp(-1./z_scale))/ &
+                                    (1.-exp(-1./z_scale))
+!! EDIT FROM MMC IF ERROR OCCURS      grid%znw(k) = (exp(-(k-1)/float(kde-1)/z_scale) - exp(-1./z_scale))/ &
+!! EDIT FROM MMC IF ERROR OCCURS                                (1.-exp(-1./z_scale))
+!!       grid%znw(k) = model_config_rec%eta_levels(k)
      ENDDO
    ELSE
      DO k=1, kde
@@ -1375,6 +1392,80 @@ CONTAINS
 ! For 2D test, call randx outside I-loop
 ! For 3D runs, call randx inside both I-J loops
 
+!!!!START OF EDITS FOR MMC TEMP PERTURBATIONS
+!!!JDM MMC Use code below to add perturbations
+!!!
+!!!  delta = 250.0
+!!!  nkp = 0
+!!!
+!!!  print*,'Adding initial perturbations'
+!!!  print*,'k,     z_mid,     sf(k),      nkp'
+!!!
+!!!  DO k = 1, kte-1
+!!!
+!!!     IF (config_flags%spec_init_perts ) THEN
+!!!
+!!!        zrad = 0.5*(grid%ph_1(i,k,j)+grid%ph_1(i,k+1,j)  &
+!!!                    +grid%phb(i,k,j)+grid%phb(i,k+1,j))/g
+!!!
+!!!        sf(k) = ( (delta-zrad)/delta )**3
+!!!
+!!!     ELSE
+!!!
+!!!        sf(k) = 0.0
+!!!
+!!!     ENDIF
+!!!
+!!!
+!!!     IF ( sf(k) .LE. 0.0 ) THEN
+!!!
+!!!        IF ( sf(k-1) .GT. 0.0 ) nkp = k - 1
+!!!
+!!!        sf(k) = 0.0
+!!!
+!!!     ENDIF
+!!!
+!!!     print*,k,zrad,sf(k),nkp
+!!!
+!!!  ENDDO
+!!!
+!!!  DO J = jts, min(jde-1,jte)
+!!!
+!!!    DO I = its, min(ide-1,ite)
+!!!
+!!!     DO K = 1, nkp  !JDM-SWiFT
+!!!
+!!!     call random_number (randx) !JDM-SWiFT
+!!!     randx = randx - 0.5        !JDM-SWiFT
+!!!
+!!!           grid%t_1(i,k,j)=grid%t_1(i,k,j) + randx*sf(k)
+!!!           grid%t_2(i,k,j)=grid%t_1(i,k,j)
+!!!           qvf = 1. + rvovrd*moist(i,k,j,P_QV)
+!!!           grid%alt(i,k,j) = (r_d/p1000mb)*(grid%t_1(i,k,j)+t0)*qvf* &
+!!!                        (((grid%p(i,k,j)+grid%pb(i,k,j))/p1000mb)**cvpm)
+!!!           grid%al(i,k,j) = grid%alt(i,k,j) - grid%alb(i,k,j)
+!!!
+!!!     ENDDO
+!!!
+!!!!  rebalance hydrostatically
+!!!
+!!!      DO  kk  = 2,kte
+!!!        k = kk - 1
+!!!        grid%ph_1(i,kk,j) = grid%ph_1(i,kk-1,j) - (grid%dnw(kk-1))*(       &
+!!!                     ((grid%c1h(k)*grid%mub(i,j)+grid%c2h(k))+(grid%c1h(k)*grid%mu_1(i,j)))*grid%al(i,kk-1,j)+ &
+!!!                      (grid%c1h(k)*grid%mu_1(i,j))*grid%alb(i,kk-1,j)  )
+!!!
+!!!        grid%ph_2(i,kk,j) = grid%ph_1(i,kk,j)
+!!!        grid%ph0(i,kk,j) = grid%ph_1(i,kk,j) + grid%phb(i,kk,j)
+!!!      ENDDO
+!!!
+!!!    ENDDO
+!!!  ENDDO
+!!!
+!!!!END OF EDITS FROM MMC TEMP PERTURBATIONS
+
+
+!!!! COMMENT THE FOLLOWING IF ADDING TEMP PERTURBATIONS FROM MMC
   DO J = jts, min(jde-1,jte)
 !   yrad = config_flags%dy*float(j-nyc)/10000.
     yrad = 0.
@@ -1422,6 +1513,7 @@ CONTAINS
 
     ENDDO
   ENDDO
+!!!!END COMMENT IF ADDING TEMP PERTURBATIONS FROM MMC
 
   END SELECT ideal_pert
 

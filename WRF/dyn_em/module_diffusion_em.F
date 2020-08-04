@@ -5352,7 +5352,10 @@ END SUBROUTINE phy_bc
 
     REAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( INOUT )  &
     :: tendency
-
+    !!! ADDED BY MSG
+!    REAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( OUT )  &
+!    :: eeppss
+    !!!
     REAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN )  &
     :: tke, bn2, theta, p8w, t8w, z, rdz, rdzw
 
@@ -5425,7 +5428,9 @@ END SUBROUTINE phy_bc
         ELSE
           coefc = ce1 + ce2 * l_scale(i,k,j) / deltas
         END IF
-
+        ! Turbulence dissipation rate !!!!!!!!!!!!!!!!!!!!!! ADDED BY MSG!
+       ! eeppss(i,k,j) = (c1(k)*mu(i,j)+c2(k)) * coefc * tketmp**1.5 / l_scale(i,k,j)
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         tendency(i,k,j) = tendency(i,k,j) - &
                           (c1(k)*mu(i,j)+c2(k)) * coefc * tketmp**1.5 / l_scale(i,k,j)
       END DO
