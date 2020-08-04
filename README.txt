@@ -5,6 +5,7 @@
 including...
 -Generalized Actuator Disk (GAD) wind turbine model
 -Cell perturpation method (CPM) for downscaling turbulence in nested simulations
+-Idealized surface layer parameterization
 
 @@@@@@@@@@@
 @ WRF-GAD @
