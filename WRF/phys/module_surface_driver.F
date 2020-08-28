@@ -1960,7 +1960,7 @@ CONTAINS
                               i_start(ij),i_end(ij), j_start(ij),j_end(ij),kts,kte, &
                               ust,mol,&
                               ustt,molt)
-
+PRINT*, 'ideal SFCSCHEME [ust, mol]',ust(i,j),mol(i,j)
         ENDDO
         !$OMP END PARALLEL DO
 
