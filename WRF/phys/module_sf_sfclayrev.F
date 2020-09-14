@@ -394,11 +394,9 @@ CONTAINS
 !                                                            
       DO 5 I=its,ite                                   
         TGDSA(I)=TSK(I)
-        print*,'TSK when calculating THGB is',TSK(I)                    
 ! PSFC cb
 !        THGB(I)=TSK(I)*(100./PSFC(I))**ROVCP                
         THGB(I)=TSK(I)*(P1000mb/PSFCPA(I))**ROVCP
-        print*,'theta at surface (THGB) is ',THGB(I)   
     5 CONTINUE                                               
 !                                                            
 !-----DECOUPLE FLUX-FORM VARIABLES TO GIVE U,V,T,THETA,THETA-VIR.,
@@ -431,7 +429,6 @@ CONTAINS
          SCR4(I)=SCR3(I)                                                    
          THVX(I)=THX(I)                                                     
          QX(I)=0.
-         print*,'theta at first model level (THX) is ',THX(I)                                                             
    30 CONTINUE                                                                 
 !                                                                                
       DO I=its,ite
@@ -680,7 +677,6 @@ CONTAINS
 !                                                                                
       DO 330 I=its,ite
         DTG=THX(I)-THGB(I)
-        print*,'delta theta between first level and surface (DTG) is ',DTG
    
         PSIX=GZ1OZ0(I)-PSIM(I)                                                   
         PSIX10=GZ10OZ0(I)-PSIM10(I)
@@ -939,13 +935,12 @@ CONTAINS
         IF ( PRESENT(USTM) ) THEN
         USTM(I)=0.5*USTM(I)+0.5*KARMAN*WSPDI(I)/PSIX
         ENDIF
-        print*,'2-m temperature before crucial step is',T2(I)
+
         U10(I)=UX(I)*PSIX10/PSIX                                    
         V10(I)=VX(I)*PSIX10/PSIX                                   
         TH2(I)=THGB(I)+DTG*PSIT2/PSIT                                
         Q2(I)=QSFC(I)+(QX(I)-QSFC(I))*PSIQ2/PSIQ                   
         T2(I) = TH2(I)*(PSFCPA(I)/P1000mb)**ROVCP            
-        print*,'2-m temperature after crucial step is ',T2(I)         
 !                                                                                
         IF((XLAND(I)-1.5).LT.0.)THEN                                            
           UST(I)=AMAX1(UST(I),0.001)
@@ -1049,7 +1044,7 @@ CONTAINS
 !         ENDIF 
         ELSEIF(XLAND(I)-1.5.LT.0.)THEN                                       
           HFX(I)=FLHC(I)*(THGB(I)-THX(I))                                
-          HFX(I)=AMAX1(HFX(I),-250.)                                       
+          HFX(I)=AMAX1(HFX(I),-250.) 
         ENDIF                                                                  
   400 CONTINUE                                                                 
 
