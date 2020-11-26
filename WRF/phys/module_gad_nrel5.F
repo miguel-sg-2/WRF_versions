@@ -356,7 +356,7 @@ FUNCTION calc_fnft_nrel5( v0, rho, blades, bladelen, diameter,           &
 
   IF (radius .LT. radmax) THEN !JDM
      
-     IF (radius .GE. radmin) THEN !JDM
+     IF (radius .GT. radmin) THEN !JDM ! MSG CHANGED FROM .GE. TO .GT.
 
         an = 0.0
         at = 0.0
@@ -394,7 +394,6 @@ FUNCTION calc_fnft_nrel5( v0, rho, blades, bladelen, diameter,           &
   
            psi    = atan2(vn,vt)
            psideg = psi*180.0/pi
-
 ! print*,'iter',iter
 ! print*,'v0,  omega, radius',v0,omega,radius
 ! print*,'vn, at, vt',vn,at,vt
@@ -468,7 +467,6 @@ FUNCTION calc_fnft_nrel5( v0, rho, blades, bladelen, diameter,           &
              an = 0.0
              at = 0.0
 
-print*,'what am I doing in here???'
 
           endif
 
@@ -477,7 +475,9 @@ print*,'what am I doing in here???'
            epsi = sqrt( ( anold - an )**2.0 + ( atold - at )**2.0 )
   
         end do
-
+        if (isnan(at)) then
+                print*,'at is NaN lossfac=',lossfac,'psi=',psi,'solid=',solid,'ct=',ct
+        endif
 !print*,'radius,radmax,radmin',radius,radmax,radmin
 !print*,'radius - radmin',radius - radmin
 !print*,'fac1,fac2',fac1,fac2
@@ -500,6 +500,9 @@ print*,'what am I doing in here???'
 
        psi    = atan2(vn,vt)
        psideg = psi*180.0/pi
+        if (isnan(psi)) then
+                print*,'vn=',vn,'vt=',vt,'v0=',v0,'an=',an,'omega=',omega,'radius=',radius,'at=',at
+        endif
 !
 !    --Incidence angle   
 
@@ -533,7 +536,12 @@ print*,'what am I doing in here???'
 
        if( fn .lt. 0.0 ) fn = 0.0
        if( ft .lt. 0.0 ) ft = 0.0
-
+        if (isnan(fn)) then
+                print*,'fn is NaN, psi=',psi,'lift=',lift,'drag=',drag
+        endif
+        if (isnan(ft)) then
+                print*,'ft is NaN, psi=',psi,'lift=',lift,'drag=',drag
+        endif
        fnft(1) = fn
        fnft(2) = ft              
 

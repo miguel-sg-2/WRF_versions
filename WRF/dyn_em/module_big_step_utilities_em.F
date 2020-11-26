@@ -1188,6 +1188,9 @@ SUBROUTINE calc_p_rho_phi ( moist, n_moist, hypsometric_opt,      &
               ph(i,k+1,j) = ph(i,k,j) - (dnw(k))*(           &
                            ((c1(k)*muts(i,j)+c2(k)))*al(i,k,j)+            &
                             (c1(k)*mu(i,j))*alb(i,k,j)  )
+                if (isnan(ph(i,k+1,j))) then
+                         print*,'HERE4'
+                endif
             ENDDO
           ENDDO
         ENDDO
@@ -1198,6 +1201,9 @@ SUBROUTINE calc_p_rho_phi ( moist, n_moist, hypsometric_opt,      &
       DO j=jts,jtf
         DO i=its,itf
            ph(i,kts,j) = phb(i,kts,j)
+        if (isnan(ph(i,kts,j))) then
+           print*,'HERE5'
+       endif
         END DO
 
         DO k=kts+1,ktf+1
@@ -1206,12 +1212,18 @@ SUBROUTINE calc_p_rho_phi ( moist, n_moist, hypsometric_opt,      &
             pfd = c3f(k-1)*MUTS(i,j) + c4f(k-1) + ptop
             phm = c3h(k-1)*MUTS(i,j) + c4h(k-1) + ptop
             ph(i,k,j) = ph(i,k-1,j) + (al(i,k-1,j)+alb(i,k-1,j))*phm*LOG(pfd/pfu)
+            if (isnan(ph(i,k,j))) then
+                print*,'HERE6'
+            endif
           ENDDO
         ENDDO
 
         DO k=kts,ktf+1
           DO i=its,itf
              ph(i,k,j) = ph(i,k,j) - phb(i,k,j)
+        if (isnan(ph(i,k,j))) then
+           print*,'HERE7'
+       endif
           END DO
         END DO
       END DO
@@ -2461,6 +2473,9 @@ SUBROUTINE pg_buoy_w( rw_tend, p, cqw, muf, mubf,     &
        rw_tend(i,k,j) = rw_tend(i,k,j)+(1./msfty(i,j))*g*(      &
                         cq1*2.*rdnw(k-1)*(  -p(i,k-1,j))  &
                         -(c1f(k)*muf(i,j))-cq2*(c1f(k)*mubf(i,j)+c2f(k))            )
+        if (isnan(rw_tend(i,k,j))) then
+                print*,'HERE 1'
+        endif
      END DO
 
      DO k = 2, kde-1
@@ -2471,6 +2486,9 @@ SUBROUTINE pg_buoy_w( rw_tend, p, cqw, muf, mubf,     &
       rw_tend(i,k,j) = rw_tend(i,k,j)+(1./msfty(i,j))*g*(      &
                        cq1*rdn(k)*(p(i,k,j)-p(i,k-1,j))  &
                        -(c1f(k)*muf(i,j))-cq2*(c1f(k)*mubf(i,j)+c2f(k))            )
+        if (isnan(rw_tend(i,k,j))) then
+                print*,'HERE 2'
+        endif
      END DO
      ENDDO           
 
@@ -2618,6 +2636,9 @@ SUBROUTINE w_damp( rw_tend, max_vert_cfl,max_horiz_cfl, &
 #endif
            if ( vert_cfl > 2. ) some = some + 1
            rw_tend(i,k,j) = rw_tend(i,k,j)-sign(1.,w(i,k,j))*w_alpha*(vert_cfl-w_beta)*(c1f(k)*mut(i,j)+c2f(k))
+                if (isnan(rw_tend(i,k,j))) then
+                        print*,'HERE 3'
+                endif
         endif
      END DO
      ENDDO
@@ -3818,7 +3839,9 @@ SUBROUTINE coriolis ( ru, rv, rw, ru_tend, rv_tend, rw_tend, &
           -(msftx(i,j)/msfty(i,j))*                      &
            sina(i,j)*0.5*(fzm(k)*(rv(i,k,j)+rv(i,k,j+1)) &
           +fzp(k)*(rv(i,k-1,j)+rv(i,k-1,j+1))))
-
+        if (isnan(rw_tend(i,k,j))) then
+                print*,'HERE 4'
+        endif
    ENDDO
    ENDDO
    ENDDO
@@ -4139,7 +4162,9 @@ SUBROUTINE perturbation_coriolis ( ru_in, rv_in, rw, ru_tend, rv_tend, rw_tend, 
           +fzp(k)*(ru(i,k-1,j)+ru(i+1,k-1,j)))           &
           -(msftx(i,j)/msfty(i,j))*sina(i,j)*0.5*(fzm(k)*(rv(i,k,j)+rv(i,k,j+1)) &
           +fzp(k)*(rv(i,k-1,j)+rv(i,k-1,j+1))))
-
+        if (isnan(rw_tend(i,k,j))) then
+                print*,'HERE 5'
+        endif
    ENDDO
    ENDDO
    ENDDO
@@ -4437,7 +4462,9 @@ SUBROUTINE curvature ( ru, rv, rw, u, v, w, ru_tend, rv_tend, rw_tend, &
     *0.5*(fzm(k)*( u(i,k,j) +u(i+1,k,j))+fzp(k)*( u(i,k-1,j) +u(i+1,k-1,j)))     &
     +(msftx(i,j)/msfty(i,j))*0.5*(fzm(k)*(rv(i,k,j)+rv(i,k,j+1))+fzp(k)*(rv(i,k-1,j)+rv(i,k-1,j+1))) &
     *0.5*(fzm(k)*( v(i,k,j) +v(i,k,j+1))+fzp(k)*( v(i,k-1,j) +v(i,k-1,j+1))))
-
+        if (isnan(rw_tend(i,k,j))) then
+                print*,'HERE 6'
+        endif
    ENDDO
    ENDDO
    ENDDO
@@ -4843,6 +4870,9 @@ END SUBROUTINE pole_point_bc
     do k = k_start, kte
     do i = i_start, i_end
       z_at_w(i,k,j) = (phb(i,k,j)+ph(i,k,j))/g
+      if (isnan(z_at_w(i,k,j))) then
+            print*,'phb(i,k,j) = ',phb(i,k,j), 'ph(i,k,j) = ',ph(i,k,j)
+      endif
     enddo
     enddo
     enddo
@@ -4850,7 +4880,10 @@ END SUBROUTINE pole_point_bc
     do j = j_start,j_end
     do k = k_start, kte-1
     do i = i_start, i_end
-      dz8w(i,k,j) = z_at_w(i,k+1,j)-z_at_w(i,k,j)
+        dz8w(i,k,j) = z_at_w(i,k+1,j)-z_at_w(i,k,j)
+        if (isnan(dz8w(i,k,j))) then
+                print*,'z_at_w(i,k+1,j) =',z_at_w(i,k+1,j),' z_at_w(i,k,j) =',z_at_w(i,k,j)
+        endif
     enddo
     enddo
     enddo
@@ -6023,6 +6056,9 @@ END SUBROUTINE set_tend
           dcoef = ( SIN( 0.5 * pii * dcoef ) )**2
           rw_tendf(i,k,j) = rw_tendf(i,k,j) -  &
                             (c1f(k)*mut(i,j)+c2f(k)) * ( dcoef * dampcoef ) * w(i,k,j)
+          if (isnan(rw_tendf(i,k,j))) then
+                print*,'asdfgh',c1f(k),mut(i,j),c2f(k),dcoef,dampcoef,w(i,k,j)
+          endif
         END IF
       END DO
     END DO

@@ -205,6 +205,7 @@ CONTAINS
       DO J=jts,jte
         DO i=its,ite
           dz8w1d(I) = dz8w(i,1,j)
+          !print*,"dz8w1d(I) = ",dz8w1d(I)
         ENDDO
    
         DO i=its,ite
@@ -469,10 +470,16 @@ CONTAINS
 !                                                                                
       DO 110 I=its,ite                                                   
            ZQKL(I)=dz8w1d(I)+ZQKLP1(I)
+           IF (isnan(ZQKL(I))) THEN
+              print*,'dz8w1d(I) = ',dz8w1d(I),' ZQLP1(I) = ',ZQKLP1(I)
+           ENDIF
   110 CONTINUE                                                                 
 !                                                                                
       DO 120 I=its,ite
-         ZA(I)=0.5*(ZQKL(I)+ZQKLP1(I))                                        
+         ZA(I)=0.5*(ZQKL(I)+ZQKLP1(I)) 
+         IF (isnan(ZA(I))) THEN
+              print*,'zqkl(I) = ',ZQKL(I),' ZQLP1(I) = ',ZQKLP1(I)  
+         ENDIF                                       
   120 CONTINUE                                                                 
 !                                                                                
       DO 160 I=its,ite
@@ -572,6 +579,9 @@ CONTAINS
 !
 ! ... paj: compute integrated similarity functions.
 !
+        IF (isnan(za(I))) THEN
+                print*,'zol(I) = ',zol(I),'za(I) = ',za(I),'znt(I) = ',znt(I)
+        ENDIF
         zolzz=zol(I)*(za(I)+znt(I))/za(I) ! (z+z0/L
         zol10=zol(I)*(10.+znt(I))/za(I)   ! (10+z0)/L
         zol2=zol(I)*(2.+znt(I))/za(I)     ! (2+z0)/L
@@ -1203,6 +1213,9 @@ CONTAINS
       real    :: rzol
         nzol = int(zolf*100.)
         rzol = zolf*100. - nzol
+        IF (isnan(zolf)) THEN
+                print*,'psim_stable -> zolf = ',zolf,', nzol = ',nzol,', rzol = ',rzol
+        ENDIF
         if(nzol+1 .le. 1000)then
            psim_stable = psim_stab(nzol) + rzol*(psim_stab(nzol+1)-psim_stab(nzol))
         else

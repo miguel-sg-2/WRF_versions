@@ -172,6 +172,9 @@ SUBROUTINE small_step_prep( u_1, u_2, v_1, v_2, w_1, w_2, &
     DO j=j_start, j_end
       DO i=i_start, i_end
         MUTS(i,j)=MUB(i,j)+MU_2(i,j)
+        if (isnan(MUTS(i,j))) then
+            print*,'MUB=',MUB(i,j),'MU_2=',MU_2(i,j)
+        endif
       ENDDO
       DO i=i_start, i_endu
         MUUS(i,j) = MUU(i,j)
@@ -196,6 +199,9 @@ SUBROUTINE small_step_prep( u_1, u_2, v_1, v_2, w_1, w_2, &
     DO j=j_start, j_end
       DO i=i_start, i_end
         MUTS(i,j)=MUB(i,j)+MU_1(i,j)
+        if (isnan(MUTS(i,j))) then
+            print*,'MUB=',MUB(i,j),'MU_1=',MU_1(i,j)
+        endif
       ENDDO
       DO i=i_start, i_endu
         MUUS(i,j)=0.5*(MUB(i,j)+MU_1(i,j)+MUB(i-1,j)+MU_1(i-1,j))
@@ -541,6 +547,9 @@ SUBROUTINE calc_p_rho( al, p, ph,                    &
                       /((c1h(k)*Mut(i,j)+c2h(k))*(t0+t_1(i,k,j)))-p(i,k,j)/c2a(i,k,j)
          ph(i,k+1,j)=ph(i,k,j)-dnw(k)*((c1h(k)*Mut(i,j)+c2h(k))*al (i,k,j)              &
                           +(c1h(k)*mu(i,j))*alt(i,k,j))
+        if (isnan(ph(i,k,j))) then
+           print*,'HERE3'
+       endif
        ENDDO
        ENDDO
        ENDDO
@@ -1097,6 +1106,9 @@ SUBROUTINE advance_mu_t( ww, ww_1, u, u_1, v, v_1,            &
                     +rdx*( (u(i+1,k,j)+(c1h(k)*muu(i+1,j)+c2h(k))*u_1(i+1,k,j)/msfuy(i+1,j))       &
                           -(u(i,k,j  )+(c1h(k)*muu(i  ,j)+c2h(k))*u_1(i,k,j  )/msfuy(i  ,j)) ))
         DMDT(i)    = DMDT(i) + dnw(k)*dvdxi(i,k)
+        if (isnan(DMDT(i))) then
+                print*,'DMDT(i-1)=',DMDT(i-1),'DMDT=',DMDT(i),'dnw=',dnw(k),'dvdxi=',dvdxi(i,k)
+        endif
      ENDDO
      ENDDO
      DO i=i_start, i_end
@@ -1104,6 +1116,9 @@ SUBROUTINE advance_mu_t( ww, ww_1, u, u_1, v, v_1,            &
        MU(i,j) = MU(i,j)+dts*(DMDT(i)+MU_TEND(i,j))
        MUDF(i,j) = (DMDT(i)+MU_TEND(i,j)) ! save tendency for div damp filter
        MUTS(i,j) = MUT(i,j)+MU(i,j)
+        if (isnan(MUTS(i,j))) then
+            print*,'MUAVE = ',MUAVE(i,j),'MUT=',MUT(i,j),'MU=',MU(i,j),'dts=',dts,'DMDT(i)=',DMDT(i),'MU_TEND=',MU_TEND(i,j)
+        endif
        MUAVE(i,j) =.5*((1.+epssm)*MU(i,j)+(1.-epssm)*MUAVE(i,j))
      ENDDO
      DO kk=2,k_end
@@ -1367,6 +1382,9 @@ SUBROUTINE advance_w( w, rw_tend, ww, w_save, u, v,  &
         *(cf1*u(i+1,1,j)+cf2*u(i+1,2,j)+cf3*u(i+1,3,j))    &
                         +(ht(i,j  )-ht(i-1,j))             &
         *(cf1*u(i  ,1,j)+cf2*u(i  ,2,j)+cf3*u(i  ,3,j))  )
+        if (isnan(w(i,1,j))) then
+                print*,msfty(i,j),rdy,ht(i,j+1),ht(i,j),cf1,cf2,cf3,v(i,1,j+1),v(i,2,j+1),v(i,3,j+1),ht(i,j-1),v(i,1,j),v(i,2,j),v(i,3,j),msftx(i,j),rdx,ht(i+1,j),u(i+1,1,j),u(i+1,2,j),u(i+1,3,j),ht(i-1,j),u(i,1,j),u(i,2,j),u(i,3,j)
+        endif
      ENDDO
 !
 ! Jammed 3 doubly nested loops over k/i into 1 for slight improvement
@@ -1390,6 +1408,15 @@ SUBROUTINE advance_w( w, rw_tend, ww, w_save, u, v,  &
              (c2a(i,k  ,j)*alt(i,k  ,j)*t_2ave(i,k  ,j)            &
              -c2a(i,k-1,j)*alt(i,k-1,j)*t_2ave(i,k-1,j))           &
               - (c1f(k)*muave(i,j)))
+
+        if (isnan(w(i,k,j))) then
+                print*,dts,rw_tend(i,k,j),msft_inv(i),cqw(i,k,j),g,rdn(k),c2a(i,k,j), &
+                        rdnw(k),c1h(k),MUT(i,j),c2h(k),epssm,rhs(i,k+1),rhs(i,k), &
+                        ph(i,k+1,j),ph(i,k,j),c2a(i,k-1,j),rdnw(k-1),c1h(k-1),c2h(k-1), &
+                        rhs(i,k-1),ph(i,k-1,j),alt(i,k,j),t_2ave(i,k,j),alt(i,k-1,j),&
+                        t_2ave(i,k-1,j),muave(i,j)
+        endif
+
       ENDDO
     ENDDO
     K=k_end+1
@@ -1402,18 +1429,33 @@ SUBROUTINE advance_w( w, rw_tend, ww, w_save, u, v,  &
          -dts*g*(2.*rdnw(k-1)*                                      &
                    c2a(i,k-1,j)*alt(i,k-1,j)*t_2ave(i,k-1,j)        &
               + (c1f(k)*muave(i,j))) )
+
+        if (isnan(w(i,k,j))) then
+                print*,'cant be nan:',dts,rw_tend(i,k,j),msft_inv(i), & 
+                        rdnw(k-1),c2a(i,k-1,j),epssm,rhs(i,k),rhs(i,k-1), &
+                        ph(i,k,j),ph(i,k-1,j),g,alt(i,k-1,j),t_2ave(i,k-1,j), & 
+                        c1f(k),muave(i,j),'should not be zero: ',c1h(k-1), &
+                        MUT(i,j),c2h(k-1) 
+        endif
+
        if(top_lid)w(i,k,j) = 0.
     ENDDO
 
     DO k=2,k_end+1
     DO i=i_start, i_end
        w(i,k,j)=(w(i,k,j)-a(i,k,j)*w(i,k-1,j))*alpha(i,k,j)
+       if (isnan(w(i,k,j))) then
+            print*,'a=',a(i,k,j),'w(i,k-1,j)=',w(i,k-1,j),'alppha=',alpha(i,k,j)
+       endif
     ENDDO
     ENDDO
 
     DO k=k_end,2,-1
     DO i=i_start, i_end
        w (i,k,j)=w (i,k,j)-gamma(i,k,j)*w(i,k+1,j)
+       if (isnan(w(i,k,j))) then
+            print*,'w(i,k+1,j)=',w(i,k+1,j),'gamma=',gamma(i,k,j)
+       endif
     ENDDO
     ENDDO
 
@@ -1436,6 +1478,9 @@ SUBROUTINE advance_w( w, rw_tend, ww, w_save, u, v,  &
     DO i=i_start, i_end
        ph(i,k,j) = rhs(i,k)+msfty(i,j)*.5*dts*g*(1.+epssm) &
                       *w(i,k,j)/(c1f(k)*muts(i,j)+c2f(k))
+       if (isnan(ph(i,k,j))) then
+           print*,'rhs =',rhs(i,k),'msfty = ',msfty(i,j),'dts=',dts,'g=',g,'epssm=',epssm,'w=',w(i,k,j),'c1f=',c1f(k),'muts=',muts(i,j),'c2f=',c2f(k)
+       endif
     ENDDO
     ENDDO
 
@@ -1796,6 +1841,9 @@ IF ( config_flags%non_hydrostatic ) THEN
       DO i=i_start, i_end
         w(i,k,j)=w(i,k,j)+dts*rw_tend(i,k,j)*msfty(i,j)/mut(i,j)
         ph(i,k,j) = ph(i,k,j)+dts*ph_tend(i,k,j)*msfty(i,j)/mut(i,j)
+        if (isnan(ph(i,k,j))) then
+           print*,'HERE2'
+       endif
       ENDDO
     ENDDO
   ENDDO j_loop_w

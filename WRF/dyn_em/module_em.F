@@ -852,7 +852,7 @@ SUBROUTINE rk_addtend_dry ( ru_tend, rv_tend, rw_tend, ph_tend, t_tend,      &
 
 ! Local
    INTEGER :: i, j, k
-
+   REAL :: temp ! temporary variable for debugging MSG
 !<DESCRIPTION>
 !
 ! rk_addtend_dry constructs the full large-timestep tendency terms for
@@ -901,9 +901,16 @@ SUBROUTINE rk_addtend_dry ( ru_tend, rv_tend, rw_tend, ph_tend, t_tend,      &
    DO k = kts,kte
    DO i = its,MIN(ite,ide-1)
      ! multiply by my to uncouple w
+        temp = rw_tendf(i,k,j)
      IF(rk_step == 1)rw_tendf(i,k,j) = rw_tendf(i,k,j) +  w_save(i,k,j)*msfty(i,j)
      ! divide by my to couple w
+        if (isnan(rw_tendf(i,k,j))) then
+                print*,w_save(i,k,j),msfty(i,j),temp
+        endif
      rw_tend(i,k,j) = rw_tend(i,k,j) + rw_tendf(i,k,j)/msfty(i,j)
+        if (isnan(rw_tend(i,k,j))) then
+                print*,'HERE 7','rw_tendf=',rw_tendf(i,k,j),'msfty=',msfty(i,j)
+        endif
      IF(rk_step == 1)ph_tendf(i,k,j) = ph_tendf(i,k,j) +  ph_save(i,k,j)
      ! divide by my to couple scalar
      ph_tend(i,k,j) = ph_tend(i,k,j) + ph_tendf(i,k,j)/msfty(i,j)

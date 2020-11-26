@@ -326,7 +326,8 @@ USE module_gad_nrel5, ONLY: calc_rpm_nrel5, calc_pitch_nrel5, calc_fnft_nrel5
 
 ! test
   REAL :: zd, zetazd
-
+! temporary variable from MSG debugging
+REAL :: temp
 !---------------------------------------------------------
 
   CHARACTER(LEN=12), PARAMETER :: FMT1 = "(I5,1F18.12)"
@@ -1256,6 +1257,9 @@ endif
                  ft = fnft(2) 
 
                  fz = -fn*sin(tilt) - ft*cos(zeta)*cos(tilt)
+                if (isnan(fz)) then
+                        print*,'fz is NaN fn=',fn,'sin(tilt)=',sin(tilt),'ft=',ft,'cos(zeta)=',cos(zeta),'cos(tilt)=',cos(tilt)
+                endif
               else
                  !RSA set fz to 0 for now, but turbine should eventually yaw into place.
                  ! write(*,*) "RSA to prevent NaNs, skipping call to calc_fnft for fz: i,j,k=",i,j,k 
@@ -1264,10 +1268,12 @@ endif
 
 !JDM TEST SIGN      fz = -fn*sin(tilt) 
 !JDM TEST SIGN      fz = -ft*cos(zeta)*cos(tilt) 
-
+              temp = rw_tendf(i,k,j)
               rw_tendf(i,k,j) = rw_tendf(i,k,j)  &
                               - mut(i,j)*acc_w*cnst*fz
-
+                if (isnan(rw_tendf(i,k,j))) then
+                        print*,'in phys/module_gen_act_disk mut(i,j)=',mut(i,j),'acc_w=',acc_w,'cnst=',cnst,'fz=',fz,'temp=',temp
+                endif
 !JDM          wp_ts(i,k,j) = -1.0*mut(i,j)*acc_w*cnst*fz
  
 !------ C ---- 

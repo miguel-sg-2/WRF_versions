@@ -585,6 +585,9 @@
                DO kk  = 2,kte
                   k = kk - 1
                   grid%phb(i,kk,j) = grid%phb(i,kk-1,j) - grid%dnw(kk-1)*(grid%c1h(k)*grid%mub(i,j)+grid%c2h(k))*grid%alb(i,kk-1,j)
+                  if (isnan(grid%phb(i,kk,j))) then
+                        print*,grid%dnw(kk-1),grid%c1h(k),grid%mub(i,j),grid%c2h(k),grid%alb(i,kk-1,j)
+                  endif
                END DO
             ELSE IF ( config_flags%hypsometric_opt .EQ. 2 ) THEN
                DO k  = 2,kte
@@ -592,6 +595,9 @@
                   pfd = grid%c3f(k-1)*grid%MUB(i,j) + grid%c4f(k-1) + grid%p_top
                   phm = grid%c3h(k-1)*grid%MUB(i,j) + grid%c4h(k-1) + grid%p_top
                   grid%phb(i,k,j) = grid%phb(i,k-1,j) + grid%alb(i,k-1,j)*phm*LOG(pfd/pfu)
+                  if (isnan(grid%phb(i,k,j))) then
+                        print*,'grid%phb(i,k,j) = ',grid%phb(i,k,j),'grid%alb(i,k-1,j) = ',grid%alb(i,k-1,j),'phm = ',phm,'pfd = ',pfd,'pfu = ',pfu
+                  endif
                END DO
             END IF
          END DO
