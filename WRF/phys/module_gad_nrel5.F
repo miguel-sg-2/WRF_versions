@@ -433,7 +433,7 @@ FUNCTION calc_fnft_nrel5( v0, rho, blades, bladelen, diameter,           &
 !          force is set to 0. The turbine should still yaw into place eventually.
 
            if ( abs( psi ) .gt. 0.001 ) then
-
+             if ( psi .lt. (pi-0.01)) then  !! if STATEMENT ADDED BY MSG TO AVOID GETTING NAN IN tiploss AND hubloss
               fac1 = blades / 2.0*( radmax - radius ) / ( radius*sin( psi ) )
               fac2 = blades / 2.0*( radius - radmin ) / ( radmin*sin( psi ) )
 
@@ -459,6 +459,16 @@ FUNCTION calc_fnft_nrel5( v0, rho, blades, bladelen, diameter,           &
 ! print*,'tiploss, hubloss, lossfac',tiploss,hubloss,lossfac
 ! print*,'------'
 
+            else
+
+             anold = an
+             atold = at
+
+             an = 0.0
+             at = 0.0
+
+
+            endif
           else
 
              anold = an
@@ -469,14 +479,20 @@ FUNCTION calc_fnft_nrel5( v0, rho, blades, bladelen, diameter,           &
 
 
           endif
-
 !       --Convergence criteria
 
            epsi = sqrt( ( anold - an )**2.0 + ( atold - at )**2.0 )
   
         end do
         if (isnan(at)) then
-                print*,'at is NaN lossfac=',lossfac,'psi=',psi,'solid=',solid,'ct=',ct
+                print*,'at is NaN lossfac=',lossfac,'psi=',psi,'solid=',solid,'ct=',ct, & 
+                        'tiploss=',tiploss,'hubloss=',hubloss,'fac1=',fac1,'fac2=',fac2,'radius=',radius
+        endif
+!        if (at .GT. 0) then
+!                print*,'at is > 0 at=',at,'psi=',psi,'fac1=',fac1,'fac2=',fac2,'radius=',radius
+!        endif
+        if (isnan(at)) then
+                print*,'ADD LOGIC SO THAT PSI > 0 deg AND PSI < 180 deg (add error margins to each limit) '
         endif
 !print*,'radius,radmax,radmin',radius,radmax,radmin
 !print*,'radius - radmin',radius - radmin

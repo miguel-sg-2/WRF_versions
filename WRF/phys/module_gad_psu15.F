@@ -182,7 +182,7 @@ FUNCTION calc_fnft_psu15( v0, rho, blades, bladelen, diameter,           &
 
   IF (radius .LT. radmax) THEN !JDM
      
-     IF (radius .GT. radmin) THEN !JDM    !! MSG CHANGED THIS FROM .GE.
+     IF (radius .GT. radmin) THEN !JDM    !! MSG CHANGED .GE. TO .GT. TO AVOID MAKING CALCULATIONS OUTSIDE THE BLADE
 
         an = 0.0
         at = 0.0
