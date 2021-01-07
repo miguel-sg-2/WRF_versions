@@ -113,3 +113,13 @@ Notes: -The amplitude of the potential temperature perturbations should be obtai
        -The time step for the perturbations should roughly satisfy /Gamma = 1 (Muñoz-Esparza et al., 2015)
 
 ------------------------------------------------------------------------------------------------------------------------
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ WRF-Idealized surface layer parameterization @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+---WRF-Idealized surface layer files------------------------------------------------------------------------------------
+
+WRF/phys/module_sf_spec_ideal_tsk.F     #Module driving surface temperature from cooling rate or heatflux specified in namelist
+WRF/Registry/registry.les               #Registry file containing variables for idealized surface layer
+WRF/phys/module_surface_driver.F        #Idealized surface layer called from WRF/phys/module_surface_driver.F
