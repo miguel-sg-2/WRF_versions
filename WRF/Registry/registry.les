@@ -25,6 +25,15 @@ state   real    molt              ij      misc          1                -  r  "
 state   real    spec_dumvar_1      -      misc          1                -  r  "spec_dumvar_1"  "Dummy variable for specified heat flux forcing" #MMC
 state   real    spec_dumvar_2      -      misc          1                -  r  "spec_dumvar_2"  "Dummy variable for specified surface T forcing" #MMC
 
+## ASW CPM MMC
+state   real    pert_t   ikj    misc            1       -       rh      "pert_t"        ""      "K"
+state   real    prttms   -      misc            1       -       r       "prttms"        ""      "s"
+state   real    prtdt    -      misc            1       -       r       "prtdt"         ""      "s"
+state   real    prtz     -      misc            1       -       r       "prtz"          ""      "m"
+state   integer prtnk    -      misc            1       -       r       "prtnk"         ""      ""
+state   integer prtseed  k      misc            1       -       r       "prtseed"       ""      ""
+state   real    m_pblh   ij     misc            1       -       rhdf    "m_pblh"       "PBL height for stoch. LES inflow perts" "m"
+#
 
 rconfig	integer sfs_opt 	namelist,dynamics	max_domains     0       -	"1 or 2 to use NBA models"
 rconfig	integer m_opt    	namelist,dynamics       max_domains     0       -       "1 to output sgs stresses if not using NBA"
@@ -34,6 +43,13 @@ package	nba1	sfs_opt==1      	-       nba_mij:m11,m22,m33,m12,m13,m23;nba_rij:r1
 package	nba2	sfs_opt==2      	-       nba_mij:m11,m22,m33,m12,m13,m23;nba_rij:r12,r13,r23,smnsmn
 
 package mout	m_opt==1		-	nba_mij:m11,m22,m33,m12,m13,m23
+
+
+## ASW CPM MMC
+rconfig integer les_pert_opt    namelist,dynamics       max_domains     0       -       "Option to use stoch LES inflow perts, 0 is off"
+rconfig integer m_pblh_opt      namelist,dynamics       max_domains     0       -       "1 to calculate mesoscale pblh and pass to LES for
+#
+
 
 halo      HALO_EM_NBA_MIJ	dyn_em 8:nba_mij
 period    PERIOD_EM_NBA_MIJ   	dyn_em 3:nba_mij
