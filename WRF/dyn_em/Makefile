@@ -25,6 +25,7 @@ MODULES =                 		\
         module_convtrans_prep.o         \
 	module_sfs_driver.o		\
 	module_stoch.o			\
+	module_stoch_les_inflow_perts.o \
 	module_after_all_rk_steps.o	\
 	$(CASE_MODULE)
 

@@ -60,6 +60,10 @@ CONTAINS
     USE module_sfs_driver !JDM
     USE module_stoch, ONLY : update_stoch_ten, perturb_physics_tend,RAND_PERT_UPDATE
 
+!! ADDED BY MSG FOR CPM-JDM
+    USE module_stoch_les_inflow_perts !JDM
+!!
+
 !! ADDED BY MSG FOR GAD
     USE module_wind_param_driver
 !!
@@ -372,6 +376,81 @@ BENCH_START(comp_diff_metrics_tim)
          ENDDO
          !$OMP END PARALLEL DO
 BENCH_END(comp_diff_metrics_tim)
+
+!!! ADDED BY MSG FOR CPM-JDM
+!JDM Perturbations
+IF ( ( config_flags%m_pblh_opt .EQ. 1 ) .AND. ( config_flags%km_opt .EQ. 4 ) ) THEN
+
+         !$OMP PARALLEL DO   &
+         !$OMP PRIVATE ( ij )
+         DO ij = 1 , grid%num_tiles
+
+           CALL force_down_meso_pblh( grid%m_pblh, grid%pblh,            &
+                                      ids, ide, jds, jde, kds, kde,      &
+                                      ims, ime, jms, jme, kms, kme,      &
+                                      grid%i_start(ij), grid%i_end(ij),  &
+                                      grid%j_start(ij), grid%j_end(ij),  &
+                                      k_start    , k_end                  )
+
+
+        ENDDO
+         !$OMP END PARALLEL DO
+
+ENDIF
+
+IF (  config_flags%les_pert_opt .GT. 0 ) THEN
+
+   IF (  config_flags%les_pert_opt .EQ. 1 ) THEN
+            !$OMP PARALLEL DO   &
+            !$OMP PRIVATE ( ij )
+            DO ij = 1 , grid%num_tiles
+
+              CALL calc_pert_t ( config_flags%les_pert_opt,                  &
+                                 config_flags%m_pblh_opt,                    &
+                                 grid%prttms, grid%prtdt, grid%prtnk,        &
+                                 grid%prtz, grid%prtseed, grid%pert_t,       &
+                                 grid%m_pblh,                                &
+                                 grid%t_2, grid%u_2, grid%v_2, grid%rdz,     &
+                                 grid%dx, grid%dt,                           &
+                                 ids, ide, jds, jde, kds, kde,               &
+                                 ims, ime, jms, jme, kms, kme,               &
+                                 grid%i_start(ij), grid%i_end(ij),           &
+                                 grid%j_start(ij), grid%j_end(ij),           &
+                                 k_start    , k_end                          )
+
+            ENDDO
+            !$OMP END PARALLEL DO
+
+   ENDIF
+
+   IF (  config_flags%les_pert_opt .EQ. 2 ) THEN
+
+            !$OMP PARALLEL DO   &
+            !$OMP PRIVATE ( ij )
+            DO ij = 1 , grid%num_tiles
+
+              CALL calc_pert_uv ( config_flags%les_pert_opt,                  &
+                                  config_flags%m_pblh_opt,                    &
+                                  grid%prttms, grid%prtdt, grid%prtnk,        &
+                                  grid%prtz, grid%prtseed, grid%pert_t,       &
+                                  grid%m_pblh,                                &
+                                  ru_tendf, rv_tendf,                         &
+                                  grid%muu, grid%muv,                         &
+                                  grid%u_2, grid%v_2, grid%rdz,               &
+                                  grid%dx, grid%dt,                           &
+                                  ids, ide, jds, jde, kds, kde,               &
+                                  ims, ime, jms, jme, kms, kme,               &
+                                  grid%i_start(ij), grid%i_end(ij),           &
+                                  grid%j_start(ij), grid%j_end(ij),           &
+                                  k_start    , k_end                          )
+
+            ENDDO
+            !$OMP END PARALLEL DO
+
+   ENDIF
+
+ENDIF
+!!! End CPM-JDM
 
 #ifdef DM_PARALLEL
 #  include "HALO_EM_TKE_C.inc"
