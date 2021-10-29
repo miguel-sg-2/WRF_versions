@@ -5,6 +5,8 @@
 including...
 -Generalized Actuator Disk (GAD) wind turbine model
 -Cell perturpation method (CPM) for downscaling turbulence in nested simulations
+  * CPM from DME adds perturbations as specified in namelist.
+  * CPM from JDM automatically adds perturbations based on boundary layer height and stability characteristics.
 -Idealized surface layer parameterization
 
 @@@@@@@@@@@
@@ -33,11 +35,11 @@ scale simulation of wind farm performance during a frontal passage. Atmosphere, 
 
 ---WRF-GAD files--------------------------------------------------------------------------------------------------------
 
-WRF/Registry/registry.windturb          #Registry file for GAD code
-WRF/dyn_em/module_first_rk_step_part2.F #Calls GAD driver
-WRF/phys/module_wind_param_driver.F     #Driver of GAD code, called from dyn_em/module_first_rk_step_part2.F
-WRF/phys/module_gad_*.F                 #Parameterization file for different turbines / turbine-specific functions
-WRF/phys/module_gen_act_disk.F          #Primary GAD code, called from driver
+WRF/Registry/registry.windturb            #Registry file for GAD code
+WRF/dyn_em/module_first_rk_step_part2.F   #Calls GAD driver
+WRF/phys/module_wind_param_driver.F       #Driver of GAD code, called from dyn_em/module_first_rk_step_part2.F
+WRF/phys/module_gad_*.F                   #Parameterization file for different turbines / turbine-specific functions
+WRF/phys/module_gen_act_disk.F            #Primary GAD code, called from driver
 
 ---Notes on WRF-GAD usage-----------------------------------------------------------------------------------------------
 
@@ -89,9 +91,15 @@ atmospheric boundary layer in the presence of under‐resolved convective struct
 
 ---WRF-CPM files--------------------------------------------------------------------------------------------------------
 
-WRF/Registry/registry.cell_pert         #Registry file for CPM code
-WRF/dyn_em/start_em.F                   #CPM code for initial perturbations included in WRF/dyn_em/start_em.F
-WRF/dyn_em/solve_em.F                   #CPM code included in WRF/dyn_em/solve_em.F
+CPM-DME:
+WRF/Registry/registry.cell_pert           #Registry file for CPM code
+WRF/dyn_em/start_em.F                     #CPM code for initial perturbations included in WRF/dyn_em/start_em.F
+WRF/dyn_em/solve_em.F                     #CPM code included in WRF/dyn_em/solve_em.F
+
+CPM-JDM:
+WRF/Registry/registry.les                 #Registry file including relevant variables
+WRF/dyn_em/module_first_rk_step_part2.F   #Calls CPM calculations
+WRF/dyn_em/module_stoch_les_inflow_perts.F#Primary CPM code
 
 ---Notes on WRF-CPM usage-----------------------------------------------------------------------------------------------
 
@@ -120,6 +128,6 @@ Notes: -The amplitude of the potential temperature perturbations should be obtai
 
 ---WRF-Idealized surface layer files------------------------------------------------------------------------------------
 
-WRF/phys/module_sf_spec_ideal_tsk.F     #Module driving surface temperature from cooling rate or heatflux specified in namelist
-WRF/Registry/registry.les               #Registry file containing variables for idealized surface layer
-WRF/phys/module_surface_driver.F        #Idealized surface layer called from WRF/phys/module_surface_driver.F
+WRF/phys/module_sf_spec_ideal_tsk.F       #Module driving surface temperature from cooling rate or heatflux specified in namelist
+WRF/Registry/registry.les                 #Registry file containing variables for idealized surface layer
+WRF/phys/module_surface_driver.F          #Idealized surface layer called from WRF/phys/module_surface_driver.F
