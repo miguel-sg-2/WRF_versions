@@ -395,7 +395,7 @@ IF ( ( config_flags%m_pblh_opt .EQ. 1 ) .AND. ( config_flags%km_opt .EQ. 4 ) ) T
 
         ENDDO
          !$OMP END PARALLEL DO
-
+print*,'We are forcing dowm the mesoscale pblh to the LES'
 ENDIF
 
 IF (  config_flags%les_pert_opt .GT. 0 ) THEN

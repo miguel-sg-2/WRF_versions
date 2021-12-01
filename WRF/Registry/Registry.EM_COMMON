@@ -739,6 +739,9 @@ state    real   ts_gph_profile ?!k       misc      -         -      -        "TS
 state    real   ts_th_profile  ?!k       misc      -         -      -        "TS_TH_PROFILE"  "Total potential temperature, vertical profile" "K"
 state    real   ts_qv_profile  ?!k       misc      -         -      -        "TS_QV_PROFILE"  "Water vapor mixing ratio, vertical profile" "kg/kg"
 state    real   ts_p_profile   ?!k       misc      -         -      -        "TS_P_PROFILE"   "Pressure, vertical profile" "Pa"
+state    real   ts_m11_profile ?!k       misc      -         -      -        "TS_M1_PROFILE"  "m11 component NBA" "m2 s-2"
+state    real   ts_m22_profile ?!k       misc      -         -      -        "TS_M2_PROFILE"  "m22 component NBA" "m2 s-2"
+state    real   ts_m33_profile ?!k       misc      -         -      -        "TS_M3_PROFILE"  "m33 component NBA" "m2 s-2"
 
 
 # urban model variables

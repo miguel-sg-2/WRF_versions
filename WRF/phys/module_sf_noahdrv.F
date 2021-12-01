@@ -1980,6 +1980,24 @@ CONTAINS
              SIZE(ZBOTVTBL) < LUCATS .OR. &
              SIZE(EMISSMINTBL ) < LUCATS .OR. &
              SIZE(EMISSMAXTBL ) < LUCATS ) THEN
+           print*,'LUCATS: ',LUCATS
+           print*,'SHDTBL: ',SIZE(SHDTBL)
+           print*,'NROTBL: ',SIZE(NROTBL)
+           print*,'RSTBL: ',SIZE(RSTBL)
+           print*,'RGLTBL: ',SIZE(RGLTBL)
+           print*,'HSTBL: ',SIZE(HSTBL)
+           print*,'SNUPTBL: ',SIZE(SNUPTBL)
+           print*,'MAXALB: ',SIZE(MAXALB)
+           print*,'LAIMINTBL: ',SIZE(LAIMINTBL)
+           print*,'LAIMAXTBL: ',SIZE(LAIMAXTBL)
+           print*,'Z0MINTBL: ',SIZE(Z0MINTBL)
+           print*,'Z0MAXTBL: ',SIZE(Z0MAXTBL)
+           print*,'ALBEDOMINTBL: ',SIZE(ALBEDOMINTBL)
+           print*,'ALBEDOMAXTBL: ',SIZE(ALBEDOMAXTBL)
+           print*,'ZTOPVTBL: ',SIZE(ZTOPVTBL)
+           print*,'ZBOTVTBL: ',SIZE(ZBOTVTBL)
+           print*,'EMISSMINTBL: ',SIZE(EMISSMINTBL)
+           print*,'EMISSMAXTBL: ',SIZE(EMISSMAXTBL)
            CALL wrf_error_fatal('Table sizes too small for value of LUCATS in module_sf_noahdrv.F')
         ENDIF
 

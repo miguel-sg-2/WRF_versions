@@ -30,7 +30,7 @@ use module_wrf_error
         INTEGER :: LUCATS , BARE
         INTEGER :: NATURAL
         INTEGER :: LOW_DENSITY_RESIDENTIAL, HIGH_DENSITY_RESIDENTIAL, HIGH_INTENSITY_INDUSTRIAL
-        integer, PARAMETER :: NLUS=50
+        integer, PARAMETER :: NLUS=100!50  !Modified to include NLCD95
         CHARACTER(LEN=256) LUTYPE
         INTEGER, DIMENSION(1:NLUS) :: NROTBL
         real, dimension(1:NLUS) ::  SNUPTBL, RSTBL, RGLTBL, HSTBL,                &

@@ -43,7 +43,7 @@
        END DO
     END DO
  
-!    print*,'in m_pblh, m_pblh(its,jts)',m_pblh(its,jts)   
+    print*,'mesoscale pblh, m_pblh(its,jts)',m_pblh(its,jts)   
 
     END SUBROUTINE force_down_meso_pblh
 
@@ -195,9 +195,12 @@
              DO i=i_start, i_end
                 mpblhpsum = mpblhpsum + m_pblh(i,j)
                 counter = counter + 1.0
+                ! Print pblh from mesoscale
+                print*,'pblh from mesoscale is',m_pblh(i,j)
              END DO
           END DO
-
+          print*,'Counter here1 is',counter
+          print*,'mpblhpsum is ',mpblhpsum
 #ifdef DM_PARALLEL
 
 mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
@@ -205,12 +208,13 @@ mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
 #endif
               
           counter = float(ide-ids)*float(jde-jds) ! One fewer since m_pblh is at mass points
+          print*,'Counter here2 is',counter
 
           mpblhdavg = mpblhdsum/counter
           
           pblh = MAX(100.0,MIN(mpblhdavg,3000.0))
-                   
-!          print*,'its,mpblhdsum,counter,mpblhdavg ',its,mpblhdsum,counter,mpblhdavg
+                            
+          print*,'its,mpblhdsum,counter,mpblhdavg ',its,mpblhdsum,counter,mpblhdavg
 
        ENDIF 
 
