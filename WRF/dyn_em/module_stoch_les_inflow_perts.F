@@ -43,7 +43,7 @@
        END DO
     END DO
  
-    ! print*,'mesoscale pblh, m_pblh(its,jts)',m_pblh(its,jts)   
+!    print*,'in m_pblh, m_pblh(its,jts)',m_pblh(its,jts)   
 
     END SUBROUTINE force_down_meso_pblh
 
@@ -58,7 +58,7 @@
                             dx, dt,                            &
                             ids, ide, jds, jde, kds, kde,      &
                             ims, ime, jms, jme, kms, kme,      &
-                            its, ite, jts, jte, kts, kte       )
+                            its, ite, jts, jte, kts, kte, ec_cpm  )
 
 !-----------------------------------------------------------------------
 
@@ -90,7 +90,7 @@
     INTEGER,         INTENT( INOUT ) :: prtnk                          ! number of vertical grid cells over which to apply perturbations
     REAL,            INTENT( IN    ) :: dt                             ! model time step
     REAL,            INTENT( IN    ) :: dx                             ! horizontal grid spacing
-
+    REAL,            INTENT( IN    ) :: ec_cpm                         ! Eckert number defined by user
     REAL, DIMENSION( its:ite, kts:kte, jts:jte ) :: z  ! height above surface at midpoint levels   
     REAL, DIMENSION( kts:kte ) :: sf                   ! vertical scaling factor for perturbations  
 
@@ -142,6 +142,11 @@
     prttms = prttms + dt
 
 !    print*,'prttms',prttms
+
+    ! Modify Eckert number to that of User !!  ADDED BY MSG
+    ek_opt = ec_cpm
+!    print*,'Eckert number is ',ek_opt
+    !
 
     IF (  prttms .GE. prtdt ) THEN !prdt should be zero at startup
 
@@ -195,12 +200,9 @@
              DO i=i_start, i_end
                 mpblhpsum = mpblhpsum + m_pblh(i,j)
                 counter = counter + 1.0
-                ! Print pblh from mesoscale
-                ! print*,'pblh from mesoscale is',m_pblh(i,j)
              END DO
           END DO
-          ! print*,'Counter here1 is',counter
-          ! print*,'mpblhpsum is ',mpblhpsum
+
 #ifdef DM_PARALLEL
 
 mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
@@ -208,13 +210,12 @@ mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
 #endif
               
           counter = float(ide-ids)*float(jde-jds) ! One fewer since m_pblh is at mass points
-          ! print*,'Counter here2 is',counter
 
           mpblhdavg = mpblhdsum/counter
           
           pblh = MAX(100.0,MIN(mpblhdavg,3000.0))
-                            
-          ! print*,'its,mpblhdsum,counter,mpblhdavg ',its,mpblhdsum,counter,mpblhdavg
+                   
+!          print*,'its,mpblhdsum,counter,mpblhdavg ',its,mpblhdsum,counter,mpblhdavg
 
        ENDIF 
 
@@ -332,10 +333,10 @@ vwsgpsumdsum  = wrf_dm_sum_real(vwsgpsum)
 !
 ! Uncomment to select your own inflow/outflow boundaries
 !
-!       north = 0
-!       east = 0
-!       south = 0
-!       west = 1
+       north = 0
+       east = 1
+       south = 1
+       west = 0
 
        print*,'Applying perturbations to the following boundary(ies):'
        IF (north .EQ. 1) print*,'north'

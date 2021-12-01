@@ -395,7 +395,7 @@ IF ( ( config_flags%m_pblh_opt .EQ. 1 ) .AND. ( config_flags%km_opt .EQ. 4 ) ) T
 
         ENDDO
          !$OMP END PARALLEL DO
-! print*,'We are forcing dowm the mesoscale pblh to the LES'
+
 ENDIF
 
 IF (  config_flags%les_pert_opt .GT. 0 ) THEN
@@ -416,7 +416,7 @@ IF (  config_flags%les_pert_opt .GT. 0 ) THEN
                                  ims, ime, jms, jme, kms, kme,               &
                                  grid%i_start(ij), grid%i_end(ij),           &
                                  grid%j_start(ij), grid%j_end(ij),           &
-                                 k_start    , k_end                          )
+                                 k_start    , k_end, config_flags%ec_cpm     )
 
             ENDDO
             !$OMP END PARALLEL DO

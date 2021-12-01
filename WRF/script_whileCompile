@@ -1,0 +1,16 @@
+#!/bin/bash
+
+declare -i x=0; 
+
+while true; do 
+	ls -altrh log.compile*; 
+	grep 'Error' log.compile_CPM_DME_mod; 
+	grep 'success' log.compile_CPM_DME_mod; 
+	sleep 30; 
+	#x=x+1; 	
+	#if [ $x -ge 180 ] 
+	#then 
+	#	cd /projects/awaken/mgomez/realSims/KingPlains/test_AUs
+	#	pwd
+	#fi; 
+done
