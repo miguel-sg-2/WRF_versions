@@ -47,7 +47,8 @@ package mout	m_opt==1		-	nba_mij:m11,m22,m33,m12,m13,m23
 
 ## ASW CPM MMC
 rconfig integer les_pert_opt    namelist,dynamics       max_domains     0       -       "Option to use stoch LES inflow perts, 0 is off"
-rconfig integer m_pblh_opt      namelist,dynamics       max_domains     0       -       "1 to calculate mesoscale pblh and pass to LES for
+rconfig integer m_pblh_opt      namelist,dynamics       max_domains     0       -       "1 to calculate mesoscale pblh and pass to LES for"
+rconfig real    ec_cpm          namelist,dynamics       1               0.7     -       "Specify Eckert number to modify perturbations in CPM-JDM"
 #
 
 
