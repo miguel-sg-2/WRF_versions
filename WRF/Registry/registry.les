@@ -58,3 +58,7 @@ period    PERIOD_EM_NBA_MIJ   	dyn_em 3:nba_mij
 halo      HALO_EM_NBA_RIJ       dyn_em 8:nba_rij
 period    PERIOD_EM_NBA_RIJ     dyn_em 3:nba_rij
 
+### hybrid-order advection scheme
+rconfig   real     upwind_adv5       namelist,dynamics     max_domains    0.0       rh       "upwind_adv5"    "Blending coefficient 5th/6th order (==0 default WRF)"      ""
+rconfig   real     upwind_adv3       namelist,dynamics     max_domains    0.0       rh       "upwind_adv3"    "Blending coefficient 3rd/4th order (==0 default WRF)"      ""
+

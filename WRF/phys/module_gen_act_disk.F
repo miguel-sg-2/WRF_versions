@@ -9,6 +9,7 @@ USE module_gad_psu15, ONLY: calc_rpm_psu15, calc_pitch_psu15, calc_fnft_psu15
 USE module_gad_ge16, ONLY: calc_rpm_ge16, calc_pitch_ge16, calc_fnft_ge16
 USE module_gad_dtu10, ONLY: calc_rpm_dtu10, calc_pitch_dtu10, calc_fnft_dtu10
 USE module_gad_nrel5, ONLY: calc_rpm_nrel5, calc_pitch_nrel5, calc_fnft_nrel5
+USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
 
 #ifdef DM_PARALLEL
   USE MODULE_DM
@@ -903,6 +904,9 @@ endif
       ELSEIF (turbine_opt .EQ. 16) THEN
          rpm   = calc_rpm_ge16( v0t_avg )
          pitchdeg = calc_pitch_ge16( v0t_avg )
+      ELSEIF (turbine_opt .EQ. 28) THEN
+         rpm   = calc_rpm_ge28( v0t_avg )
+         pitchdeg = calc_pitch_ge28( v0t_avg )
       ELSEIF (turbine_opt .EQ. 100) THEN
          rpm = calc_rpm_dtu10( v0t_avg )
          pitchdeg = calc_pitch_dtu10( v0t_avg )
@@ -1099,7 +1103,10 @@ endif
                 elseif (turbine_opt .eq. 16) then
                    fnft = calc_fnft_ge16( v0_u, rho, blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 100) then
+                elseif (turbine_opt .eq. 28) then
+                   fnft = calc_fnft_ge28( v0_u, rho, blades, blade_length(n),rotor_diameter(n),   &
+                                        radius, pitchdeg, rpm, dscale,cscale)
+               elseif (turbine_opt .eq. 100) then
                    fnft = calc_fnft_dtu10( v0_u, rho, blades, blade_length(n),rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale,cscale)
                 elseif (turbine_opt .eq. 50) then
@@ -1182,6 +1189,9 @@ endif
                    elseif (turbine_opt .eq. 16) then
                       fnft = calc_fnft_ge16( v0_v, rho, blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)  
+                   elseif (turbine_opt .eq. 28) then
+                      fnft = calc_fnft_ge28( v0_v, rho, blades, blade_length(n),rotor_diameter(n),   &
+                                              radius, pitchdeg, rpm, dscale,cscale)
                    elseif (turbine_opt .eq. 100) then
                       fnft = calc_fnft_dtu10( v0_v, rho, blades,blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
@@ -1245,6 +1255,9 @@ endif
                  elseif (turbine_opt .eq. 16) then 
                     fnft = calc_fnft_ge16( v0_w, rho, blades, blade_length(n), rotor_diameter(n), &
                                             radius, pitchdeg, rpm, dscale, cscale )
+                elseif (turbine_opt .eq. 28) then
+                    fnft = calc_fnft_ge28( v0_w, rho, blades, blade_length(n),rotor_diameter(n), &
+                                            radius, pitchdeg, rpm, dscale,cscale )
                 elseif (turbine_opt .eq. 100) then
                       fnft = calc_fnft_dtu10( v0_w, rho, blades,blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
@@ -1317,6 +1330,9 @@ endif
                 elseif (turbine_opt .eq. 16) then
                    fnft = calc_fnft_ge16( v0_c, rho, blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
+                elseif (turbine_opt .eq. 28) then
+                   fnft = calc_fnft_ge28( v0_c, rho, blades, blade_length(n),rotor_diameter(n),   &
+                                              radius, pitchdeg, rpm, dscale,cscale)
                 elseif (turbine_opt .eq. 100) then
                       fnft = calc_fnft_dtu10( v0_c, rho, blades,blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)

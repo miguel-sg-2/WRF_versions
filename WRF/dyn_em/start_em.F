@@ -610,7 +610,7 @@
 !    grid%h_diabatic = 0.
 
 !! ADDED BY MSG FOR CPM
-! initial random perturbations of theta 
+! initial random perturbations of theta
        k_top_pert=min(config_flags%pertz_gp_initial,kte-1)
        DO j = jts,min(jte,jde-1)
        DO k = kts,k_top_pert

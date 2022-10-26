@@ -201,6 +201,7 @@ CONTAINS
       REAL,     DIMENSION( its:ite ) ::                    dz8w1d
 
       INTEGER ::  I,J
+CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
 
       DO J=jts,jte
         DO i=its,ite
@@ -382,6 +383,7 @@ CONTAINS
       REAL    :: zl2,zl10,z0t
       REAL,     DIMENSION( its:ite )        ::         pq,pq2,pq10
 
+CALL wrf_debug ( 200 , 'start SFCLAYREV1D and define variables' )
 
 !-------------------------------------------------------------------
       KL=kte
@@ -446,7 +448,10 @@ CONTAINS
          THVX(I)=THX(I)*TVCON                                               
          SCR4(I)=SCR3(I)*TVCON                                              
    50 CONTINUE                                                                 
-!                                                                                
+!                                                             
+
+CALL wrf_debug ( 200 , 'start some calculations in SFCLAYREV1D' )
+                   
       DO 60 I=its,ite
         E1=SVP1*EXP(SVP2*(TGDSA(I)-SVPT0)/(TGDSA(I)-SVP3))                       
 !  for land points QSFC can come from previous time step
@@ -462,7 +467,9 @@ CONTAINS
                                                                                  
 !-----COMPUTE THE HEIGHT OF FULL- AND HALF-SIGMA LEVELS ABOVE GROUND             
 !     LEVEL, AND THE LAYER THICKNESSES.                                          
-                                                                                 
+                                                   
+CALL wrf_debug ( 200 , 'Height levels in SFCLAYREV1D' )
+                              
       DO 90 I=its,ite
         ZQKLP1(I)=0.
         RHOX(I)=PSFC(I)*1000./(R*SCR4(I))                                       
@@ -489,6 +496,8 @@ CONTAINS
 !-----CALCULATE BULK RICHARDSON NO. OF SURFACE LAYER, ACCORDING TO               
 !     AKB(1976), EQ(12).                                                         
                    
+CALL wrf_debug ( 200 , 'Ri in SFCLAYREV1D' )
+
       DO 260 I=its,ite
         GZ1OZ0(I)=ALOG((ZA(I)+ZNT(I))/ZNT(I))   ! log((z+z0)/z0)                                     
         GZ2OZ0(I)=ALOG((2.+ZNT(I))/ZNT(I))      ! log((2+z0)/z0)                           
@@ -508,6 +517,8 @@ CONTAINS
 !
 !       VCONV = 0.25*sqrt(g/tskv*pblh(i)*dthvm)
 !      Use Beljaars over land, old MM5 (Wyngaard) formula over water
+CALL wrf_debug ( 200 , 'Convective velocity scale in SFCLAYREV1D' )
+
         if (xland(i).lt.1.5) then
         fluxc = max(hfx(i)/rhox(i)/cp                    &
               + ep1*tskv*qfx(i)/rhox(i),0.)
@@ -554,6 +565,7 @@ CONTAINS
 !               REPRESENTS FREE CONVECTION CONDITIONS (REGIME=4).                
 !                                                                                
 !CCCCC                                                                           
+CALL wrf_debug ( 200 , 'Stability conditions in SFCLAYREV1D' )
 
       DO 320 I=its,ite
 !                                                                           
@@ -579,6 +591,8 @@ CONTAINS
 !
 ! ... paj: compute integrated similarity functions.
 !
+CALL wrf_debug ( 200 , 'Similarity functions in SFCLAYREV1D' )
+
         IF (isnan(za(I))) THEN
                 print*,'zol(I) = ',zol(I),'za(I) = ',za(I),'znt(I) = ',znt(I)
         ENDIF
@@ -600,6 +614,8 @@ CONTAINS
 !                                                                                
 !-----CLASS 1; STABLE (NIGHTTIME) CONDITIONS:                                    
 !
+CALL wrf_debug ( 200 , 'Stable conditions in SFCLAYREV1D' )
+
         REGIME(I)=1.
 !
 ! ... paj: psim and psih. Follows Cheng and Brutsaert 2005 (CB05).
@@ -626,7 +642,9 @@ CONTAINS
         GOTO 320                                                                 
 !                                                                                
 !-----CLASS 3; FORCED CONVECTION:                                                
-!                                                                                
+!                                        
+CALL wrf_debug ( 200 , 'Forced convection in SFCLAYREV1D' )
+                                        
   280   REGIME(I)=3.                                                           
         PSIM(I)=0.0                                                              
         PSIH(I)=PSIM(I)                                                          
@@ -647,7 +665,9 @@ CONTAINS
         GOTO 320                                                                 
 !                                                                                
 !-----CLASS 4; FREE CONVECTION:                                                  
-!                                                                                
+!                                        
+CALL wrf_debug ( 200 , 'Free convection in SFCLAYREV1D' )
+                                        
   310   CONTINUE                                                                 
         REGIME(I)=4.                                                           
 !
@@ -684,7 +704,9 @@ CONTAINS
 !                                                                                
 !-----COMPUTE THE FRICTIONAL VELOCITY:                                           
 !     ZA(1982) EQS(2.60),(2.61).                                                 
-!                                                                                
+!                           
+CALL wrf_debug ( 200 , 'After stability conditions in SFCLAYREV1D' )
+                                                     
       DO 330 I=its,ite
         DTG=THX(I)-THGB(I)
    
@@ -964,7 +986,9 @@ CONTAINS
   330 CONTINUE                                                                   
 !                                                                                
   335 CONTINUE                                                                   
-                                                                                  
+                                                  
+CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
+                                
 !-----COMPUTE THE SURFACE SENSIBLE AND LATENT HEAT FLUXES:                       
       IF ( PRESENT(SCM_FORCE_FLUX) ) THEN
          IF (SCM_FORCE_FLUX.EQ.1) GOTO 350
@@ -1092,6 +1116,7 @@ CONTAINS
 !       ENDIF
 !     ENDDO
 !jdf
+CALL wrf_debug ( 200 , 'After surface fluxes in SFCLAYREV1D' )
 
 !                                                                                
    END SUBROUTINE SFCLAYREV1D

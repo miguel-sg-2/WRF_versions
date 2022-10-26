@@ -201,7 +201,7 @@ SUBROUTINE advect_u   ( u, u_old, tendency,            &
 
    flux3(q_im2, q_im1, q_i, q_ip1, ua) =                         &
             flux4(q_im2, q_im1, q_i, q_ip1, ua) +                &
-            sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))/12.0
+            sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))*(1-config_flags%upwind_adv3)/12.0
 
    flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =           &
                       ( 37.*(q_i+q_im1) - 8.*(q_ip1+q_im2)       &
@@ -210,7 +210,7 @@ SUBROUTINE advect_u   ( u, u_old, tendency,            &
    flux5(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =           &
            flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua)     &
             -sign(1,time_step)*sign(1.,ua)*(                     &
-              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1) )/60.0
+              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1))*(1-config_flags%upwind_adv5)/60.0
 
 
    LOGICAL :: specified
@@ -1609,7 +1609,7 @@ SUBROUTINE advect_v   ( v, v_old, tendency,            &
 
    flux3(q_im2, q_im1, q_i, q_ip1, ua) =                     &
            flux4(q_im2, q_im1, q_i, q_ip1, ua) +                &
-           sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))/12.0
+           sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))*(1-config_flags%upwind_adv3)/12.0
 
    flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =       &
                       ( 37.*(q_i+q_im1) - 8.*(q_ip1+q_im2)   &
@@ -1618,7 +1618,7 @@ SUBROUTINE advect_v   ( v, v_old, tendency,            &
    flux5(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =       &
            flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua)    &
             -sign(1,time_step)*sign(1.,ua)*(                    &
-              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1) )/60.0
+              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1))*(1-config_flags%upwind_adv5)/60.0
 
 
 
@@ -3107,7 +3107,7 @@ SUBROUTINE advect_scalar   ( field, field_old, tendency,    &
 
       flux3(q_im2, q_im1, q_i, q_ip1, ua) =                     &
            flux4(q_im2, q_im1, q_i, q_ip1, ua) +                &
-           sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))/12.0
+           sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))*(1-config_flags%upwind_adv3)/12.0
 
       flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =       &
           ( 37.*(q_i+q_im1) - 8.*(q_ip1+q_im2)                  &
@@ -3116,7 +3116,7 @@ SUBROUTINE advect_scalar   ( field, field_old, tendency,    &
       flux5(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =       &
            flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua)    &
             -sign(1,time_step)*sign(1.,ua)*(                    &
-              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1) )/60.0
+              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1))*(1-config_flags%upwind_adv5)/60.0
 
 
    LOGICAL :: specified
@@ -4440,7 +4440,7 @@ SUBROUTINE advect_w    ( w, w_old, tendency,            &
 
       flux3(q_im2, q_im1, q_i, q_ip1, ua) =                     &
            flux4(q_im2, q_im1, q_i, q_ip1, ua) +                &
-           sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))/12.0
+           sign(1,time_step)*sign(1.,ua)*((q_ip1 - q_im2)-3.*(q_i-q_im1))*(1-config_flags%upwind_adv3)/12.0
 
       flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =       &
                       ( 37.*(q_i+q_im1) - 8.*(q_ip1+q_im2)      &
@@ -4449,7 +4449,7 @@ SUBROUTINE advect_w    ( w, w_old, tendency,            &
       flux5(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua) =       &
            flux6(q_im3, q_im2, q_im1, q_i, q_ip1, q_ip2, ua)    &
             -sign(1,time_step)*sign(1.,ua)*(                    &
-              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1) )/60.0
+              (q_ip2-q_im3)-5.*(q_ip1-q_im2)+10.*(q_i-q_im1))*(1-config_flags%upwind_adv5)/60.0
 
 
    LOGICAL :: specified
