@@ -62,6 +62,7 @@ MODULES = \
         module_gad_ge16.o \
 	module_gad_nrel5.o \
 	module_gad_dtu10.o \
+	module_gad_ge28.o \
 	module_cu_g3.o \
 	module_cu_kf.o  \
 	module_cu_bmj.o \
