@@ -9,8 +9,6 @@ USE module_gad_psu15, ONLY: calc_rpm_psu15, calc_pitch_psu15, calc_fnft_psu15
 USE module_gad_ge16, ONLY: calc_rpm_ge16, calc_pitch_ge16, calc_fnft_ge16
 USE module_gad_dtu10, ONLY: calc_rpm_dtu10, calc_pitch_dtu10, calc_fnft_dtu10
 USE module_gad_nrel5, ONLY: calc_rpm_nrel5, calc_pitch_nrel5, calc_fnft_nrel5
-USE module_gad_nrel2p8, ONLY: calc_rpm_nrel2p8, calc_pitch_nrel2p8, calc_fnft_nrel2p8
-!USE module_gad_nrel28, ONLY: calc_rpm_nrel28, calc_pitch_nrel28, calc_fnft_nrel28
 USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
 
 #ifdef DM_PARALLEL
@@ -350,8 +348,7 @@ REAL :: temp
 ! 0. Set turbine parameters (to be assigned via auxiliary input file in future version)
 !____________________________________________________________________________________________________________________________
 
- !PRINT *,'Starting GAD routine'
- !PRINT *,'turbine_opt = ', turbine_opt
+! PRINT *,'Starting GAD routine'
 
   hoff = 5.0 ! hub offset
   yaw_rate = 2.0 !degrees per second
@@ -426,7 +423,7 @@ endif
                  cutinspd(i) = cutin
                  cutoutspd(i) = cutout
                  i = i + 1 !RSA counting lines
-                 PRINT *,'Reading file turbines(MSG)',x_turbine(i-1),y_turbine(i-1),'locs',hub_height(i-1),'hub height',rotor_diameter(i-1), 'diameter',blade_length(i-1),'blades',theta_turbine(i-1),'angle',cutinspd(i-1),'cutin',cutoutspd(i-1),'cutout'
+                ! PRINT *,'Reading file turbines(MSG)',x_turbine(i-1),y_turbine(i-1),'locs',hub_height(i-1),'hub height',rotor_diameter(i-1), 'diameter',blade_length(i-1),'blades',theta_turbine(i-1),'angle',cutinspd(i-1),'cutin',cutoutspd(i-1),'cutout'
               ENDIF
            ENDDO
 
@@ -514,7 +511,7 @@ endif
 !
 ! 1. Find x, y locations for u, v, and w nodes within the patch
 !____________________________________________________________________________________________________________________________
-  !PRINT*,'Starting part 1'
+ ! PRINT*,'Starting part 1'
   i_start = its
   i_end   = MIN(ite,ide-1)
   j_start = jts
@@ -720,7 +717,7 @@ endif
 !PRINT*,'Starting part 3.2'
   DO n = 1, n_turbines
     IF (inflow_on_patch(n) .EQ. 1 ) THEN
-      !PRINT*,'inflow patch for turbine ',n
+ !     PRINT*,'inflow patch for turbine ',n
       theta =  theta_turbine(n)*pi/180.0
 
         !using w locations, will calculate cell-centered values below
@@ -790,13 +787,10 @@ endif
     CALL MPI_BCAST(d0n,n_turbines,MPI_REAL,master,MPI_COMM_WORLD,ierr)
   ENDIF
 #endif 
-  
 !____________________________________________________________________________________________________________________________
 !
 ! 4. Add current v0 to timeseries in v0t, compute current average, and calculate pitch and rpm
 !____________________________________________________________________________________________________________________________
-  !PRINT*,'Starting part 4'
-  
   DO n = 1, n_turbines
   
       turb_power_local(n) = 0.0 !RSA initializing for power calculation
@@ -814,7 +808,7 @@ endif
           v0t(k,n) = v0n(n)
           d0t(k,n) = d0n(n)
         ENDDO
-        !print*,'v0t in part 4 for first time running GAD should be equal to v0n for each turbine',v0t(1,n),v0n(n)
+!        print*,'v0t in part 4 for first time running GAD should be equal to v0n for each turbine',v0t(1,n),v0n(n)
       ENDIF 
 
       v0t(1,n)=v0n(n)                  ! Assign the first element the current v0 
@@ -863,7 +857,7 @@ endif
           acc_yaw_err(n) = acc_yaw_err(n) + yaw_err
 
         ELSE ! turbine is yawing or ready to start
-         !PRINT *,"Turbine is yawing (MSG), theta turbine is",theta_turbine(n)
+         ! PRINT *,"Turbine is yawing (MSG), theta turbine is",theta_turbine(n)
          yaw_new = d0t_avg !calculated above
          yaw_inc = yaw_rate*dt
 
@@ -894,34 +888,31 @@ endif
       ENDIF !wp_opt .EQ. 3
 
     !!!!! Turbine operation !!!!!!
-    !print*,'Is the turbine on patch?',turbine_on_patch(n),'1-> Yes, 0-> No'
+ !   print*,'Is the turbine on path?',turbine_on_patch(n),'1-> Yes, 0-> No'
     IF (turbine_on_patch(n) .EQ. 1 ) THEN !only do this if part of the turbine is on the patch
 
       theta =  theta_turbine(n)*pi/180.0
-      !print*,'current wind speed is:',v0t_avg,', cut in speed is:',cutinspd(n),', and cut out speed is:',cutoutspd(n)
+  !    print*,'current wind speed is:',v0t_avg,', cut in speed is:',cutinspd(n),', and cut out speed is:',cutoutspd(n)
       IF ( (v0t_avg .lt. cutinspd(n)) .or. (v0t_avg .gt. cutoutspd(n)) ) GOTO 200 
       operate = 1.0
       
       !Use time average velocity at hub location for rpm and pitch
-      !print*,'TURBINE SHOULD BE OPERATING'
+   !   print*,'TURBINE SHOULD BE OPERATING'
       IF (turbine_opt .EQ. 15) THEN
          rpm   = calc_rpm_psu15( v0t_avg )
          pitchdeg = calc_pitch_psu15( v0t_avg )
       ELSEIF (turbine_opt .EQ. 16) THEN
          rpm   = calc_rpm_ge16( v0t_avg )
          pitchdeg = calc_pitch_ge16( v0t_avg )
+      ELSEIF (turbine_opt .EQ. 28) THEN
+         rpm   = calc_rpm_ge28( v0t_avg )
+         pitchdeg = calc_pitch_ge28( v0t_avg )
       ELSEIF (turbine_opt .EQ. 100) THEN
          rpm = calc_rpm_dtu10( v0t_avg )
          pitchdeg = calc_pitch_dtu10( v0t_avg )
       ELSEIF (turbine_opt .EQ. 50) THEN
          rpm   = calc_rpm_nrel5( v0t_avg )
          pitchdeg = calc_pitch_nrel5( v0t_avg )
-      ELSEIF (turbine_opt .EQ. 28) THEN
-         rpm   = calc_rpm_nrel2p8( v0t_avg )
-         pitchdeg = calc_pitch_nrel2p8( v0t_avg )
-      ELSEIF (turbine_opt .EQ. 29) THEN
-        rpm   = calc_rpm_ge28( v0t_avg )
-        pitchdeg = calc_pitch_ge28( v0t_avg )
       ENDIF
    
       omega(n) = 2.0*pi*rpm/60.0
@@ -947,9 +938,6 @@ endif
       ! dau,dav,daw - Signed distance, in a horizontal plane, from the gridpoint to a line
       !               going through the turbine (nacelle) axis. 
       ! dru,drv,drw - signed distance, in a horizontal plane, from the vertical rotor plane
-      
-      !PRINT*,'Starting part 5'
-        
       CALL calc_distance( x_turbine(n), y_turbine(n), theta_turbine(n), &
                           its, ite, jts, jte, &
                           i_start, i_end, j_start, j_end,        &
@@ -1002,8 +990,6 @@ endif
       !
       ! 6. Compute local lift and drag accelerations using instantaneous local velocity, and apply to u,v, and w tendencies
       !____________________________________________________________________________________________________________________________
-      !PRINT*,'Starting part 6'
-      
       DO j = j_start, j_end
         DO k = kts, k_end
           DO i = i_start, i_end
@@ -1117,17 +1103,14 @@ endif
                 elseif (turbine_opt .eq. 16) then
                    fnft = calc_fnft_ge16( v0_u, rho, blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 100) then
+                elseif (turbine_opt .eq. 28) then
+                   fnft = calc_fnft_ge28( v0_u, rho, blades, blade_length(n),rotor_diameter(n),   &
+                                        radius, pitchdeg, rpm, dscale,cscale)
+               elseif (turbine_opt .eq. 100) then
                    fnft = calc_fnft_dtu10( v0_u, rho, blades, blade_length(n),rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale,cscale)
                 elseif (turbine_opt .eq. 50) then
                    fnft = calc_fnft_nrel5( v0_u, rho, blades,blade_length(n),rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm,dscale,cscale)
-                elseif (turbine_opt .eq. 28) then
-                   fnft = calc_fnft_nrel2p8( v0_u, rho, blades,blade_length(n),rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm,dscale,cscale)
-                elseif (turbine_opt .eq. 29) then
-                  fnft = calc_fnft_ge28( v0_u, rho, blades,blade_length(n),rotor_diameter(n),   &
                                               radius, pitchdeg, rpm,dscale,cscale)
                 endif
 
@@ -1206,18 +1189,15 @@ endif
                    elseif (turbine_opt .eq. 16) then
                       fnft = calc_fnft_ge16( v0_v, rho, blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)  
+                   elseif (turbine_opt .eq. 28) then
+                      fnft = calc_fnft_ge28( v0_v, rho, blades, blade_length(n),rotor_diameter(n),   &
+                                              radius, pitchdeg, rpm, dscale,cscale)
                    elseif (turbine_opt .eq. 100) then
                       fnft = calc_fnft_dtu10( v0_v, rho, blades,blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
                    elseif (turbine_opt .eq. 50) then
                       fnft = calc_fnft_nrel5( v0_v, rho,blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
-                   elseif (turbine_opt .eq. 28) then
-                      fnft = calc_fnft_nrel2p8( v0_v, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                  elseif (turbine_opt .eq. 29) then
-                    fnft = calc_fnft_ge28( v0_v, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                            radius, pitchdeg, rpm, dscale, cscale)
                    endif
 
                    fn = fnft(1)
@@ -1275,17 +1255,14 @@ endif
                  elseif (turbine_opt .eq. 16) then 
                     fnft = calc_fnft_ge16( v0_w, rho, blades, blade_length(n), rotor_diameter(n), &
                                             radius, pitchdeg, rpm, dscale, cscale )
+                elseif (turbine_opt .eq. 28) then
+                    fnft = calc_fnft_ge28( v0_w, rho, blades, blade_length(n),rotor_diameter(n), &
+                                            radius, pitchdeg, rpm, dscale,cscale )
                 elseif (turbine_opt .eq. 100) then
                       fnft = calc_fnft_dtu10( v0_w, rho, blades,blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
                 elseif (turbine_opt .eq. 50) then
                       fnft = calc_fnft_nrel5( v0_w, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 28) then
-                      fnft = calc_fnft_nrel2p8( v0_w, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 29) then
-                      fnft = calc_fnft_ge28( v0_w, rho,blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
                 endif
 
@@ -1353,17 +1330,14 @@ endif
                 elseif (turbine_opt .eq. 16) then
                    fnft = calc_fnft_ge16( v0_c, rho, blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
+                elseif (turbine_opt .eq. 28) then
+                   fnft = calc_fnft_ge28( v0_c, rho, blades, blade_length(n),rotor_diameter(n),   &
+                                              radius, pitchdeg, rpm, dscale,cscale)
                 elseif (turbine_opt .eq. 100) then
                       fnft = calc_fnft_dtu10( v0_c, rho, blades,blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
                 elseif (turbine_opt .eq. 50) then
                       fnft = calc_fnft_nrel5( v0_c, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 28) then
-                      fnft = calc_fnft_nrel2p8( v0_c, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 29) then
-                      fnft = calc_fnft_ge28( v0_c, rho,blades, blade_length(n), rotor_diameter(n),   &
                                               radius, pitchdeg, rpm, dscale, cscale)
                 endif
 
@@ -1398,14 +1372,12 @@ endif
 
     ENDIF !turbine_on_patch = 1
 
-  !PRINT*, 'WRC(L1385): turbine not on patch'
-
 200 CONTINUE !time-averaged inflow is < cutin or > cutout speed
     
     if (operate .eq. 1.0) then
-       !print*,'Turbine did start operating'            
+ !      print*,'Turbine did start operating'            
     elseif (operate .eq. 0.0) then
-       !print*,'Turbine did not start operating'
+  !     print*,'Turbine did not start operating'
     endif
 
   ENDDO  !n loop over all turbines
