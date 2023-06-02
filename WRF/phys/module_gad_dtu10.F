@@ -23,7 +23,7 @@ FUNCTION calc_rpm_dtu10( x ) result( rpm )
 
   REAL, INTENT( in ) :: x
 
-  REAL, PARAMETER :: nws = 50
+  INTEGER, PARAMETER :: nws = 50
 
   REAL, DIMENSION( 0:nws-1 ) :: ws
   REAL, DIMENSION( 0:nws-1 ) :: rp
@@ -167,7 +167,7 @@ FUNCTION calc_pitch_dtu10( x ) RESULT( pitch )
  
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: nws = 50
+  INTEGER, PARAMETER :: nws = 50
 
   REAL, DIMENSION( 0:nws-1 ) :: ws 
   REAL, DIMENSION( 0:nws-1 ) :: p
@@ -563,7 +563,7 @@ FUNCTION calc_twist_dtu10( x ) RESULT( twist )
   
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: ns = 40
+  INTEGER, PARAMETER :: ns = 40
 
   REAL, DIMENSION( 0:ns-1 ) :: r
   REAL, DIMENSION( 0:ns-1 ) :: t
@@ -702,7 +702,7 @@ FUNCTION calc_chord_dtu10( x ) RESULT( chord )
 
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: ns = 40
+  INTEGER, PARAMETER :: ns = 40
 
   REAL, DIMENSION( 0:ns-1 ) :: r
   REAL, DIMENSION( 0:ns-1 ) :: c
@@ -843,7 +843,7 @@ FUNCTION calc_cl_dtu10( x,y ) RESULT( cl )
   
   REAL, INTENT( IN ) :: x,y
 
-  REAL, PARAMETER :: ns = 7
+  INTEGER, PARAMETER :: ns = 7
 
   REAL, DIMENSION( 0:ns-1 ) :: r
 
@@ -922,7 +922,7 @@ FUNCTION calc_cl2_dtu10( y ) RESULT( cl2 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1073,7 +1073,7 @@ FUNCTION calc_cl3_dtu10( y ) RESULT( cl3 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1224,7 +1224,7 @@ FUNCTION calc_cl4_dtu10( y ) RESULT( cl4 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1375,7 +1375,7 @@ FUNCTION calc_cl5_dtu10( y ) RESULT( cl5 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1526,7 +1526,7 @@ FUNCTION calc_cl6_dtu10( y ) RESULT( cl6 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1688,7 +1688,7 @@ FUNCTION calc_cd_dtu10( x,y ) RESULT( cd )
   
   REAL, INTENT( IN ) :: x,y
 
-  REAL, PARAMETER :: ns = 7
+  INTEGER, PARAMETER :: ns = 7
 
   REAL, DIMENSION( 0:ns-1 ) :: r
 
@@ -1765,7 +1765,7 @@ FUNCTION calc_cd2_dtu10( y ) RESULT( cd2 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -1916,7 +1916,7 @@ FUNCTION calc_cd3_dtu10( y ) RESULT( cd3 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -2067,7 +2067,7 @@ FUNCTION calc_cd4_dtu10( y ) RESULT( cd4 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -2218,7 +2218,7 @@ FUNCTION calc_cd5_dtu10( y ) RESULT( cd5 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -2369,7 +2369,7 @@ FUNCTION calc_cd6_dtu10( y ) RESULT( cd6 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 105
+  INTEGER, PARAMETER :: na = 105
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 

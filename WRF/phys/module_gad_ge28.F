@@ -23,7 +23,7 @@ FUNCTION calc_rpm_ge28( x ) result( rpm )
 
   REAL, INTENT( in ) :: x
 
-  REAL, PARAMETER :: nws = 30
+  INTEGER, PARAMETER :: nws = 30
 
   REAL, DIMENSION( 0:nws-1 ) :: ws
   REAL, DIMENSION( 0:nws-1 ) :: rp
@@ -127,7 +127,7 @@ FUNCTION calc_pitch_ge28( x ) RESULT( pitch )
  
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: nws = 30
+  INTEGER, PARAMETER :: nws = 30
 
   REAL, DIMENSION( 0:nws-1 ) :: ws 
   REAL, DIMENSION( 0:nws-1 ) :: p
@@ -508,7 +508,7 @@ FUNCTION calc_twist_ge28( x ) RESULT( twist )
   
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: ns = 30
+  INTEGER, PARAMETER :: ns = 30
 
   REAL, DIMENSION( 0:ns-1 ) :: r
   REAL, DIMENSION( 0:ns-1 ) :: t
@@ -627,7 +627,7 @@ FUNCTION calc_chord_ge28( x ) RESULT( chord )
 
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: ns = 30
+  INTEGER, PARAMETER :: ns = 30
 
   REAL, DIMENSION( 0:ns-1 ) :: r
   REAL, DIMENSION( 0:ns-1 ) :: c
@@ -773,7 +773,7 @@ FUNCTION calc_cl_ge28( x,y ) RESULT( cl )
   
   REAL, INTENT( IN ) :: x,y
 
-  REAL, PARAMETER :: ns = 30
+  INTEGER, PARAMETER :: ns = 30
 
   REAL, DIMENSION( 0:ns-1 ) :: r
 
@@ -905,7 +905,7 @@ FUNCTION calc_cl1_ge28( y ) RESULT( cl1 )
 
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1152,7 +1152,7 @@ FUNCTION calc_cl2_ge28( y ) RESULT( cl2 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1399,7 +1399,7 @@ FUNCTION calc_cl3_ge28( y ) RESULT( cl3 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1644,7 +1644,7 @@ FUNCTION calc_cl4_ge28( y ) RESULT( cl4 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1889,7 +1889,7 @@ FUNCTION calc_cl5_ge28( y ) RESULT( cl5 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -2135,7 +2135,7 @@ FUNCTION calc_cl6_ge28( y ) RESULT( cl6 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -2380,7 +2380,7 @@ FUNCTION calc_cl7_ge28( y ) RESULT( cl7 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -2625,7 +2625,7 @@ FUNCTION calc_cl8_ge28( y ) RESULT( cl8 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -2870,7 +2870,7 @@ FUNCTION calc_cl9_ge28( y ) RESULT( cl9 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -3115,7 +3115,7 @@ FUNCTION calc_cl10_ge28( y ) RESULT( cl10 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -3360,7 +3360,7 @@ FUNCTION calc_cl11_ge28( y ) RESULT( cl11 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -3605,7 +3605,7 @@ FUNCTION calc_cl12_ge28( y ) RESULT( cl12 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -3850,7 +3850,7 @@ FUNCTION calc_cl13_ge28( y ) RESULT( cl13 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -4095,7 +4095,7 @@ FUNCTION calc_cl14_ge28( y ) RESULT( cl14 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -4340,7 +4340,7 @@ FUNCTION calc_cl15_ge28( y ) RESULT( cl15 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -4585,7 +4585,7 @@ FUNCTION calc_cl16_ge28( y ) RESULT( cl16 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -4830,7 +4830,7 @@ FUNCTION calc_cl17_ge28( y ) RESULT( cl17 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -5075,7 +5075,7 @@ FUNCTION calc_cl18_ge28( y ) RESULT( cl18 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -5320,7 +5320,7 @@ FUNCTION calc_cl19_ge28( y ) RESULT( cl19 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -5565,7 +5565,7 @@ FUNCTION calc_cl20_ge28( y ) RESULT( cl20 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -5810,7 +5810,7 @@ FUNCTION calc_cl21_ge28( y ) RESULT( cl21 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -6055,7 +6055,7 @@ FUNCTION calc_cl22_ge28( y ) RESULT( cl22 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -6300,7 +6300,7 @@ FUNCTION calc_cl23_ge28( y ) RESULT( cl23 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -6545,7 +6545,7 @@ FUNCTION calc_cl24_ge28( y ) RESULT( cl24 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -6790,7 +6790,7 @@ FUNCTION calc_cl25_ge28( y ) RESULT( cl25 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -7035,7 +7035,7 @@ FUNCTION calc_cl26_ge28( y ) RESULT( cl26 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -7280,7 +7280,7 @@ FUNCTION calc_cl27_ge28( y ) RESULT( cl27 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -7525,7 +7525,7 @@ FUNCTION calc_cl28_ge28( y ) RESULT( cl28 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -7770,7 +7770,7 @@ FUNCTION calc_cl29_ge28( y ) RESULT( cl29 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -8015,7 +8015,7 @@ FUNCTION calc_cl30_ge28( y ) RESULT( cl30 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -8299,7 +8299,7 @@ FUNCTION calc_cd_ge28( x,y ) RESULT( cd )
   
   REAL, INTENT( IN ) :: x,y
 
-  REAL, PARAMETER :: ns = 30
+  INTEGER, PARAMETER :: ns = 30
 
   REAL, DIMENSION( 0:ns-1 ) :: r
 
@@ -8433,7 +8433,7 @@ FUNCTION calc_cd1_ge28( y ) RESULT( cd1 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -8678,7 +8678,7 @@ FUNCTION calc_cd2_ge28( y ) RESULT( cd2 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -8923,7 +8923,7 @@ FUNCTION calc_cd3_ge28( y ) RESULT( cd3 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -9168,7 +9168,7 @@ FUNCTION calc_cd4_ge28( y ) RESULT( cd4 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -9413,7 +9413,7 @@ FUNCTION calc_cd5_ge28( y ) RESULT( cd5 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -9658,7 +9658,7 @@ FUNCTION calc_cd6_ge28( y ) RESULT( cd6 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -9903,7 +9903,7 @@ FUNCTION calc_cd7_ge28( y ) RESULT( cd7 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -10148,7 +10148,7 @@ FUNCTION calc_cd8_ge28( y ) RESULT( cd8 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -10393,7 +10393,7 @@ FUNCTION calc_cd9_ge28( y ) RESULT( cd9 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -10638,7 +10638,7 @@ FUNCTION calc_cd10_ge28( y ) RESULT( cd10 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -10883,7 +10883,7 @@ FUNCTION calc_cd11_ge28( y ) RESULT( cd11 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -11128,7 +11128,7 @@ FUNCTION calc_cd12_ge28( y ) RESULT( cd12 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -11372,7 +11372,7 @@ FUNCTION calc_cd13_ge28( y ) RESULT( cd13 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -11617,7 +11617,7 @@ FUNCTION calc_cd14_ge28( y ) RESULT( cd14 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -11862,7 +11862,7 @@ FUNCTION calc_cd15_ge28( y ) RESULT( cd15 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -12107,7 +12107,7 @@ FUNCTION calc_cd16_ge28( y ) RESULT( cd16 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -12352,7 +12352,7 @@ FUNCTION calc_cd17_ge28( y ) RESULT( cd17 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -12597,7 +12597,7 @@ FUNCTION calc_cd18_ge28( y ) RESULT( cd18 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -12842,7 +12842,7 @@ FUNCTION calc_cd19_ge28( y ) RESULT( cd19 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -13087,7 +13087,7 @@ FUNCTION calc_cd20_ge28( y ) RESULT( cd20 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -13332,7 +13332,7 @@ FUNCTION calc_cd21_ge28( y ) RESULT( cd21 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -13577,7 +13577,7 @@ FUNCTION calc_cd22_ge28( y ) RESULT( cd22 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -13822,7 +13822,7 @@ FUNCTION calc_cd23_ge28( y ) RESULT( cd23 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -14067,7 +14067,7 @@ FUNCTION calc_cd24_ge28( y ) RESULT( cd24 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -14312,7 +14312,7 @@ FUNCTION calc_cd25_ge28( y ) RESULT( cd25 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -14557,7 +14557,7 @@ FUNCTION calc_cd26_ge28( y ) RESULT( cd26 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -14802,7 +14802,7 @@ FUNCTION calc_cd27_ge28( y ) RESULT( cd27 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -15047,7 +15047,7 @@ FUNCTION calc_cd28_ge28( y ) RESULT( cd28 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -15292,7 +15292,7 @@ FUNCTION calc_cd29_ge28( y ) RESULT( cd29 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -15537,7 +15537,7 @@ FUNCTION calc_cd30_ge28( y ) RESULT( cd30 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 200
+  INTEGER, PARAMETER :: na = 200
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -15777,4 +15777,3 @@ END FUNCTION calc_cd30_ge28
 
 
 END MODULE module_gad_ge28
-
