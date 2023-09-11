@@ -50,6 +50,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
 !! *** add new modules of schemes here
 
   USE module_gen_act_disk
+  USE module_nonrot_act_disk
 
   IMPLICIT NONE
 
@@ -142,6 +143,46 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
 
   IF ( config_flags%wp_opt .GE. 2 ) then
 
+     IF ( config_flags%wp_opt .EQ. 10 ) then
+         ! Non-rotating actuator disk
+         CALL nonRot_act_disk  ( ru_tendf, rv_tendf, rw_tendf,     &
+                         config_flags%wp_opt,              &
+                         config_flags%turbine_opt,         & !RSA
+                         config_flags%windturb_spec,       & !RSA
+                         config_flags%turb_loc_in_latlon,  & !RSA
+                         config_flags%truelat1,            & !RSA
+                         config_flags%truelat2,            & !RSA
+                         config_flags%stand_lon,           & !RSA
+                         n_turbines,                       &
+                         n_timeseries,                     &
+                         x_turbine,                        &
+                         y_turbine,                        &
+                         x_inflow,                         & !RSA
+                         y_inflow,                         & !RSA
+                         hub_height,                       &
+                         rotor_diameter,                   &
+                         blade_length,                     &
+                         theta_turbine,                    &
+                         cutinspd, cutoutspd,              & !RSA
+                         turb_power,                       & !RSA
+                         acc_yaw_err,                      &
+                         wp_acc_u, wp_acc_v, wp_acc_w,     &
+                         wp_ts,                            & !JDM May 2, 2013
+                         u_2, v_2, w_2,                    &
+                         muu, muv, mut,                    &
+                         rdzw, dx, dy, dt,                 & !JDM May 2, 2013
+                         v0t, d0t, itimestep,              & !JDM May 2, 2013
+                         xlat_v, xlong_u, hgt,             & !RSA
+                         fnm, fnp,                         & !RSA
+                         ids, ide, jds, jde, kds, kde,     &
+                         ims, ime, jms, jme, kms, kme,     &
+                         ips, ipe, jps, jpe, kps, kpe,     &
+                         its, ite, jts, jte, kts, kte      )
+
+
+
+     ELSE
+
      CALL gen_act_disk ( ru_tendf, rv_tendf, rw_tendf,     & 
                          config_flags%wp_opt,              & 
                          config_flags%turbine_opt,         & !RSA
@@ -178,6 +219,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                          ips, ipe, jps, jpe, kps, kpe,     &
                          its, ite, jts, jte, kts, kte      )
 
+    ENDIF
   ENDIF
 
 

@@ -297,6 +297,7 @@ MODULE module_state_description
   INTEGER, PARAMETER :: noturbine = 0
   INTEGER, PARAMETER :: genactdisk2 = 2
   INTEGER, PARAMETER :: genactdisk3 = 3
+  INTEGER, PARAMETER :: genactdisk10 = 10
   INTEGER, PARAMETER :: tracer_test1 = 2
   INTEGER, PARAMETER :: restofwrf = 0
   INTEGER, PARAMETER :: realonly = 1

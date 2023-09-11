@@ -1,15 +1,12 @@
 
-MODULE module_gen_act_disk
+MODULE module_nonrot_act_disk
 
 !RSA for converting lat/lon to x/y
 USE module_llxy
 
 !RSA for turbine-specific functions
-USE module_gad_psu15, ONLY: calc_rpm_psu15, calc_pitch_psu15, calc_fnft_psu15
-USE module_gad_ge16, ONLY: calc_rpm_ge16, calc_pitch_ge16, calc_fnft_ge16
-USE module_gad_dtu10, ONLY: calc_rpm_dtu10, calc_pitch_dtu10, calc_fnft_dtu10
-USE module_gad_nrel5, ONLY: calc_rpm_nrel5, calc_pitch_nrel5, calc_fnft_nrel5
-USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
+USE module_nonrot_gad_ge28 !, ONLY: calc_ct_p_ge28
+USE module_nonrot_gad_nrel5
 
 #ifdef DM_PARALLEL
   USE MODULE_DM
@@ -17,7 +14,7 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
   
   CONTAINS
     
-  SUBROUTINE gen_act_disk ( ru_tendf, rv_tendf, rw_tendf, &
+  SUBROUTINE nonRot_act_disk ( ru_tendf, rv_tendf, rw_tendf, &
                             wp_opt,                       & 
                             turbine_opt,                  & !RSA
                             windturb_spec,                & !RSA
@@ -39,8 +36,6 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
                             acc_yaw_err,                  & 
                             wp_acc_u, wp_acc_v, wp_acc_w, & ! these variables likely not needed. 
                             wp_ts,                        &
-                            thrust, torque,               &
-                            rotrate, power,               &
                             u, v, w,                      &
                             muu, muv, mut,                &
                             rdzw,  dx, dy, dt,            &
@@ -51,32 +46,6 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
                             ims, ime, jms, jme, kms, kme, &
                             ips, ipe, jps, jpe, kps, kpe, &
                             its, ite, jts, jte, kts, kte  )
-
-!-----------------------------------------------------------------------------
-!
-! Purpose: To calculate forces using the generalized actuator disk model. 
-!
-! See Mirocha et al. (2014), J. Renew. Sust. Energy:
-! "Implementation of a generalized actuator disk wind turbine model into the
-! weather research and forecasting model for large-eddy simulation applications"
-!
-! Lookup tables use generic Penn State 1.5 MW GE SLE turbine (approximate).
-!
-! Note that wind direction and turbine yaw are measured counterclockwise from
-! 0 deg. for a westerly wind / west-facing turbine. Thus, 90 is a southerly
-! wind / south-facing turbine, 180 is an easterly wind / east-facing turbine,
-! 270 is a northerly wind / north-facing turbine, up to 360 deg.
-!
-! Last modified 10/2018 by RSA and JDM. 
-! - Code will not compute GAD forces if flow is from behind the turbine; turbine
-! must first yaw into mean flow direction (when yaw error exceeds threshold) 
-! before forces will be calculated.
-! - Added ability specify upwind distance for turbine inflow calculation relative 
-! to turbine hub.
-! - Added ability to read in turbine info from a file specifying turbine
-! parameters, including position in either x,y or lat,lon.
-!
-!=============================================================================
 
   IMPLICIT NONE
 
@@ -134,8 +103,6 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
   REAL, DIMENSION( n_turbines ),                 INTENT(INOUT) & 
   ::  acc_yaw_err
 
-  REAL, DIMENSION( ims:ime, jms:jme ),            INTENT( OUT ) &
-  :: thrust, torque, rotrate, power
 
    REAL, DIMENSION( n_timeseries, n_turbines ),   INTENT(INOUT) &
   :: v0t          & ! Wind speed timeseries               (m s-1)
@@ -254,12 +221,12 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
 
 !--------------------------------------------------------
 
-  REAL, DIMENSION(2)    :: fnft
-  REAL                  :: fn, ft
+  REAL, DIMENSION(2)    :: ct_p
+  REAL                  :: CT, P, thrust, power
   REAL                  :: v0, v0_u, v0_v, v0_w, v0_c, d0, v0t_avg, d0t_avg !RSA
   REAL                  :: u_c, v_c, w_c !RSA
   REAL                  :: rho
-  REAL                  :: rpm, blades, pitchdeg
+  REAL                  :: blades
   REAL                  :: rotor_radius
   REAL                  :: dscale, cscale
   REAL                  :: zeta
@@ -271,7 +238,8 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
   INTEGER, DIMENSION(n_turbines) :: turbine_on_patch
   INTEGER, DIMENSION(n_turbines) :: inflow_on_patch
   REAL, DIMENSION(n_turbines) :: turb_power_local !turbine power calculation on local processor
-  REAL, DIMENSION(n_turbines) :: omega !turbine rotation rate (rad/s)
+  REAL, DIMENSION(n_turbines) :: count_turb_power_local !turbine number of counts on local processor
+  REAL, DIMENSION(n_turbines) :: count_turb_power
 
   REAL                  :: time_fac
   REAL                  :: xtime
@@ -324,6 +292,7 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
 ! RSA for converting lat/lon to x/y
   TYPE(proj_info)      :: proj
   REAL                 :: lat1,lon1,knowni,knownj,inew,jnew!,truelat1,truelat2,stand_lon
+  REAL :: pi=3.1415926535897932384626433
 
 ! test
   REAL :: zd, zetazd
@@ -352,10 +321,8 @@ REAL :: temp
 
   hoff = 5.0 ! hub offset
   yaw_rate = 2.0 !degrees per second
-  pitchdeg=  0.0
   dscale  =  1.0
   cscale  =  1.0
-  rpm     = 16.0
   blades  =  3
   rho     =  1.225
   start_fac = 1.0
@@ -423,7 +390,7 @@ endif
                  cutinspd(i) = cutin
                  cutoutspd(i) = cutout
                  i = i + 1 !RSA counting lines
-                ! PRINT *,'Reading file turbines(MSG)',x_turbine(i-1),y_turbine(i-1),'locs',hub_height(i-1),'hub height',rotor_diameter(i-1), 'diameter',blade_length(i-1),'blades',theta_turbine(i-1),'angle',cutinspd(i-1),'cutin',cutoutspd(i-1),'cutout'
+                PRINT *,'Reading file turbines(MSG)',x_turbine(i-1),y_turbine(i-1),'locs',hub_height(i-1),'hub height',rotor_diameter(i-1), 'diameter',blade_length(i-1),'blades',theta_turbine(i-1),'angle',cutinspd(i-1),'cutin',cutoutspd(i-1),'cutout'
               ENDIF
            ENDDO
 
@@ -491,15 +458,6 @@ endif
            y_turbine(n) = jnew*dy
         ENDDO
 
-        !RSA for debugging
-        ! print*,'y_turbine=',y_turbine(1)
-        ! print*,'x_turbine=',x_turbine(1)
-        ! print*,'lat1=',lat1
-        ! print*,'lon1=',lon1
-        ! print*,'dx=',dx
-        ! print*,'stand_lon=',stand_lon
-        ! print*,'truelat1=',truelat1
-        ! print*,'truelat2=',truelat2
 
      ENDIF
   ENDIF !RSA end first time GAD is turned on
@@ -520,14 +478,6 @@ endif
   dxo2 = dx/2.0
   dyo2 = dy/2.0
 
-  ! RSA/JDM for debugging
-  ! DO i = i_start, i_end !only for visualizing instantaneous position of multiple turbines
-  ! DO j = j_start, j_end
-  ! DO k = 1, 20
-  !   wp_ts(i,k,j) = 0.0
-  ! ENDDO
-  ! ENDDO
-  ! ENDDO
 
   DO i = i_start, i_end+1
     u_x(i) = (i-1)*dx
@@ -707,7 +657,7 @@ endif
     ENDDO
   ENDDO
 !PRINT*,'Starting part 3.1'
-  IF (wp_opt .EQ. 3 ) THEN
+  IF (wp_opt .EQ. 10 ) THEN
     DO n = 1, n_turbines
       DO k = n_timeseries-1,1,-1
         d0t(k+1,n)=d0t(k,n)
@@ -737,7 +687,7 @@ endif
         w_c = 0.5 * ( w(i_inflow,k_inflow,j_inflow) + w(i_inflow,k_inflow+1,j_inflow) )
         v0inst = u_c*cos(theta)*cos(tilt) + v_c*sin(theta)*cos(tilt) - w_c*sin(tilt) !Instantaneous velocity component normal to the rotor.
 
-        IF (wp_opt .EQ. 3 ) THEN
+        IF (wp_opt .EQ. 10 ) THEN
           IF ( ( u_c .GE. 0.0 ) .AND. ( v_c .LT. 0.0 ) ) THEN   !Wind direction, independent of the
              d0inst = 360.0 - (atan2(u_c,v_c)*180.0/pi - 90.0)  !rotor angle. 0 and 360 are Westerly. 
           ELSE                                                  !Positive values are counterclockwise
@@ -749,13 +699,13 @@ endif
         tag=n
         CALL MPI_SEND(v0inst,1,MPI_REAL,master,tag,            &
                              MPI_COMM_WORLD,ierr )
-        IF (wp_opt .EQ. 3 ) THEN
+        IF (wp_opt .EQ. 10 ) THEN
           CALL MPI_SEND(d0inst,1,MPI_REAL,master,tag,            &
                                  MPI_COMM_WORLD,ierr )
         ENDIF
 #else
         v0n(n) = v0inst
-        IF (wp_opt .EQ. 3 ) THEN
+        IF (wp_opt .EQ. 10 ) THEN
           d0n(n) = d0inst
         ENDIF
 #endif
@@ -772,7 +722,7 @@ endif
       v0n(n)=v0inst
     ENDDO
 !PRINT*,'Starting part 3.4'
-    IF (wp_opt .EQ. 3 ) THEN
+    IF (wp_opt .EQ. 10 ) THEN
       DO n=1,n_turbines
         tag=n
         CALL MPI_RECV(d0inst,1,MPI_REAL,MPI_ANY_SOURCE,tag,                 &
@@ -783,17 +733,18 @@ endif
   ENDIF
   CALL MPI_BARRIER(MPI_COMM_WORLD,ierr)
   CALL MPI_BCAST(v0n,n_turbines,MPI_REAL,master,MPI_COMM_WORLD,ierr)
-  IF (wp_opt .EQ. 3 ) THEN
+  IF (wp_opt .EQ. 10 ) THEN
     CALL MPI_BCAST(d0n,n_turbines,MPI_REAL,master,MPI_COMM_WORLD,ierr)
   ENDIF
 #endif 
 !____________________________________________________________________________________________________________________________
 !
-! 4. Add current v0 to timeseries in v0t, compute current average, and calculate pitch and rpm
+! 4. Add current v0 to timeseries in v0t and compute current average
 !____________________________________________________________________________________________________________________________
   DO n = 1, n_turbines
   
       turb_power_local(n) = 0.0 !RSA initializing for power calculation
+      count_turb_power_local(n) = 0.0
 
       operate = 0.0
 
@@ -825,29 +776,40 @@ endif
          dum = dum + d0t(k,n)
       ENDDO
       d0t_avg = dum/real(n_timeseries) !Running time-average
-      
-      !!!!! Turbine yawing !!!!!!
 
-      IF (wp_opt .EQ. 3) THEN
+      IF (wp_opt .EQ. 10) THEN
 
         IF ( abs(acc_yaw_err(n)) .GE. yaw_thresh ) THEN ! If acc_yaw_err(n) exceeds threshold, turbine n begins yawing.
-                                                        ! During yawing, no new entries are stored in d0t(n) and 
-                                                        ! acc_yaw_err(n) remains fixed.Turbine n rotates toward
-                                                        ! the time average direction before yawing began,yaw_new. 
-                                                        ! The turbine rotates at yaw_rate until it is less than 
-                                                        ! yaw_rate*dt from yaw_new. At this point turbine_theta is
-                                                        ! set to yaw_new, yawing is set to 0, and everything starts over.
+                                                        ! During yawing, no new
+                                                        ! entries are stored in
+                                                        ! d0t(n) and 
+                                                        ! acc_yaw_err(n) remains
+                                                        ! fixed.Turbine n
+                                                        ! rotates toward
+                                                        ! the time average
+                                                        ! direction before
+                                                        ! yawing began,yaw_new. 
+                                                        ! The turbine rotates at
+                                                        ! yaw_rate until it is
+                                                        ! less than 
+                                                        ! yaw_rate*dt from
+                                                        ! yaw_new. At this point
+                                                        ! turbine_theta is
+                                                        ! set to yaw_new, yawing
+                                                        ! is set to 0, and
+                                                        ! everything starts
+                                                        ! over.
           yawing(n) = 1
         ELSE
-          yawing(n) = 0 
+          yawing(n) = 0
         ENDIF
 
         IF (yawing(n) .EQ. 0 ) THEN
 
           delta = theta_turbine(n) - d0t_avg
-          IF ( delta .LT. -180.0 ) THEN 
+          IF ( delta .LT. -180.0 ) THEN
             delta = theta_turbine(n) + ( 360.0 - d0t_avg )
-          ELSE IF (delta .GE. 180.0 ) THEN 
+          ELSE IF (delta .GE. 180.0 ) THEN
             delta = theta_turbine(n) - ( 360.0 + d0t_avg )
           ENDIF
 
@@ -857,21 +819,21 @@ endif
           acc_yaw_err(n) = acc_yaw_err(n) + yaw_err
 
         ELSE ! turbine is yawing or ready to start
-         PRINT *,"Turbine is yawing (MSG), theta turbine is",theta_turbine(n)
+         PRINT *,"Turbine is yawing (MSG), theta turbine is ",theta_turbine(n)
          yaw_new = d0t_avg !calculated above
          yaw_inc = yaw_rate*dt
 
-         delta = theta_turbine(n) - yaw_new  
-         IF ( delta .LT. -180.0 ) THEN 
+         delta = theta_turbine(n) - yaw_new
+         IF ( delta .LT. -180.0 ) THEN
            delta = theta_turbine(n) + ( 360.0 - d0t_avg )
-         ELSE IF (delta .GE. 180.0 ) THEN 
+         ELSE IF (delta .GE. 180.0 ) THEN
            delta = theta_turbine(n) - ( 360.0 + d0t_avg )
          ENDIF
 
          sgn = 1.0
          IF ( delta .GT. 0.0 ) sgn = -1.0
 
-         IF ( abs(yaw_inc) .GE. abs(delta) ) THEN 
+         IF ( abs(yaw_inc) .GE. abs(delta) ) THEN
            theta_turbine(n) = yaw_new
            yawing(n) = 0
            acc_yaw_err(n) = 0.0
@@ -882,13 +844,13 @@ endif
         ENDIF !yawing or not
 
         ! Keep turbine-theta between 0 and 360 degrees.
-        IF ( theta_turbine(n) .GE. 360.0 ) theta_turbine(n) = theta_turbine(n) - 360.0
+        IF ( theta_turbine(n) .GE. 360.0 ) theta_turbine(n) = theta_turbine(n) -360.0
         IF ( theta_turbine(n) .LT. 0.0 ) theta_turbine(n) = 360.0 + theta_turbine(n)
 
-      ENDIF !wp_opt .EQ. 3
+      ENDIF !wp_opt .EQ. 3      
 
     !!!!! Turbine operation !!!!!!
- !   print*,'Is the turbine on path?',turbine_on_patch(n),'1-> Yes, 0-> No'
+    ! print*,'Is the turbine on path?',turbine_on_patch(n),'1-> Yes, 0-> No'
     IF (turbine_on_patch(n) .EQ. 1 ) THEN !only do this if part of the turbine is on the patch
 
       theta =  theta_turbine(n)*pi/180.0
@@ -897,34 +859,6 @@ endif
       operate = 1.0
       
       !Use time average velocity at hub location for rpm and pitch
-   !   print*,'TURBINE SHOULD BE OPERATING'
-      IF (turbine_opt .EQ. 15) THEN
-         rpm   = calc_rpm_psu15( v0t_avg )
-         pitchdeg = calc_pitch_psu15( v0t_avg )
-      ELSEIF (turbine_opt .EQ. 16) THEN
-         rpm   = calc_rpm_ge16( v0t_avg )
-         pitchdeg = calc_pitch_ge16( v0t_avg )
-      ELSEIF (turbine_opt .EQ. 28) THEN
-         rpm   = calc_rpm_ge28( v0t_avg )
-         pitchdeg = calc_pitch_ge28( v0t_avg )
-      ELSEIF (turbine_opt .EQ. 100) THEN
-         rpm = calc_rpm_dtu10( v0t_avg )
-         pitchdeg = calc_pitch_dtu10( v0t_avg )
-      ELSEIF (turbine_opt .EQ. 50) THEN
-         rpm   = calc_rpm_nrel5( v0t_avg )
-         pitchdeg = calc_pitch_nrel5( v0t_avg )
-      ENDIF
-   
-      omega(n) = 2.0*pi*rpm/60.0
-
-      ! DO j = j_start, j_end
-      !   DO i = i_start, i_end
-      !      rotrate(i,j) = 2.0*pi*rpm/60.0
-      !      thrust(i,j)  = 0.0
-      !      torque(i,j)  = 0.0
-      !      power(i,j)   = 0.0
-      !   ENDDO
-      ! ENDDO
 
       !____________________________________________________________________________________________________________________________
       !
@@ -938,7 +872,7 @@ endif
       ! dau,dav,daw - Signed distance, in a horizontal plane, from the gridpoint to a line
       !               going through the turbine (nacelle) axis. 
       ! dru,drv,drw - signed distance, in a horizontal plane, from the vertical rotor plane
-      CALL calc_distance( x_turbine(n), y_turbine(n), theta_turbine(n), &
+      CALL calc_distance_2( x_turbine(n), y_turbine(n), theta_turbine(n), &
                           its, ite, jts, jte, &
                           i_start, i_end, j_start, j_end,        &
                           u_x, u_y, v_x, v_y, w_x, w_y,          &
@@ -974,8 +908,6 @@ endif
       cnst = 1.0/rho !JDM
 
 !      sigma = sqrt(dx*dy)
-!      adenom = sigma*sqrt(2.0*pi)
-!      bdenom  = 2.0*sigma*sigma
       sigma   = (abs(dx*cos(theta))+abs(dy*sin(theta))) !NM so normal for rotor plane sqrt(dx*dy)	!!!This is the standard deviation
       adenom  = sigma*sqrt(2.0*pi)                  !want integral=1 for Gaussian ;accel will have units of 1/m
       bdenom  = 2.*sigma*sigma                      !!determines spread of gaussian
@@ -984,11 +916,12 @@ endif
       sigmar = abs(dx*cos(theta)*cos(tilt))+abs(dy*sin(theta)*cos(tilt)) !NM
       adenom2 = sigmar*sqrt(2.0*pi) !NM want integral to be 1 for gaussian
       bdenom2 = 2.*sigmar**2 !NM spread of 1-D gaussian 
-
+      
+      radmax = 0.5*rotor_diameter(n)
       radmin = rotor_diameter(n)/2.0 - blade_length(n)
       !____________________________________________________________________________________________________________________________
       !
-      ! 6. Compute local lift and drag accelerations using instantaneous local velocity, and apply to u,v, and w tendencies
+      ! 6. Compute local thrust using instantaneous local velocity, and apply to u,v, and w tendencies
       !____________________________________________________________________________________________________________________________
       DO j = j_start, j_end
         DO k = kts, k_end
@@ -1022,10 +955,10 @@ endif
                    Rtwr = abs(dzu(i,k,j))*(Rtwrb-Rtwrt)/hub_height(n)+Rtwrt !NM linear	 
                    IF ( abs( dau(i,j) ) .le. Rtwr) then !NM tower below hub; dau needs to be less than tower radius
                    !JDM-04-201 Note to self. This should be fixed so that the tower is not grid location dependent. Same goes for the hub!
-                      fn = 0.5*rho*v0_u*v0_u*cdt !NM force per unit area for tower
-                      ft = 0.0 !NM no tangential force
+                      thrust = 0.5*rho*v0_u*v0_u*cdt !NM force per unit area for tower
+                      !ft = 0.0 !NM no tangential force
                       acc_u = (1.0/adenom)*exp(-(dru(i,j)**2)/bdenom) !NM 1-D !Gaussian
-                      fx = fn*cos(theta) !NM to x direction
+                      fx = thrust*cos(theta) !NM to x direction
                       ru_tendf(i,k,j) = ru_tendf(i,k,j) - muu(i,j)*acc_u*cnst*fx !NM
                    ENDIF
                 ENDIF
@@ -1034,10 +967,10 @@ endif
                    Rtwr = abs(dzv(i,k,j))*(Rtwrb-Rtwrt)/hub_height(n)+Rtwrt !NM linear	 
                    IF ( abs( dav(i,j) ) .le. Rtwr) then !NM tower below hub; dau needs to be less than tower radius
                    !JDM-04-201 Note to self. This should be fixed so that the tower is not grid location dependent. Same goes for the hub!
-                      fn = 0.5*rho*v0_v*v0_v*cdt !NM force per unit area for tower
-                      ft = 0.0 !NM no tangential force
+                      thrust = 0.5*rho*v0_v*v0_v*cdt !NM force per unit area for tower
+                      !ft = 0.0 !NM no tangential force
                       acc_v = (1.0/adenom)*exp(-(drv(i,j)**2)/bdenom) !NM 1-D !Gaussian
-                      fy = fn*sin(theta) !NM to x direction
+                      fy = thrust*sin(theta) !NM to x direction
                       rv_tendf(i,k,j) = rv_tendf(i,k,j) - muv(i,j)*acc_v*cnst*fy !NM
                   ENDIF
                 ENDIF
@@ -1045,25 +978,17 @@ endif
 
 !------ X ---- 
 
-        ! IF ( (ru(i,k,j) .le. radmin) .and. (ru(i,k,j) .gt. -0.001) ) then !HUB-----------------------------------	
           IF (ru(i,k,j) .le. radmin) then !HUB----------------------------------- !RSA
 
-           fn = 0.5*rho*v0_u*v0_u*cdh  !NM only need force per unit area
+           thrust = 0.5*rho*v0_u*v0_u*cdh  !NM only need force per unit area
 
-           ft = 0.0 !NM no tangential force
-
-           !NM including off set of hub from tower hoff in + dru
-           !direction or opposite of wind direction U
 
            acc_u = (1.0/adenom)*exp(-((dru(i,j)-hoff)**2)/bdenom) !NM 1-D gaussian, hub has no tilt.
  
-                fx = fn*cos(theta) 
+                fx = thrust*cos(theta) 
  
                 ru_tendf(i,k,j) = ru_tendf(i,k,j) &
                                   - muu(i,j)*acc_u*cnst*fx
-
-!JDM	        thrust(i,k,j) = thrust(i,k,j)-fn*cos(theta)*acc_u     		
-                !!thrust everywhere is equal to current thrust plus force distribution due to gaussian times normal force
 
         ELSE !GAD-------------------------------------------------------------------------------------------------
 
@@ -1077,13 +1002,9 @@ endif
 
           ELSE !Tilt ------------------------------------------------------------------------------------------
 
-! drut-----------------
+             drut = calc_yprime_2( 1.0/tan(tilt), 1.0, 0.0, (dru(i,j)-hoff), dzu(i,k,j) ) 
 
-             drut = calc_yprime( 1.0/tan(tilt), 1.0, 0.0, (dru(i,j)-hoff), dzu(i,k,j) ) 
-
-! zd-----------------
-
-             zd = calc_yprime( -tan(tilt), 1.0, 0.0, (dru(i,j)-hoff), dzu(i,k,j) ) 
+             zd = calc_yprime_2( -tan(tilt), 1.0, 0.0, (dru(i,j)-hoff), dzu(i,k,j) ) 
 
              radius = sqrt( dau(i,j)**2 + zd**2 ) !NM new radial distance to tilted turbine:
 
@@ -1095,47 +1016,31 @@ endif
 
              !RSA adding logic to prevent fx from being NaN. See explanation in calc_fnft below.
              if ( v0_u .gt. 0.0 ) then
-                if (turbine_opt .eq. 15) then 
-     !              print*,'radius',radius,'blade_length',blade_length(n),'rotor_diameter',rotor_diameter(n),'dscale',dscale
-                   fnft = calc_fnft_psu15( v0_u, rho, blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-     !              print*,'done u-component' 
-                elseif (turbine_opt .eq. 16) then
-                   fnft = calc_fnft_ge16( v0_u, rho, blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 28) then
-                   fnft = calc_fnft_ge28( v0_u, rho, blades, blade_length(n),rotor_diameter(n),   &
-                                        radius, pitchdeg, rpm, dscale,cscale)
-               elseif (turbine_opt .eq. 100) then
-                   fnft = calc_fnft_dtu10( v0_u, rho, blades, blade_length(n),rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale,cscale)
-                elseif (turbine_opt .eq. 50) then
-                   fnft = calc_fnft_nrel5( v0_u, rho, blades,blade_length(n),rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm,dscale,cscale)
-                endif
 
-                fn = fnft(1)
-                ft = fnft(2)
-                !print*,'fn = ',fn,' in v0_u' 
-                fx = fn*cos(theta)*cos(tilt) + ft*sin(zeta)*sin(theta) - ft*cos(zeta)*sin(tilt)*cos(theta)
+                   CT = 0.0
+                   P = 0.0
+                   if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
+                      if (turbine_opt .eq. 28) then
+                          ct_p = calc_ct_p_ge28(v0_u)
+                      elseif (turbine_opt .eq. 50) then
+                          ct_p = calc_ct_p_nrel5(v0_u)
+                      endif
+                      CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
+                      P = ct_p(2)
+                   endif
+                thrust = 0.5*rho*v0_u*v0_u*CT
+                ! print*,'thrust is ',thrust,', CT is ',CT, ', and power is ',P
+
+
+                fx = thrust*cos(theta)*cos(tilt) ! + ft*sin(zeta)*sin(theta) - ft*cos(zeta)*sin(tilt)*cos(theta)
               else
-                !RSA set fx to 0 for now, but turbine should eventually yaw into place.
-                ! write(*,*) "RSA to prevent NaNs, skipping call to calc_fnft for fx: i,j,k=",i,j,k 
                 fx = 0.0
               endif
                 
-!JDM TEST SIGN 12/2014     fx = fn*cos(theta)*cos(tilt) 
-!JDM TEST SIGN 12/2014     fx = ft*sin(zeta)*sin(theta) 
-!JDM TEST SIGN 12/2014     fx = -ft*cos(zeta)*sin(tilt)*cos(theta)
-
-!print*,'i,j,k',k,j,i
-!print*,'v0, pitchdeg, rpm',v0, pitchdeg, rpm
-!print*,'fn,ft,fx,accu',fn,ft,fx,acc_u
 
               ru_tendf(i,k,j) = ru_tendf(i,k,j) &
                                  - muu(i,j)*acc_u*cnst*fx
 
-              ! wp_ts(i,k,j) = -1.0*muu(i,j)*acc_u*cnst*fx
 
         ENDIF !Hub or GAD-----------------------------------------------------------------------------------------
 
@@ -1144,13 +1049,13 @@ endif
         ! IF ( (rv(i,k,j) .le. radmin) .and. (rv(i,k,j) .gt. -0.001) ) then !HUB------------------------------------	
         IF (rv(i,k,j) .le. radmin) then !HUB--------------------------- !RSA
 
-           fn = 0.5*rho*v0_v*v0_v*cdh 
+           thrust = 0.5*rho*v0_v*v0_v*cdh 
 
-           ft = 0.0
+           ! ft = 0.0
 
            acc_v = (1.0/adenom)*exp(-((drv(i,j)-hoff)**2)/bdenom) 
 
-           fy = fn*sin(theta) 
+           fy = thrust*sin(theta) 
 
            rv_tendf(i,k,j) = rv_tendf(i,k,j) &
                                    - muv(i,j)*acc_v*cnst*fy
@@ -1167,9 +1072,9 @@ endif
 
            ELSE !Tilt---------------------------------------------------------------------------------------------
 
-               drvt = calc_yprime( 1.0/tan(tilt), 1.0, 0.0, (drv(i,j)-hoff), dzv(i,k,j) )  
+               drvt = calc_yprime_2( 1.0/tan(tilt), 1.0, 0.0, (drv(i,j)-hoff), dzv(i,k,j) )  
 
-               zd = calc_yprime( -tan(tilt), 1.0, 0.0, (drv(i,j)-hoff), dzv(i,k,j) )
+               zd = calc_yprime_2( -tan(tilt), 1.0, 0.0, (drv(i,j)-hoff), dzv(i,k,j) )
 
                radius = sqrt( dav(i,j)**2 + zd**2 )
 
@@ -1181,43 +1086,34 @@ endif
 
                !RSA adding logic to prevent fy from being NaN. See explanation in calc_fnft below.
                if ( v0_v .gt. 0.0 ) then
-                   if (turbine_opt .eq. 15) then
-      !                print*,'radius',radius,'blade_length',blade_length(n),'rotor_diameter',rotor_diameter(n),'dscale',dscale
-                      fnft = calc_fnft_psu15( v0_v, rho, blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-       !               print*,'done v-component'
-                   elseif (turbine_opt .eq. 16) then
-                      fnft = calc_fnft_ge16( v0_v, rho, blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)  
-                   elseif (turbine_opt .eq. 28) then
-                      fnft = calc_fnft_ge28( v0_v, rho, blades, blade_length(n),rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale,cscale)
-                   elseif (turbine_opt .eq. 100) then
-                      fnft = calc_fnft_dtu10( v0_v, rho, blades,blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                   elseif (turbine_opt .eq. 50) then
-                      fnft = calc_fnft_nrel5( v0_v, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
+                  ! ct_p = calc_ct_p_ge28(v0_v)
+                   
+                   CT = 0.0
+                   P = 0.0
+                   if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
+                      if (turbine_opt .eq. 28) then
+                          ct_p = calc_ct_p_ge28(v0_v)
+                      elseif (turbine_opt .eq. 50) then
+                          ct_p = calc_ct_p_nrel5(v0_v)
+                      endif
+                      CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
+                      P = ct_p(2)
                    endif
 
-                   fn = fnft(1)
-                   ft = fnft(2)
-                   ! print*,'fn = ',fn,' in v0_v'
-                   fy = fn*sin(theta)*cos(tilt) - ft*sin(zeta)*cos(theta) - ft*cos(zeta)*sin(tilt)*sin(theta)!NM 
+                   thrust = 0.5*rho*v0_v*v0_v*CT
+
+
+                   fy = thrust*sin(theta)*cos(tilt) ! - ft*sin(zeta)*cos(theta) - ft*cos(zeta)*sin(tilt)*sin(theta)!NM 
                 else
                    !RSA set fy to 0 for now, but turbine should eventually yaw into place.
                    ! write(*,*) "RSA to prevent NaNs, skipping call to calc_fnft for fy: i,j,k=",i,j,k 
                    fy = 0.0
                 endif
 
-!JDM TEST SIGN 12/2014      fy = fn*sin(theta)*cos(tilt)
-!JDM TEST SIGN 12/2014      fy = -ft*sin(zeta)*cos(theta)
-!JDM TEST SIGN 12/2014      fy = -ft*cos(zeta)*sin(tilt)*sin(theta)
 
                 rv_tendf(i,k,j) = rv_tendf(i,k,j) &
                                   - muv(i,j)*acc_v*cnst*fy
 
-!JDM            wp_ts(i,k,j) = -1.0*muv(i,j)*acc_v*cnst*fy
 
               ENDIF !Hub or GAD------------------------------------------------------------------------------------
 
@@ -1233,9 +1129,9 @@ endif
 
               ELSE !Tilt ------------------------------------------------------------------------------------------
 
-                 drwt = calc_yprime( 1.0/tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzw(i,k,j) ) 
+                 drwt = calc_yprime_2( 1.0/tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzw(i,k,j) ) 
  
-                 zd = calc_yprime( -tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzw(i,k,j) ) 
+                 zd = calc_yprime_2( -tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzw(i,k,j) ) 
 
                  radius = sqrt( daw(i,j)**2 + zd**2 )
 
@@ -1247,40 +1143,30 @@ endif
 
               !RSA adding logic to prevent fz from being NaN. See explanation in calc_fnft below.
               if ( v0_w .gt. 0.0 ) then
-                 if (turbine_opt .eq. 15) then
-        !            print*,'radius',radius,'blade_length',blade_length(n),'rotor_diameter',rotor_diameter(n),'dscale',dscale
-                    fnft = calc_fnft_psu15( v0_w, rho, blades, blade_length(n), rotor_diameter(n), &
-                                            radius, pitchdeg, rpm, dscale, cscale )
-         !           print*,'done w-component' 
-                 elseif (turbine_opt .eq. 16) then 
-                    fnft = calc_fnft_ge16( v0_w, rho, blades, blade_length(n), rotor_diameter(n), &
-                                            radius, pitchdeg, rpm, dscale, cscale )
-                elseif (turbine_opt .eq. 28) then
-                    fnft = calc_fnft_ge28( v0_w, rho, blades, blade_length(n),rotor_diameter(n), &
-                                            radius, pitchdeg, rpm, dscale,cscale )
-                elseif (turbine_opt .eq. 100) then
-                      fnft = calc_fnft_dtu10( v0_w, rho, blades,blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 50) then
-                      fnft = calc_fnft_nrel5( v0_w, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                endif
 
-                 fn = fnft(1)
-                 ft = fnft(2) 
-                 ! print*,'fn = ',fn,' in v0_w'
-                 fz = -fn*sin(tilt) - ft*cos(zeta)*cos(tilt)
-                if (isnan(fz)) then
-                        print*,'fz is NaN fn=',fn,'sin(tilt)=',sin(tilt),'ft=',ft,'cos(zeta)=',cos(zeta),'cos(tilt)=',cos(tilt)
-                endif
+                   CT = 0.0
+                   P = 0.0
+                   if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
+                      if (turbine_opt .eq. 28) then
+                          ct_p = calc_ct_p_ge28(v0_w)
+                      elseif (turbine_opt .eq. 50) then
+                          ct_p = calc_ct_p_nrel5(v0_w)
+                      endif
+                      CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
+                      P = ct_p(2)
+                   endif
+
+                   thrust = 0.5*rho*v0_w*v0_w*CT
+
+
+
+                 fz = -thrust*sin(tilt) ! - ft*cos(zeta)*cos(tilt)
               else
                  !RSA set fz to 0 for now, but turbine should eventually yaw into place.
                  ! write(*,*) "RSA to prevent NaNs, skipping call to calc_fnft for fz: i,j,k=",i,j,k 
                  fz = 0.0
               endif
 
-!JDM TEST SIGN      fz = -fn*sin(tilt) 
-!JDM TEST SIGN      fz = -ft*cos(zeta)*cos(tilt) 
               temp = rw_tendf(i,k,j)
               rw_tendf(i,k,j) = rw_tendf(i,k,j)  &
                               - mut(i,j)*acc_w*cnst*fz
@@ -1294,7 +1180,7 @@ endif
         ! IF ( (ru(i,k,j) .le. radmin) .and. (ru(i,k,j) .gt. -0.001) ) then !HUB-----------------------------------	
           IF (rc(i,k,j) .le. radmin) then !HUB------------------------------ !RSA
 
-           ft = 0.0 !NM no tangential force
+           ! ft = 0.0 !NM no tangential force
 
           ELSE !GAD-------------------------------------------------------------------------------------------------
 
@@ -1308,9 +1194,9 @@ endif
 
             ELSE !Tilt ------------------------------------------------------------------------------------------
 
-                drct = calc_yprime( 1.0/tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzc(i,k,j) ) 
+                drct = calc_yprime_2( 1.0/tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzc(i,k,j) ) 
 
-                zd = calc_yprime( -tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzc(i,k,j) ) 
+                zd = calc_yprime_2( -tan(tilt), 1.0, 0.0, (drw(i,j)-hoff), dzc(i,k,j) ) 
 
                 radius = sqrt( daw(i,j)**2 + zd**2 ) !NM new radial distance to tilted turbine:
 
@@ -1322,49 +1208,27 @@ endif
 
              !RSA adding logic to prevent fx from being NaN. See explanation in calc_fnft below.
              if ( v0_c .gt. 0.0 ) then
-                if (turbine_opt .eq. 15) then
-!                   print*,'radius',radius,'blade_length',blade_length(n),'rotor_diameter',rotor_diameter(n),'dscale',dscale
-                   fnft = calc_fnft_psu15( v0_c, rho, blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale) 
- !                  print*,'done c-component'
-                elseif (turbine_opt .eq. 16) then
-                   fnft = calc_fnft_ge16( v0_c, rho, blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 28) then
-                   fnft = calc_fnft_ge28( v0_c, rho, blades, blade_length(n),rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale,cscale)
-                elseif (turbine_opt .eq. 100) then
-                      fnft = calc_fnft_dtu10( v0_c, rho, blades,blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                elseif (turbine_opt .eq. 50) then
-                      fnft = calc_fnft_nrel5( v0_c, rho,blades, blade_length(n), rotor_diameter(n),   &
-                                              radius, pitchdeg, rpm, dscale, cscale)
-                endif
+                   CT = 0.0
+                   P = 0.0
+                   if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
+                      if (turbine_opt .eq. 28) then
+                          ct_p = calc_ct_p_ge28(v0_c)
+                      elseif (turbine_opt .eq. 50) then
+                          ct_p = calc_ct_p_nrel5(v0_c)
+                      endif
+                      CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
+                      P = ct_p(2)
+                   endif
 
-                ft = fnft(2)
+                   power = P
 
-              else
-                !RSA set fx to 0 for now, but turbine should eventually yaw into place.
-                ! write(*,*) "RSA to prevent NaNs, skipping call to calc_fnft for fx: i,j,k=",i,j,k 
-                ft = 0.0
               endif
                 
         ENDIF !Hub or GAD-----------------------------------------------------------------------------------------
 
-!!         Assuming turbine rotors are perpendicualar to x axis. Generalize to arbitrary orientation.  
-!
-!!            IF ( ru(i,k,j) .lt. rotor_radius ) THEN
-!               thrust(i,j) = thrust(i,j) +                             &
-!                             wp_acc_u(i,k,j)*fn
-!               torque(i,j) = torque(i,j) +                             &
-!                             wp_acc_u(i,k,j)*ru(i,k,j)*ft
-!                power(i,j)  = power(i,j)  +                             &
-!                             wp_acc_u(i,k,j)*rotrate(i,j)*ru(i,k,j)*ft
-!!            ENDIF
-!!
-
               !RSA sum up power for each turbine on local processor
-              turb_power_local(n) = turb_power_local(n) + omega(n)*ft*acc_c*rc(i,k,j)*dx*dy*dz(i,k,j)
+              turb_power_local(n) = turb_power_local(n) + power !omega(n)*ft*acc_c*rc(i,k,j)*dx*dy*dz(i,k,j)
+              count_turb_power_local(n) = count_turb_power_local(n) + 1
 
           ENDDO         ! j loop
         ENDDO         ! k loop
@@ -1375,25 +1239,39 @@ endif
 200 CONTINUE !time-averaged inflow is < cutin or > cutout speed
     
     !if (operate .eq. 1.0) then
-    !   ! print*,'Turbine did start operating'            
+    !   print*,'Turbine did start operating'            
     !elseif (operate .eq. 0.0) then
-    !   ! print*,'Turbine did not start operating'
+    !   print*,'Turbine did not start operating'
     !endif
 
   ENDDO  !n loop over all turbines
 !print*, 'finishing looping all turbines'
+
 #ifdef DM_PARALLEL
   !RSA sum turbine power over all procs
 !  print*, 'try setting turb_power to zero (allocate a space for it)'
   CALL MPI_REDUCE(turb_power_local,turb_power,n_turbines,MPI_REAL,MPI_SUM,master,MPI_COMM_WORLD,ierr)
+  CALL MPI_REDUCE(count_turb_power_local,count_turb_power,n_turbines,MPI_REAL,MPI_SUM,master,MPI_COMM_WORLD,ierr)
+  DO n = 1, n_turbines
+      if (count_turb_power(n) .gt. 0.0) then
+          turb_power(n) = turb_power(n)/count_turb_power(n)
+      endif
+  ENDDO  !n loop over all turbines
+#else
+  DO n = 1, n_turbines
+      if (count_turb_power_local(n) .gt. 0.0) then
+          turb_power(n) = turb_power_local(n)/count_turb_power_local(n)
+      endif
+  ENDDO  !n loop over all turbines
 #endif
+
 !PRINT *,'GAD FINISHED, MSG MADE IT!!'
 
-END SUBROUTINE gen_act_disk
+END SUBROUTINE nonRot_act_disk
 
 !==============================================================================
 
-SUBROUTINE calc_distance( x_turb, y_turb, theta_turb,     &
+SUBROUTINE calc_distance_2( x_turb, y_turb, theta_turb,     &
                           its, ite, jts, jte,             &
                           i_start, i_end, j_start, j_end, &
                           u_x, u_y, v_x, v_y, w_x, w_y,   &
@@ -1429,6 +1307,7 @@ SUBROUTINE calc_distance( x_turb, y_turb, theta_turb,     &
   REAL    :: x0u, x0v, x0w
   REAL    :: y0u, y0v, y0w
   INTEGER :: i, j
+  REAL :: pi=3.1415926535897932384626433
 
   theta =  theta_turb*pi/180.0
 
@@ -1511,42 +1390,30 @@ SUBROUTINE calc_distance( x_turb, y_turb, theta_turb,     &
          x0v= v_x(i) - x_turb
          x0w= w_x(i) - x_turb
 
-!JDM calc_distline returns unsigned distance.
-!JDM ! calculate distance to the turbine axis in (x,y) plane
-!JDM           dau(i,j)=calc_distline(aa,ba,ca,x0u,y0u)
-!JDM           dav(i,j)=calc_distline(aa,ba,ca,x0v,y0v)
-!JDM           daw(i,j)=calc_distline(aa,ba,ca,x0w,y0w)
-!JDM 
-!JDM ! calculate distance to the rotor plane of the turbine in (x,y) plane
-!JDM            dru(i,j)=calc_distline(ar,br,cr,x0u,y0u)
-!JDM            drv(i,j)=calc_distline(ar,br,cr,x0v,y0v)
-!JDM            drw(i,j)=calc_distline(ar,br,cr,x0w,y0w)
-
-!JDM calc_yprime returns signed distance. 
 
 ! calculate distance to the turbine axis in (x,y) plane
 
-         dau(i,j)=calc_yprime(aa,ba,ca,x0u,y0u)
-         dav(i,j)=calc_yprime(aa,ba,ca,x0v,y0v)
-         daw(i,j)=calc_yprime(aa,ba,ca,x0w,y0w)
+         dau(i,j)=calc_yprime_2(aa,ba,ca,x0u,y0u)
+         dav(i,j)=calc_yprime_2(aa,ba,ca,x0v,y0v)
+         daw(i,j)=calc_yprime_2(aa,ba,ca,x0w,y0w)
  
 ! calculate distance to the rotor plane of the turbine in (x,y) plane
 
-         dru(i,j)=calc_yprime(ar,br,cr,x0u,y0u)
-         drv(i,j)=calc_yprime(ar,br,cr,x0v,y0v)
-         drw(i,j)=calc_yprime(ar,br,cr,x0w,y0w)
+         dru(i,j)=calc_yprime_2(ar,br,cr,x0u,y0u)
+         drv(i,j)=calc_yprime_2(ar,br,cr,x0v,y0v)
+         drw(i,j)=calc_yprime_2(ar,br,cr,x0w,y0w)
 
        ENDDO
     ENDDO
 
-END SUBROUTINE calc_distance
+END SUBROUTINE calc_distance_2
 
 !==============================================================================
 !
 !      Functions to compute distance from a line in 2d
 !
 !----------------------------------------------------------------------
-FUNCTION calc_distline( a, b, c, x0, y0 ) result( distline ) 
+FUNCTION calc_distline_2( a, b, c, x0, y0 ) result( distline ) 
 !
     real, intent( in )   :: a, b, c
     real, intent( in )   :: x0, y0
@@ -1554,14 +1421,14 @@ FUNCTION calc_distline( a, b, c, x0, y0 ) result( distline )
 !   
     distline=abs(a*x0+b*y0+c)/sqrt(a*a+b*b)
 !
-END FUNCTION calc_distline
+END FUNCTION calc_distline_2
 
 !==============================================================================
 !
 !      Function to compute signed distance from a line in 2D
 !
 !----------------------------------------------------------------------
-FUNCTION calc_yprime( a, b, c, x0, y0 ) result( yprime ) 
+FUNCTION calc_yprime_2( a, b, c, x0, y0 ) result( yprime ) 
 !
     real, intent( in )   :: a, b, c
     real, intent( in )   :: x0, y0
@@ -1569,36 +1436,10 @@ FUNCTION calc_yprime( a, b, c, x0, y0 ) result( yprime )
 !   
     yprime = (a*x0+b*y0+c)/sqrt(a*a+b*b)
 !
-END FUNCTION calc_yprime
+END FUNCTION calc_yprime_2
 
 !-------------------------------------------------------------
 
-!==============================================================================
-!
-!      Functions to check a variable is NaN or Inf
-!
-!----------------------------------------------------------------------
-FUNCTION check_naninf( rnaninf, snaninf ) result( naninf )
-!
-    real, intent( in )             :: rnaninf
-    character(len=8), intent( in ) :: snaninf
-    integer                        :: naninf
-!
-    naninf=0
-!
-    IF ( rnaninf*0 .NE. 0 ) THEN
-      print *, ' Variable ',snaninf,' = ',rnaninf,' is Inf'
-      naninf=1
-    ENDIF
-!   
-    IF ( rnan .NE. rnan ) THEN
-      print *, ' Variable ',srnaninf,' = ',rnaninf,' is NaN'
-      naninf=2
-    ENDIF
-!_________________________________________________________________________
   
-END FUNCTION check_naninf
-!_________________________________________________________________________
-  
-END MODULE module_gen_act_disk
+END MODULE module_nonrot_act_disk
 
