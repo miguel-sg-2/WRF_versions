@@ -33,7 +33,7 @@ USE module_nonrot_gad_nrel5
                             theta_turbine,                &
                             cutinspd, cutoutspd,          & !RSA
                             turb_power,                   & !RSA
-                            acc_yaw_err,                  & 
+                            acc_yaw_err, wp_thrust,       & 
                             wp_acc_u, wp_acc_v, wp_acc_w, & ! these variables likely not needed. 
                             wp_ts,                        &
                             u, v, w,                      &
@@ -102,7 +102,8 @@ USE module_nonrot_gad_nrel5
 
   REAL, DIMENSION( n_turbines ),                 INTENT(INOUT) & 
   ::  acc_yaw_err
-
+  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),   INTENT( OUT ) &
+  :: wp_thrust
 
    REAL, DIMENSION( n_timeseries, n_turbines ),   INTENT(INOUT) &
   :: v0t          & ! Wind speed timeseries               (m s-1)
@@ -222,7 +223,7 @@ USE module_nonrot_gad_nrel5
 !--------------------------------------------------------
 
   REAL, DIMENSION(2)    :: ct_p
-  REAL                  :: CT, P, thrust, power
+  REAL                  :: CT, CP, thrust, power
   REAL                  :: v0, v0_u, v0_v, v0_w, v0_c, d0, v0t_avg, d0t_avg !RSA
   REAL                  :: u_c, v_c, w_c !RSA
   REAL                  :: rho
@@ -336,6 +337,10 @@ REAL :: temp
   !JDM-04-2015  d_tower = 2.0 !m
   Rtwrt = 1.5 !NM radius is say 1.5 meters
   Rtwrb = 2.0 !NM radius of tower at base
+
+! Initialize thrust force
+  thrust = 0.0
+!
 
   !RSA if this is the first time the GAD is turned on, then read in turbine info 
   !from file or hard coded values
@@ -1018,17 +1023,18 @@ endif
              if ( v0_u .gt. 0.0 ) then
 
                    CT = 0.0
-                   P = 0.0
+                   CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
                       if (turbine_opt .eq. 28) then
                           ct_p = calc_ct_p_ge28(v0_u)
                       elseif (turbine_opt .eq. 50) then
-                          ct_p = calc_ct_p_nrel5(v0_u)
+                          ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_u)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
-                      P = ct_p(2)
+                      CP = ct_p(2)
+
                    endif
-                thrust = 0.5*rho*v0_u*v0_u*CT
+                thrust = 0.5*rho*v0n(n)*v0n(n)*CT ! 0.5*rho*v0_u*v0_u*CT
                 ! print*,'thrust is ',thrust,', CT is ',CT, ', and power is ',P
 
 
@@ -1089,18 +1095,18 @@ endif
                   ! ct_p = calc_ct_p_ge28(v0_v)
                    
                    CT = 0.0
-                   P = 0.0
+                   CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
                       if (turbine_opt .eq. 28) then
                           ct_p = calc_ct_p_ge28(v0_v)
                       elseif (turbine_opt .eq. 50) then
-                          ct_p = calc_ct_p_nrel5(v0_v)
+                          ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_v)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
-                      P = ct_p(2)
+                      CP = ct_p(2)
                    endif
 
-                   thrust = 0.5*rho*v0_v*v0_v*CT
+                   thrust =  0.5*rho*v0n(n)*v0n(n)*CT ! 0.5*rho*v0_v*v0_v*CT
 
 
                    fy = thrust*sin(theta)*cos(tilt) ! - ft*sin(zeta)*cos(theta) - ft*cos(zeta)*sin(tilt)*sin(theta)!NM 
@@ -1145,18 +1151,18 @@ endif
               if ( v0_w .gt. 0.0 ) then
 
                    CT = 0.0
-                   P = 0.0
+                   CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
                       if (turbine_opt .eq. 28) then
                           ct_p = calc_ct_p_ge28(v0_w)
                       elseif (turbine_opt .eq. 50) then
-                          ct_p = calc_ct_p_nrel5(v0_w)
+                          ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_w)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
-                      P = ct_p(2)
+                      CP = ct_p(2)
                    endif
 
-                   thrust = 0.5*rho*v0_w*v0_w*CT
+                   thrust = 0.5*rho*v0n(n)*v0n(n)*CT ! 0.5*rho*v0_w*v0_w*CT
 
 
 
@@ -1209,27 +1215,37 @@ endif
              !RSA adding logic to prevent fx from being NaN. See explanation in calc_fnft below.
              if ( v0_c .gt. 0.0 ) then
                    CT = 0.0
-                   P = 0.0
+                   CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
                       if (turbine_opt .eq. 28) then
                           ct_p = calc_ct_p_ge28(v0_c)
                       elseif (turbine_opt .eq. 50) then
-                          ct_p = calc_ct_p_nrel5(v0_c)
+                          ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_c)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
-                      P = ct_p(2)
+                      CP = ct_p(2)
                    endif
 
-                   power = P
+                   power = 0.5*rho*v0n(n)*v0n(n)*v0n(n)*CP*pi*(radmax*radmax)/1000 ! P
 
               endif
                 
         ENDIF !Hub or GAD-----------------------------------------------------------------------------------------
 
-              !RSA sum up power for each turbine on local processor
-              turb_power_local(n) = turb_power_local(n) + power !omega(n)*ft*acc_c*rc(i,k,j)*dx*dy*dz(i,k,j)
-              count_turb_power_local(n) = count_turb_power_local(n) + 1
-
+              !!            IF ( ru(i,k,j) .lt. rotor_radius ) THEN
+               wp_thrust(i,k,j) = acc_u*thrust ! [N/m3]              mut(i,j)*acc_w*cnst*thrust !  thrust(i,j) +                             &
+!               torque(i,j) = torque(i,j) +                             &
+!                             wp_acc_u(i,k,j)*ru(i,k,j)*ft
+!                power(i,j)  = power(i,j)  +                             &
+!                             wp_acc_u(i,k,j)*rotrate(i,j)*ru(i,k,j)*ft
+!!            ENDIF
+!!
+              ! Save turbine power if non-zero
+              if (power .gt. 0.0) then
+                  !RSA sum up power for each turbine on local processor
+                  turb_power_local(n) = turb_power_local(n) + power !omega(n)*ft*acc_c*rc(i,k,j)*dx*dy*dz(i,k,j)
+                  count_turb_power_local(n) = count_turb_power_local(n) + 1
+              endif
           ENDDO         ! j loop
         ENDDO         ! k loop
       ENDDO       ! i loop

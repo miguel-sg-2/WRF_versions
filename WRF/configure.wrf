@@ -93,7 +93,7 @@ ESMF_TARGET         = esmf_time
 NETCDF4_IO_OPTS = -DUSE_NETCDF4_FEATURES -DWRFIO_NCD_LARGE_FILE_SUPPORT
 GPFS            =
 CURL            =
-HDF5            =
+HDF5            = -L/nopt/nrel/apps/base/2019-01-02/spack/opt/spack/linux-centos7-x86_64/intel-18.0.3/hdf5-1.10.4-vhlta2p7iyv37g55vxhvpyc755umxeiu/lib -lhdf5_hl -lhdf5 -lz
 ZLIB            =
 DEP_LIB_PATH    = 
 NETCDF4_DEP_LIB = $(DEP_LIB_PATH) $(HDF5) $(ZLIB) $(GPFS) $(CURL)
@@ -125,12 +125,14 @@ CC              =       $(DM_CC) -DFSEEKO64_OK
 LD              =       $(FC)
 RWORDSIZE       =       $(NATIVE_RWORDSIZE)
 PROMOTION       =       -real-size `expr 8 \* $(RWORDSIZE)` -i4
-ARCH_LOCAL      =       -DNONSTANDARD_SYSTEM_FUNC -DWRF_USE_CLM
-CFLAGS_LOCAL    =       -w -O3 -ip -xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -no-multibyte-chars -xCORE-AVX2
-LDFLAGS_LOCAL   =       -ip -xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -align all -fno-alias -fno-common -xCORE-AVX2
+ARCH_LOCAL      =       -DNONSTANDARD_SYSTEM_FUNC -DWRF_USE_CLM $(NETCDF4_IO_OPTS)
+CFLAGS_LOCAL    =       -w -O3 -ip -xCORE-AVX2 #-xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -no-multibyte-chars -xCORE-AVX2
+#CFLAGS_LOCAL    =       -w -O3 -ip -xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -no-multibyte-chars -xCORE-AVX2
+LDFLAGS_LOCAL   =       -ip #-xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -align all -fno-alias -fno-common -xCORE-AVX2
+#LDFLAGS_LOCAL   =       -ip -xHost -fp-model fast=2 -no-prec-div -no-prec-sqrt -ftz -align all -fno-alias -fno-common -xCORE-AVX2
 CPLUSPLUSLIB    =       
 ESMF_LDFLAG     =       $(CPLUSPLUSLIB)
-FCOPTIM         =       -O3
+FCOPTIM         =       -O3 -xCORE-AVX2
 FCREDUCEDOPT	=       $(FCOPTIM)
 FCNOOPT		=       -O0 -fno-inline -no-ip
 FCDEBUG         =       # -g $(FCNOOPT) -traceback # -fpe0 -check noarg_temp_created,bounds,format,output_conversion,pointers,uninit -ftrapuv -unroll0 -u
@@ -139,10 +141,11 @@ FORMAT_FREE     =       -FR
 FCSUFFIX        =
 BYTESWAPIO      =       -convert big_endian
 RECORDLENGTH    =       -assume byterecl
-FCBASEOPTS_NO_G =       -ip -fp-model precise -w -ftz -align all -fno-alias $(FORMAT_FREE) $(BYTESWAPIO) -xHost -fp-model fast=2 -no-heap-arrays -no-prec-div -no-prec-sqrt -fno-common -xCORE-AVX2
+FCBASEOPTS_NO_G =       -ip -fp-model precise -w -ftz -align all -fno-alias $(FORMAT_FREE) $(BYTESWAPIO) #-xHost -fp-model fast=2 -no-heap-arrays -no-prec-div -no-prec-sqrt -fno-common -xCORE-AVX2
+#FCBASEOPTS_NO_G =       -ip -fp-model precise -w -ftz -align all -fno-alias $(FORMAT_FREE) $(BYTESWAPIO) -xHost -fp-model fast=2 -no-heap-arrays -no-prec-div -no-prec-sqrt -fno-common -xCORE-AVX2
 FCBASEOPTS      =       $(FCBASEOPTS_NO_G) $(FCDEBUG)
 MODULE_SRCH_FLAG =     
-TRADFLAG        =      -traditional-cpp
+TRADFLAG        =      -traditional-cpp $(NETCDF4_IO_OPTS)
 CPP             =      /lib/cpp -P -nostdinc
 AR              =      ar
 ARFLAGS         =      ru
@@ -220,22 +223,22 @@ CC_TOOLS_CFLAGS = -DNMM_CORE=$(WRF_NMM_CORE)
                       $(WRF_SRC_ROOT_DIR)/frame/pack_utils.o 
 
  LIB_EXTERNAL    = \
-                      -L$(WRF_SRC_ROOT_DIR)/external/io_netcdf -lwrfio_nf -L/nopt/nrel/apps/netcdff/netcdff-4.4.4-intel-mpi//lib -lnetcdff      
+                      -L$(WRF_SRC_ROOT_DIR)/external/io_netcdf -lwrfio_nf -L/nopt/nrel/apps/netcdff/netcdff-4.4.4-intel-mpi/lib -lnetcdff -L/nopt/nrel/apps/base/2019-01-02/spack/opt/spack/linux-centos7-x86_64/intel-18.0.3/netcdf-4.6.2-uls7dourelmvwdtuymobn2hyfmvobr2s/lib -lnetcdf #-L$(WRF_SRC_ROOT_DIR)/external/io_pnetcdf -lwrfio_pnf -L$(PNETCDFPATH)/lib -lpnetcdf      
 
-LIB             =    $(LIB_BUNDLED) $(LIB_EXTERNAL) $(LIB_LOCAL) $(LIB_WRF_HYDRO)
+LIB             =    $(LIB_BUNDLED) $(LIB_EXTERNAL) $(LIB_LOCAL) $(LIB_WRF_HYDRO) $(NETCDF4_DEP_LIB)
 LDFLAGS         =    $(OMP) $(FCFLAGS) $(LDFLAGS_LOCAL) 
 ENVCOMPDEFS     =    
 WRF_CHEM	=	0 
 CPPFLAGS        =    $(ARCHFLAGS) $(ENVCOMPDEFS) -I$(LIBINCLUDE) $(TRADFLAG) 
 NETCDFPATH      =    /nopt/nrel/apps/netcdff/netcdff-4.4.4-intel-mpi/
-HDF5PATH        =    
+HDF5PATH        =   # /nopt/nrel/apps/base/2019-01-02/spack/opt/spack/linux-centos7-x86_64/intel-18.0.3/hdf5-1.10.4-vhlta2p7iyv37g55vxhvpyc755umxeiu 
 WRFPLUSPATH     =    
 RTTOVPATH       =    
-PNETCDFPATH     =    
+PNETCDFPATH     =    # /nopt/nrel/apps/pnetcdf/1.9.0-intel-impi
 
 bundled:  io_only 
 external: io_only $(WRF_SRC_ROOT_DIR)/external/RSL_LITE/librsl_lite.a gen_comms_rsllite module_dm_rsllite $(ESMF_TARGET)
-io_only:  esmf_time wrfio_nf   \
+io_only:  esmf_time wrfio_nf \
 	  wrf_ioapi_includes wrfio_grib_share wrfio_grib1 wrfio_int fftpack
 
 

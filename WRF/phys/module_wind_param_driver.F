@@ -23,7 +23,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                               acc_yaw_err,                  & 
                               wp_acc_u, wp_acc_v, wp_acc_w, &
                               wp_ts,                        & !JDM May 2, 2013
-                              thrust, torque,               &
+                              wp_thrust, torque,               &
                               rotrate, power,               &
                               n_turbines,                   &
                               n_timeseries,                 &
@@ -108,10 +108,12 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
 
 
   REAL, DIMENSION( ims:ime, jms:jme ),           INTENT( OUT ) &
-  :: thrust          & !                         (N)
-   , torque          & !                         (N m)
+  :: torque          & !                         (N m)
    , rotrate         & !                         (rad s-1)
    , power             !                         (W) 
+
+  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT( OUT ) &
+  :: wp_thrust 
 
   REAL, DIMENSION( n_timeseries, n_turbines ),   INTENT( INOUT ) &
   :: v0t         & !  
@@ -165,7 +167,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                          theta_turbine,                    &
                          cutinspd, cutoutspd,              & !RSA
                          turb_power,                       & !RSA
-                         acc_yaw_err,                      &
+                         acc_yaw_err, wp_thrust,           &
                          wp_acc_u, wp_acc_v, wp_acc_w,     &
                          wp_ts,                            & !JDM May 2, 2013
                          u_2, v_2, w_2,                    &
@@ -206,7 +208,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                          acc_yaw_err,                      & 
                          wp_acc_u, wp_acc_v, wp_acc_w,     & 
                          wp_ts,                            & !JDM May 2, 2013
-                         thrust, torque,                   &
+                         wp_thrust, torque,                   &
                          rotrate, power,                   &
                          u_2, v_2, w_2,                    & 
                          muu, muv, mut,                    & 

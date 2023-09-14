@@ -8,7 +8,7 @@ state   real     wp_acc_w        ikj       misc     1       -       h      "wp_a
  
 state   real     wp_ts           ikj       misc     1       -       h      "wp_ts"           ""                                      "" 
 
-state   real     wp_thrust       ij        misc     1       -       h      "wp_thrust"       ""                                      "N"
+state   real     wp_thrust       ikj       misc     1       -       h      "wp_thrust"       "Turbine thrust on each grid cell"      "N m-3"
 state   real     wp_torque       ij        misc     1       -       h      "wp_torque"       ""                                      "Nm"
 state   real     wp_rotrate      ij        misc     1       -       h      "wp_rotrate"      ""                                      "rad s-1"
 state   real     wp_power        ij        misc     1       -       h      "wp_power"        ""                                      "W"   

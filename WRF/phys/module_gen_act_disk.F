@@ -135,7 +135,10 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
   ::  acc_yaw_err
 
   REAL, DIMENSION( ims:ime, jms:jme ),            INTENT( OUT ) &
-  :: thrust, torque, rotrate, power
+  :: torque, rotrate, power
+
+  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),   INTENT( OUT ) &
+  :: thrust
 
    REAL, DIMENSION( n_timeseries, n_turbines ),   INTENT(INOUT) &
   :: v0t          & ! Wind speed timeseries               (m s-1)
@@ -370,6 +373,9 @@ REAL :: temp
   Rtwrt = 1.5 !NM radius is say 1.5 meters
   Rtwrb = 2.0 !NM radius of tower at base
 
+! Initialize normal force 
+  fn = 0.0
+!
   !RSA if this is the first time the GAD is turned on, then read in turbine info 
   !from file or hard coded values
   dum = 0.0
@@ -1351,6 +1357,7 @@ endif
                 
         ENDIF !Hub or GAD-----------------------------------------------------------------------------------------
 
+        thrust(i,k,j) = acc_u*fn  ! [N/m3]
 !!         Assuming turbine rotors are perpendicualar to x axis. Generalize to arbitrary orientation.  
 !
 !!            IF ( ru(i,k,j) .lt. rotor_radius ) THEN
