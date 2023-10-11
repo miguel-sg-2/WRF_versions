@@ -22,7 +22,7 @@ FUNCTION calc_ct_p_ge28( x ) result( ct_p )
 
   REAL, INTENT( in ) :: x
 
-  REAL, PARAMETER :: nws = 30
+  INTEGER, PARAMETER :: nws = 30
 
   REAL, DIMENSION( 0:nws-1 ) :: ws
   REAL, DIMENSION( 0:nws-1 ) :: CT

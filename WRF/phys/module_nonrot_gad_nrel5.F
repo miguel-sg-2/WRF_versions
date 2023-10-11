@@ -22,7 +22,7 @@ FUNCTION calc_ct_p_nrel5( x ) result( ct_p )
 
   REAL, INTENT( in ) :: x
 
-  REAL, PARAMETER :: nws = 41
+  INTEGER, PARAMETER :: nws = 41
 
   REAL, DIMENSION( 0:nws-1 ) :: ws
   REAL, DIMENSION( 0:nws-1 ) :: CT

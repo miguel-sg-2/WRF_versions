@@ -184,8 +184,8 @@
        END DO  
 
 !       pblh = 1200.0 !50 W/m^2
-!       pblh = 1000.0 !NEUTRAL
-       pblh = 486 ! Weakly stable simulations
+       pblh = 1000.0 !NEUTRAL
+!       pblh = 486 ! Weakly stable simulations
 ! 1) Compute average pblh on each tile. 2) Find the domain max and min of all patch averages.
 ! 3) Compute the average of the global max and min values and use on all patches
 ! 4) Cap upper and lower bounds.
@@ -333,10 +333,10 @@ vwsgpsumdsum  = wrf_dm_sum_real(vwsgpsum)
 !
 ! Uncomment to select your own inflow/outflow boundaries
 !
-       north = 1
-       east = 0
-       south = 0
-       west = 1
+!       north = 1
+!       east = 0
+!       south = 0
+!       west = 1
 
        print*,'Applying perturbations to the following boundary(ies):'
        IF (north .EQ. 1) print*,'north'
@@ -897,7 +897,9 @@ mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
 !          print*,'its,mpblhdsum,counter,mpblhdavg ',its,mpblhdsum,counter,mpblhdavg
 
        ENDIF 
-
+       IF (m_pblh_opt .EQ. 0) THEN
+           pblh = 1000
+       ENDIF
        print*,'pblh',pblh
 
 !       prtz = 1.0*pblh

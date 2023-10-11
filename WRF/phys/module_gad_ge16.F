@@ -23,7 +23,7 @@ FUNCTION calc_rpm_ge16( x ) result( rpm )
 
   REAL, INTENT( in ) :: x
 
-  REAL, PARAMETER :: nws = 50
+  INTEGER, PARAMETER :: nws = 50
 
   REAL, DIMENSION( 0:nws-1 ) :: ws
   REAL, DIMENSION( 0:nws-1 ) :: rp
@@ -167,7 +167,7 @@ FUNCTION calc_pitch_ge16( x ) RESULT( pitch )
  
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: nws = 50
+  INTEGER, PARAMETER :: nws = 50
 
   REAL, DIMENSION( 0:nws-1 ) :: ws 
   REAL, DIMENSION( 0:nws-1 ) :: p
@@ -563,7 +563,7 @@ FUNCTION calc_twist_ge16( x ) RESULT( twist )
   
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: ns = 45
+  INTEGER, PARAMETER :: ns = 45
 
   REAL, DIMENSION( 0:ns-1 ) :: r
   REAL, DIMENSION( 0:ns-1 ) :: t
@@ -712,7 +712,7 @@ FUNCTION calc_chord_ge16( x ) RESULT( chord )
 
   REAL, INTENT( IN ) :: x
 
-  REAL, PARAMETER :: ns = 45
+  INTEGER, PARAMETER :: ns = 45
 
   REAL, DIMENSION( 0:ns-1 ) :: r
   REAL, DIMENSION( 0:ns-1 ) :: c
@@ -864,7 +864,7 @@ FUNCTION calc_cl_ge16( x,y ) RESULT( cl )
   
   REAL, INTENT( IN ) :: x,y
 
-  REAL, PARAMETER :: ns = 8
+  INTEGER, PARAMETER :: ns = 8
 
   REAL, DIMENSION( 0:ns-1 ) :: r
 
@@ -946,7 +946,7 @@ FUNCTION calc_cl2_ge16( y ) RESULT( cl2 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1067,7 +1067,7 @@ FUNCTION calc_cl3_ge16( y ) RESULT( cl3 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1188,7 +1188,7 @@ FUNCTION calc_cl4_ge16( y ) RESULT( cl4 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1309,7 +1309,7 @@ FUNCTION calc_cl5_ge16( y ) RESULT( cl5 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1430,7 +1430,7 @@ FUNCTION calc_cl6_ge16( y ) RESULT( cl6 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1551,7 +1551,7 @@ Function calc_cl7_ge16( y ) RESULT( cl7 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cl
 
@@ -1685,7 +1685,7 @@ FUNCTION calc_cd_ge16( x,y ) RESULT( cd )
   
   REAL, INTENT( IN ) :: x,y
 
-  REAL, PARAMETER :: ns = 8
+  INTEGER, PARAMETER :: ns = 8
 
   REAL, DIMENSION( 0:ns-1 ) :: r
 
@@ -1765,7 +1765,7 @@ FUNCTION calc_cd2_ge16( y ) RESULT( cd2 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -1886,7 +1886,7 @@ FUNCTION calc_cd3_ge16( y ) RESULT( cd3 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -2007,7 +2007,7 @@ FUNCTION calc_cd4_ge16( y ) RESULT( cd4 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -2128,7 +2128,7 @@ FUNCTION calc_cd5_ge16( y ) RESULT( cd5 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -2249,7 +2249,7 @@ FUNCTION calc_cd6_ge16( y ) RESULT( cd6 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
@@ -2370,7 +2370,7 @@ Function calc_cd7_ge16( y ) RESULT( cd7 )
   
   REAL, INTENT( IN ) :: y
 
-  REAL, PARAMETER :: na = 75
+  INTEGER, PARAMETER :: na = 75
 
   REAL, DIMENSION( 0:1,0:na-1 ) :: cd
 
