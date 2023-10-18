@@ -96,15 +96,15 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
    , turb_power        !                         (kg*m2/s3)
 
  REAL, DIMENSION( n_turbines ),                 INTENT( INOUT ) &
-  :: acc_yaw_err
+  :: acc_yaw_err, wp_ts, wp_acc_u, wp_acc_v, wp_acc_w
 
-  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT( INOUT ) &
-  :: wp_acc_u    & ! acceleration for u          (m s-2)
-   , wp_acc_v    & !                  v          (m s-2)
-   , wp_acc_w      !                  w          (m s-2)
+!  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT( INOUT ) &
+!  :: wp_acc_u    & ! acceleration for u          (m s-2)
+!   , wp_acc_v    & !                  v          (m s-2)
+!   , wp_acc_w      !                  w          (m s-2)
 
-  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT( INOUT ) & !JDM May 2, 2013
-  :: wp_ts         ! 
+!  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT( INOUT ) & !JDM May 2, 2013
+!  :: wp_ts         ! 
 
 
   REAL, DIMENSION( ims:ime, jms:jme ),           INTENT( OUT ) &

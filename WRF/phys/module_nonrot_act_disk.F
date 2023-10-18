@@ -58,13 +58,13 @@ USE module_nonrot_gad_nrel5
    , rv_tendf    & ! v
    , rw_tendf      ! w
   
-  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) &
-  :: wp_acc_u    & ! acceleration for u                  (m s-2)
-   , wp_acc_v    & !                  v                  (m s-2)
-   , wp_acc_w      !                  w                  (m s-2)
+!  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) &
+!  :: wp_acc_u    & ! acceleration for u                  (m s-2)
+!   , wp_acc_v    & !                  v                  (m s-2)
+!   , wp_acc_w      !                  w                  (m s-2)
  
-  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) & 
-  :: wp_ts         ! diagnostic for debuging
+!  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) & 
+!  :: wp_ts         ! diagnostic for debuging
 
   INTEGER,                                       INTENT( IN  ) &  
   :: n_turbines    ! number of turbines
@@ -101,7 +101,7 @@ USE module_nonrot_gad_nrel5
    , turb_power       ! turbine power output          (kg*m2/s3)
 
   REAL, DIMENSION( n_turbines ),                 INTENT(INOUT) & 
-  ::  acc_yaw_err
+  ::  acc_yaw_err, wp_ts, wp_acc_u, wp_acc_v, wp_acc_w
   REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),   INTENT( OUT ) &
   :: wp_thrust
 
@@ -355,9 +355,6 @@ else
    ! print*,'dum variable is',dum
 endif
 
-! print*,'dum variable is equal to',dum,'after loop'
-! print*,'check if i am reading the turbine files every time',' maybe use x_turbine variable (if equal to zero, then continue)',x_turbine(1)
- 
   IF ( x_turbine(1) .EQ. 0.0 ) THEN !MS changed this from dum .EQ. 0.0 
      !RSA for turbine info read from file (adapted from NM code)
      IF (TRIM(windturb_spec) .NE. 'none') THEN
@@ -406,6 +403,8 @@ endif
 130	     CONTINUE !RSA error so close file and set istat to nonzero
            CLOSE(19)
            istat = 150150
+           print*,'RSA UNABLE TO OPEN OR READ TURBINE FILE'
+           STOP
            GOTO 150
 
 150        CONTINUE
@@ -438,10 +437,10 @@ endif
            lat1 = xlat_v(its,jts)
            lon1 = xlong_u(its,jts)
         ENDIF
-
+        CALL MPI_BARRIER(MPI_COMM_WORLD,ierr) ! (MSG)
         CALL MPI_BCAST(lat1,1,MPI_REAL,master,MPI_COMM_WORLD,ierr)
         CALL MPI_BCAST(lon1,1,MPI_REAL,master,MPI_COMM_WORLD,ierr)
-        CALL MPI_BARRIER(MPI_COMM_WORLD,ierr) !RSA not sure if this is needed, or if it should be before or after BCAST
+       ! CALL MPI_BARRIER(MPI_COMM_WORLD,ierr) !RSA not sure if this is needed, or if it should be before or after BCAST
 #endif
 
         !RSA parameters for map_set. This function defines the structure 'proj'
@@ -467,9 +466,6 @@ endif
      ENDIF
   ENDIF !RSA end first time GAD is turned on
 
-! print*,'CHECKING THAT VARIABLES ARE NON ZERO EVERY TIME A RESTART FILE INITIATES'
-! print*,x_turbine(:),y_turbine(:),'locs',hub_height(:),'hub height',rotor_diameter(:),'diameter',blade_length(:),'blades',theta_turbine(:),'angle',cutinspd(:),'cutin',cutoutspd(:),'cutout'
-
 !____________________________________________________________________________________________________________________________
 !
 ! 1. Find x, y locations for u, v, and w nodes within the patch
@@ -482,7 +478,6 @@ endif
 
   dxo2 = dx/2.0
   dyo2 = dy/2.0
-
 
   DO i = i_start, i_end+1
     u_x(i) = (i-1)*dx
@@ -672,7 +667,6 @@ endif
 !PRINT*,'Starting part 3.2'
   DO n = 1, n_turbines
     IF (inflow_on_patch(n) .EQ. 1 ) THEN
- !     PRINT*,'inflow patch for turbine ',n
       theta =  theta_turbine(n)*pi/180.0
 
         !using w locations, will calculate cell-centered values below
@@ -726,7 +720,6 @@ endif
                              MPI_COMM_WORLD,MPI_STATUS_IGNORE,ierr )
       v0n(n)=v0inst
     ENDDO
-!PRINT*,'Starting part 3.4'
     IF (wp_opt .EQ. 10 ) THEN
       DO n=1,n_turbines
         tag=n
@@ -901,9 +894,9 @@ endif
             rv(i,k,j) = sqrt(dav(i,j)**2+dzv(i,k,j)**2)
             rw(i,k,j) = sqrt(daw(i,j)**2+dzw(i,k,j)**2)
             rc(i,k,j) = sqrt(daw(i,j)**2+dzc(i,k,j)**2)
-            wp_acc_u(i,k,j) = 0.0
-            wp_acc_v(i,k,j) = 0.0
-            wp_acc_w(i,k,j) = 0.0
+            !wp_acc_u(i,k,j) = 0.0
+            !wp_acc_v(i,k,j) = 0.0
+            !wp_acc_w(i,k,j) = 0.0
           ENDDO
         ENDDO
       ENDDO
@@ -1225,21 +1218,10 @@ endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)
                    endif
-
                    power = 0.5*rho*v0n(n)*v0n(n)*v0n(n)*CP*pi*(radmax*radmax)/1000 ! P
-
               endif
-                
         ENDIF !Hub or GAD-----------------------------------------------------------------------------------------
-
-              !!            IF ( ru(i,k,j) .lt. rotor_radius ) THEN
                wp_thrust(i,k,j) = acc_u*thrust ! [N/m3]              mut(i,j)*acc_w*cnst*thrust !  thrust(i,j) +                             &
-!               torque(i,j) = torque(i,j) +                             &
-!                             wp_acc_u(i,k,j)*ru(i,k,j)*ft
-!                power(i,j)  = power(i,j)  +                             &
-!                             wp_acc_u(i,k,j)*rotrate(i,j)*ru(i,k,j)*ft
-!!            ENDIF
-!!
               ! Save turbine power if non-zero
               if (power .gt. 0.0) then
                   !RSA sum up power for each turbine on local processor

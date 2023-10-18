@@ -89,13 +89,13 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
    , rv_tendf    & ! v
    , rw_tendf      ! w
   
-  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) &
-  :: wp_acc_u    & ! acceleration for u                  (m s-2)
-   , wp_acc_v    & !                  v                  (m s-2)
-   , wp_acc_w      !                  w                  (m s-2)
+!  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) &
+!  :: wp_acc_u    & ! acceleration for u                  (m s-2)
+!   , wp_acc_v    & !                  v                  (m s-2)
+!   , wp_acc_w      !                  w                  (m s-2)
  
-  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) & 
-  :: wp_ts         ! diagnostic for debuging
+!  REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  INTENT(INOUT) & 
+!  :: wp_ts         ! diagnostic for debuging
 
   INTEGER,                                       INTENT( IN  ) &  
   :: n_turbines    ! number of turbines
@@ -132,7 +132,7 @@ USE module_gad_ge28, ONLY: calc_rpm_ge28, calc_pitch_ge28, calc_fnft_ge28
    , turb_power       ! turbine power output          (kg*m2/s3)
 
   REAL, DIMENSION( n_turbines ),                 INTENT(INOUT) & 
-  ::  acc_yaw_err
+  ::  acc_yaw_err, wp_ts, wp_acc_u, wp_acc_v, wp_acc_w
 
   REAL, DIMENSION( ims:ime, jms:jme ),            INTENT( OUT ) &
   :: torque, rotrate, power
@@ -968,9 +968,9 @@ endif
             rv(i,k,j) = sqrt(dav(i,j)**2+dzv(i,k,j)**2)
             rw(i,k,j) = sqrt(daw(i,j)**2+dzw(i,k,j)**2)
             rc(i,k,j) = sqrt(daw(i,j)**2+dzc(i,k,j)**2)
-            wp_acc_u(i,k,j) = 0.0
-            wp_acc_v(i,k,j) = 0.0
-            wp_acc_w(i,k,j) = 0.0
+            !wp_acc_u(i,k,j) = 0.0
+            !wp_acc_v(i,k,j) = 0.0
+            !wp_acc_w(i,k,j) = 0.0
           ENDDO
         ENDDO
       ENDDO

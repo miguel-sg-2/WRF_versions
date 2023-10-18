@@ -982,7 +982,7 @@ subroutine ext_ncd_open_for_read(DatasetName, Comm1, Comm2, SysDepInfo, DataHand
   implicit none
   include 'wrf_status_codes.h'
   include 'netcdf.inc'
-  character *(*), INTENT(IN)   :: DatasetName
+  character *(*), INTENT(INOUT)   :: DatasetName
   integer       , INTENT(IN)   :: Comm1, Comm2
   character *(*), INTENT(IN)   :: SysDepInfo
   integer       , INTENT(OUT)  :: DataHandle

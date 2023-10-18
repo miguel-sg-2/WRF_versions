@@ -185,7 +185,7 @@
 
 !       pblh = 1200.0 !50 W/m^2
        pblh = 1000.0 !NEUTRAL
-!       pblh = 486 ! Weakly stable simulations
+       pblh = 400 ! Weakly stable simulations
 ! 1) Compute average pblh on each tile. 2) Find the domain max and min of all patch averages.
 ! 3) Compute the average of the global max and min values and use on all patches
 ! 4) Cap upper and lower bounds.
