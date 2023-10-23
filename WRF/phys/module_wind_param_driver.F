@@ -18,7 +18,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                               rotor_diameter,               &
                               blade_length,                 &
                               theta_turbine,                &
-                              cutinspd, cutoutspd,          & !RSA
+                              cutinspd, cutoutspd,turb_type, & !RSA
                               turb_power,                   & !RSA
                               acc_yaw_err,                  & 
                               wp_acc_u, wp_acc_v, wp_acc_w, &
@@ -93,6 +93,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
    , theta_turbine   & !                         (deg)
    , cutinspd        & !                         (m/s)
    , cutoutspd       & !                         (m/s)
+   , turb_type       &
    , turb_power        !                         (kg*m2/s3)
 
  REAL, DIMENSION( n_turbines ),                 INTENT( INOUT ) &
@@ -165,7 +166,7 @@ SUBROUTINE wind_param_driver( grid, config_flags,           &
                          rotor_diameter,                   &
                          blade_length,                     &
                          theta_turbine,                    &
-                         cutinspd, cutoutspd,              & !RSA
+                         cutinspd, cutoutspd,turb_type,              & !RSA
                          turb_power,                       & !RSA
                          acc_yaw_err, wp_thrust,           &
                          wp_acc_u, wp_acc_v, wp_acc_w,     &

@@ -23,7 +23,7 @@ CONTAINS
 #if ( EM_CORE==1)
    USE module_state_description, ONLY : OMLSCHEME , PWP3DSCHEME
    USE module_sf_oml
-   USE module_sf_3dpwp
+!   USE module_sf_3dpwp
 #endif
 
    IMPLICIT NONE
@@ -133,31 +133,31 @@ if ( sf_ocean_physics .eq. OMLSCHEME ) then
 
 ! call 3DPWP
 
-elseif ( sf_ocean_physics .eq. PWP3DSCHEME ) then 
-       call wrf_debug ( 100, 'call 3DPWP' )
-       if ( itimestep .eq. 1 .or. mod(itimestep, stepom) .eq. 0 ) then
-         ! run 3DPWP only when the grid resolution larger than 3.0 km
-          print*,'dx',1.0/rdx
-          if ( 1.0/rdx .ge. 3000.0 .and. 1.0/rdy .ge. 3000.0 ) then  
-             call DPWP(ims,ime, jms,jme, kms,kme,its,ite, jts,jte, kts,kte, &
-                    ids,ide, jds,jde, kds,kde,okms, okme,                   &
-                    om_tmp,om_s,om_u, om_v, om_density, om_depth, om_ml,    &
-                    om_lat, om_lon,                                         &
-                    HFX, QFX, GSW, GLW, UST, U_PHY, V_PHY,                  &
-                    STBOLT, DELTSM, TSK, LH, XLAND,                         &
-                    rdx, rdy, msfu, msfv, msft,xtime,om_tini,om_sini,id,omdt)
-          else
-              print*,'Domain',id,' no ocean'
-              do  i = its, ite
-                  do  j = jts, jte
-                      if (XLAND(i,j).GE.1.5)then
-                         TSK(i,j) = om_tmp(i, 1, j)
-                      endif
-                  enddo
-              enddo
- 
-          endif 
-       endif
+!elseif ( sf_ocean_physics .eq. PWP3DSCHEME ) then 
+!       call wrf_debug ( 100, 'call 3DPWP' )
+!       if ( itimestep .eq. 1 .or. mod(itimestep, stepom) .eq. 0 ) then
+!         ! run 3DPWP only when the grid resolution larger than 3.0 km
+!          print*,'dx',1.0/rdx
+!          if ( 1.0/rdx .ge. 3000.0 .and. 1.0/rdy .ge. 3000.0 ) then  
+!             call DPWP(ims,ime, jms,jme, kms,kme,its,ite, jts,jte, kts,kte, &
+!                    ids,ide, jds,jde, kds,kde,okms, okme,                   &
+!                    om_tmp,om_s,om_u, om_v, om_density, om_depth, om_ml,    &
+!                    om_lat, om_lon,                                         &
+!                    HFX, QFX, GSW, GLW, UST, U_PHY, V_PHY,                  &
+!                    STBOLT, DELTSM, TSK, LH, XLAND,                         &
+!                    rdx, rdy, msfu, msfv, msft,xtime,om_tini,om_sini,id,omdt)
+!          else
+!              print*,'Domain',id,' no ocean'
+!              do  i = its, ite
+!                  do  j = jts, jte
+!                      if (XLAND(i,j).GE.1.5)then
+!                         TSK(i,j) = om_tmp(i, 1, j)
+!                      endif
+!                  enddo
+!              enddo
+! 
+!          endif 
+!       endif
 endif 
 #endif
 

@@ -60,6 +60,8 @@ MODULES = \
         module_nonrot_act_disk.o \
         module_nonrot_gad_ge28.o \
         module_nonrot_gad_nrel5.o \
+        module_nonrot_gad_siem6.o \
+        module_nonrot_gad_ves3.o \
         module_gen_act_disk.o \
         module_gad_psu15.o \
         module_gad_ge16.o \
@@ -161,7 +163,6 @@ MODULES = \
 	module_sf_tmnupdate.o \
 	module_sf_ocean_driver.o \
 	module_sf_oml.o \
-	module_sf_3dpwp.o \
 	module_sf_myjsfc.o \
 	module_sf_qnsesfc.o \
 	module_sf_mynn.o \

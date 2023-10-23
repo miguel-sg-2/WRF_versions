@@ -7,6 +7,8 @@ USE module_llxy
 !RSA for turbine-specific functions
 USE module_nonrot_gad_ge28 !, ONLY: calc_ct_p_ge28
 USE module_nonrot_gad_nrel5
+USE module_nonrot_gad_siem6
+USE module_nonrot_gad_ves3
 
 #ifdef DM_PARALLEL
   USE MODULE_DM
@@ -31,7 +33,7 @@ USE module_nonrot_gad_nrel5
                             rotor_diameter,               &
                             blade_length,                 &
                             theta_turbine,                &
-                            cutinspd, cutoutspd,          & !RSA
+                            cutinspd, cutoutspd,turb_type,      & !RSA
                             turb_power,                   & !RSA
                             acc_yaw_err, wp_thrust,       & 
                             wp_acc_u, wp_acc_v, wp_acc_w, & ! these variables likely not needed. 
@@ -98,6 +100,7 @@ USE module_nonrot_gad_nrel5
    , theta_turbine  & ! angle of rotor plane w.r.t. x axis (deg)
    , cutinspd       & ! turbine cutin speed                (m/s)
    , cutoutspd      & ! turbine cutout speed               (m/s)
+   , turb_type      & ! turbine type
    , turb_power       ! turbine power output          (kg*m2/s3)
 
   REAL, DIMENSION( n_turbines ),                 INTENT(INOUT) & 
@@ -288,7 +291,7 @@ USE module_nonrot_gad_nrel5
 ! RSA for reading in turbine info from file
   CHARACTER*512        :: inline
   INTEGER              :: istat
-  REAL                 :: lat,lon,hubheight,diameter,bldlngth,thetaturb,cutin,cutout
+  REAL                 :: lat,lon,hubheight,diameter,bldlngth,thetaturb,cutin,cutout,t_type
 
 ! RSA for converting lat/lon to x/y
   TYPE(proj_info)      :: proj
@@ -382,7 +385,7 @@ endif
               READ(19,'(A256)',END=120) inline !RSA read file and goto 120 if end of file
               IF ( i .LE. n_turbines .AND. index(inline,'!') .EQ. 0 ) THEN
                  !RSA read in each part of the line seperated by spaces and go to line 130 if there is an error
-                 READ(inline,*,ERR=130) lat,lon,hubheight,diameter,bldlngth,thetaturb,cutin,cutout 
+                 READ(inline,*,ERR=130) lat,lon,hubheight,diameter,bldlngth,thetaturb,cutin,cutout,t_type 
                  x_turbine(i) = lon   
                  y_turbine(i) = lat
                  hub_height(i) = hubheight
@@ -391,8 +394,9 @@ endif
                  theta_turbine(i) = thetaturb
                  cutinspd(i) = cutin
                  cutoutspd(i) = cutout
+                 turb_type(i) = t_type
                  i = i + 1 !RSA counting lines
-                PRINT *,'Reading file turbines(MSG)',x_turbine(i-1),y_turbine(i-1),'locs',hub_height(i-1),'hub height',rotor_diameter(i-1), 'diameter',blade_length(i-1),'blades',theta_turbine(i-1),'angle',cutinspd(i-1),'cutin',cutoutspd(i-1),'cutout'
+                PRINT *,'Reading file turbines(MSG)',x_turbine(i-1),y_turbine(i-1),'locs',hub_height(i-1),'hubheight',rotor_diameter(i-1),'diameter',blade_length(i-1),'blades',theta_turbine(i-1),'angle',cutinspd(i-1),'cutin',cutoutspd(i-1),'cutout',turb_type(i-1),'type'
               ENDIF
            ENDDO
 
@@ -424,6 +428,7 @@ endif
         theta_turbine(1)  = 180.0
         cutinspd(1) = 3 !! Added by MSG
         cutoutspd(1) = 25 !! Added by MSG
+        turb_type(1) = 50 !! Added by MSG
         PRINT *,"Reading file turbines(MSG)",x_turbine(1),y_turbine(1),"locs"
      ENDIF !RSA end read file or not
 
@@ -437,10 +442,9 @@ endif
            lat1 = xlat_v(its,jts)
            lon1 = xlong_u(its,jts)
         ENDIF
-        CALL MPI_BARRIER(MPI_COMM_WORLD,ierr) ! (MSG)
         CALL MPI_BCAST(lat1,1,MPI_REAL,master,MPI_COMM_WORLD,ierr)
         CALL MPI_BCAST(lon1,1,MPI_REAL,master,MPI_COMM_WORLD,ierr)
-       ! CALL MPI_BARRIER(MPI_COMM_WORLD,ierr) !RSA not sure if this is needed, or if it should be before or after BCAST
+        CALL MPI_BARRIER(MPI_COMM_WORLD,ierr) !RSA not sure if this is needed, or if it should be before or after BCAST
 #endif
 
         !RSA parameters for map_set. This function defines the structure 'proj'
@@ -1018,10 +1022,14 @@ endif
                    CT = 0.0
                    CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
-                      if (turbine_opt .eq. 28) then
-                          ct_p = calc_ct_p_ge28(v0_u)
-                      elseif (turbine_opt .eq. 50) then
+                      if (turb_type(n) .eq. 28.0) then
+                          ct_p = calc_ct_p_ge28(v0t_avg)
+                      elseif (turb_type(n) .eq. 50.0) then
                           ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_u)
+                      elseif (turb_type(n) .eq. 60.0) then
+                          ct_p = calc_ct_p_siem6(v0t_avg)
+                      elseif (turb_type(n) .eq. 30.0) then
+                          ct_p = calc_ct_p_ves3(v0t_avg)    
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)
@@ -1090,10 +1098,14 @@ endif
                    CT = 0.0
                    CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
-                      if (turbine_opt .eq. 28) then
-                          ct_p = calc_ct_p_ge28(v0_v)
-                      elseif (turbine_opt .eq. 50) then
+                      if (turb_type(n) .eq. 28.0) then
+                          ct_p = calc_ct_p_ge28(v0t_avg)
+                      elseif (turb_type(n) .eq. 50.0) then
                           ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_v)
+                      elseif (turb_type(n) .eq. 60.0) then
+                          ct_p = calc_ct_p_siem6(v0t_avg)
+                      elseif (turb_type(n) .eq. 30.0) then
+                          ct_p = calc_ct_p_ves3(v0t_avg)    
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)
@@ -1146,10 +1158,14 @@ endif
                    CT = 0.0
                    CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
-                      if (turbine_opt .eq. 28) then
-                          ct_p = calc_ct_p_ge28(v0_w)
-                      elseif (turbine_opt .eq. 50) then
+                      if (turb_type(n) .eq. 28.0) then
+                          ct_p = calc_ct_p_ge28(v0t_avg)
+                      elseif (turb_type(n) .eq. 50.0) then
                           ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_w)
+                      elseif (turb_type(n) .eq. 60.0) then
+                          ct_p = calc_ct_p_siem6(v0t_avg)
+                      elseif (turb_type(n) .eq. 30.0) then
+                          ct_p = calc_ct_p_ves3(v0t_avg)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)
@@ -1210,10 +1226,14 @@ endif
                    CT = 0.0
                    CP = 0.0
                    if ((radius .gt. radmin) .and. (radius .lt. radmax)) then
-                      if (turbine_opt .eq. 28) then
-                          ct_p = calc_ct_p_ge28(v0_c)
-                      elseif (turbine_opt .eq. 50) then
+                      if (turb_type(n) .eq. 28.0) then
+                          ct_p = calc_ct_p_ge28(v0t_avg)
+                      elseif (turb_type(n) .eq. 50.0) then
                           ct_p = calc_ct_p_nrel5(v0t_avg) ! calc_ct_p_nrel5(v0_c)
+                      elseif (turb_type(n) .eq. 60.0) then
+                          ct_p = calc_ct_p_siem6(v0t_avg)
+                      elseif (turb_type(n) .eq. 30.0) then
+                          ct_p = calc_ct_p_ves3(v0t_avg)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)

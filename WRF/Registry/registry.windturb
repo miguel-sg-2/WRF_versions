@@ -28,6 +28,7 @@ state   real     blade_length    {ntrb}    misc     1       -       rh     "blad
 state   real     theta_turbine   {ntrb}    misc     1       -       rh     "theta_turbine"   "angle between turbine and x axis"      "deg"
 state 	real	 cutinspd	 {ntrb}    misc     1	    -	    rh	   "cutin"	     "cut in speed of turbine"               "m/s"
 state	real	 cutoutspd	 {ntrb}	   misc	    1	    -	    rh     "cutout"	     "cut out speed of turbine"              "m/s"
+state   real     turb_type       {ntrb}    misc     1       -       rh     "turb_type"          "Turbine type"              ""
 state	real	 turb_power	 {ntrb}	   misc	    1	    -	    rh     "power"	     "turbine power output"             "kg*m2/s3"
 
 state   real     acc_yaw_err     {ntrb}    misc     1       -       rh     "acc_yaw_err"     "accumulated yaw error"                 "deg^2"    

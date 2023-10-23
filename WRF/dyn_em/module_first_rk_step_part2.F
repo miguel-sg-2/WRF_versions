@@ -684,7 +684,7 @@ BENCH_START(wind_param_driver_tim)
                                   grid%rotor_diameter,                         &
                                   grid%blade_length,                           &
                                   grid%theta_turbine,                          &
-                                  grid%cutinspd, grid%cutoutspd,               &
+                                  grid%cutinspd, grid%cutoutspd, grid%turb_type,        &
 !RSA
                                   grid%turb_power,                             &
 !RSA
