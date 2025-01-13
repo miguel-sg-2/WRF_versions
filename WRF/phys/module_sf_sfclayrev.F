@@ -1030,6 +1030,22 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                 ZNT(I)=(1.0-ZW) * ZN1 + ZW * ZN2
                 ZNT(I)=MIN(ZNT(I),2.85e-3)
                 ZNT(I)=MAX(ZNT(I),1.27e-7)
+! ADD MODIFIED SURFACE EXCHANGE COEFFICIENTS HERE (MSG)
+                ! Calcuate z_0 based on wave properties (modified Drennan et al model) --> https://doi.org/10.5194/acp-19-6681-2019
+!                if ( mod_sfc_exch_coef.GT.0 ) then
+!                        ! Calculate z_0 based on u_star, Cp, wave misalignment, and significant wave height
+!                        temp_0 = cos(0.45*delta_wind_wave) ! angle in cosine must be in radians
+!                        temp_1 = UST(I)/cp
+!                        temp_2 = 3.8*cos(-0.32*delta_wind_wave) ! angle in cosine must be in radians
+!                        ZNT(I) = hs_wave*20*temp_0*(temp_1**temp_2)
+!                        cd_temp = (UST(I)/WSPD(I))**2
+!                        if (cd_temp.gt.2.4e-3) then
+!                                ! Modify surface roughness if the drag coefficient exceeds threshold
+!                                ZNT(I) = ZA(I)/exp((KARMAN**2)/(2.4e-3) + PSIM(I))
+!                        endif
+!                        ZNT(I)=MAX(ZNT(I),1.27e-7) ! Make sure z_0 is greater than zero
+!                        
+!                endif
              ENDIF
           ENDIF
           ZL = ZNT(I)
