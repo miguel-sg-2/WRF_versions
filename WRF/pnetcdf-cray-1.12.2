@@ -1,0 +1,20 @@
+help([[
+PnetCDF (Parallel netCDF v1.12.2) is a high-performance parallel I/O library for
+accessing files in format compatibility with Unidata's NetCDF,
+specifically the formats of CDF-1, 2, and 5.
+]])
+
+local base = "/nopt/nrel/apps/software/wrf/cray/installs/pnetcdf"
+
+prepend_path("PATH", pathJoin(base, "bin"))
+prepend_path("MANPATH", pathJoin(base, "share/man"))
+prepend_path("LD_LIBRARY_PATH", pathJoin(base, "lib"))
+prepend_path("LIBRARY_PATH", pathJoin(base, "lib"))
+prepend_path("C_INCLUDE_PATH", pathJoin(base, "include"))
+prepend_path("CPLUS_INCLUDE_PATH", pathJoin(base, "include"))
+prepend_path("INCLUDE", pathJoin(base, "include"))
+prepend_path("PKG_CONFIG_PATH", pathJoin(base, "lib/pkgconfig"))
+prepend_path("CMAKE_PREFIX_PATH", base)
+
+setenv("PNETCDF", base)
+

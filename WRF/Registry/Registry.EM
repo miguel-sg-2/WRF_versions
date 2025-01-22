@@ -23,6 +23,13 @@ state   real   lakemask            ij    misc          1     -     i012rhd=(inte
 state    real   SST              ij     misc        1         -     i01245rh0d=(interp_mask_field:lu_index,iswater)   "SST"              "SEA SURFACE TEMPERATURE" "K"
 state    real   SST_INPUT        ij     misc        1         -     rh   "SST_INPUT"              "SEA SURFACE TEMPERATURE FROM WRFLOWINPUT FILE" "K"
 
+# Modified surface exchange coefficients (MSG)
+state    real   hs_wv              ij     misc        1         -     i01245rh0d=(interp_mask_field:lu_index,iswater)   "HS_WV"              "SIGNIFICANT WAVE HEIGHT" "m"
+state    real   dir_wv             ij     misc        1         -     i01245rh0d=(interp_mask_field:lu_index,iswater)   "DIR_WV"             "WAVE DIRECTION" "deg"
+state    real   tpeak_wv           ij     misc        1         -     i01245rh0d=(interp_mask_field:lu_index,iswater)   "TPEAK_WV"           "PEAK WAVE PERIOD" "s"
+state    real   wlen_wv            ij     misc        1         -     i01245rh0d=(interp_mask_field:lu_index,iswater)   "WLEN_WV"            "PEAK WAVE LENGTH" "m"
+rconfig   integer mod_sfc_exch_coef              namelist,physics      1            0         h    "mod_sfc_exch_coef"  "use wave characteristics from wrflowinp file for z_0  0=no, 1=yes"   ""
+
 
 # Registry entries that are exclusive to Registry.EM
 

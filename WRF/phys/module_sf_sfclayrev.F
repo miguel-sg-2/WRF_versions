@@ -24,7 +24,8 @@ CONTAINS
                      ids,ide, jds,jde, kds,kde,                    &
                      ims,ime, jms,jme, kms,kme,                    &
                      its,ite, jts,jte, kts,kte,                    &
-                     ustm,ck,cka,cd,cda,isftcflx,iz0tlnd,scm_force_flux           )
+                     ustm,ck,cka,cd,cda,isftcflx,iz0tlnd,scm_force_flux, &
+                     mod_sfc_exch_coef,hs_wv,dir_wv,tpeak_wv,wlen_wv            )
 !-------------------------------------------------------------------
       IMPLICIT NONE
 !-------------------------------------------------------------------
@@ -118,7 +119,7 @@ CONTAINS
                                         ims,ime, jms,jme, kms,kme, &
                                         its,ite, jts,jte, kts,kte
 !                                                               
-      INTEGER,  INTENT(IN )   ::        ISFFLX
+      INTEGER,  INTENT(IN )   ::        ISFFLX,mod_sfc_exch_coef
       REAL,     INTENT(IN )   ::        SVP1,SVP2,SVP3,SVPT0
       REAL,     INTENT(IN )   ::        EP1,EP2,KARMAN,EOMEG,STBOLT
       REAL,     INTENT(IN )   ::        P1000mb
@@ -135,7 +136,8 @@ CONTAINS
                 INTENT(IN   )               ::             MAVAIL, &
                                                              PBLH, &
                                                             XLAND, &
-                                                              TSK
+                                                              TSK, &
+                                                              hs_wv,dir_wv,tpeak_wv,wlen_wv
       REAL,     DIMENSION( ims:ime, jms:jme )                    , &
                 INTENT(OUT  )               ::                U10, &
                                                               V10, &
@@ -239,8 +241,9 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
 #if ( EM_CORE == 1 )
                 ,isftcflx,iz0tlnd,scm_force_flux,                               &
                 USTM(ims,j),CK(ims,j),CKA(ims,j),                  &
-                CD(ims,j),CDA(ims,j)                               &
+                CD(ims,j),CDA(ims,j), & 
 #endif
+                mod_sfc_exch_coef,hs_wv(ims,j),dir_wv(ims,j),tpeak_wv(ims,j),wlen_wv(ims,j)                 &
                                                                    )
       ENDDO
 
@@ -261,8 +264,9 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
                      ids,ide, jds,jde, kds,kde,                    &
                      ims,ime, jms,jme, kms,kme,                    &
                      its,ite, jts,jte, kts,kte,                    &
-                     isftcflx, iz0tlnd,scm_force_flux,                            &
-                     ustm,ck,cka,cd,cda                            )
+                     isftcflx, iz0tlnd,scm_force_flux,             &
+                     ustm,ck,cka,cd,cda,                           &
+                     mod_sfc_exch_coef,hs_wv,dir_wv,tpeak_wv,wlen_wv    )
 !-------------------------------------------------------------------
       IMPLICIT NONE
 !-------------------------------------------------------------------
@@ -274,7 +278,7 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
                                         its,ite, jts,jte, kts,kte, &
                                         J
 !                                                               
-      INTEGER,  INTENT(IN )   ::        ISFFLX
+      INTEGER,  INTENT(IN )   ::        ISFFLX,mod_sfc_exch_coef
       REAL,     INTENT(IN )   ::        SVP1,SVP2,SVP3,SVPT0
       REAL,     INTENT(IN )   ::        EP1,EP2,KARMAN,EOMEG,STBOLT
       REAL,     INTENT(IN )   ::        P1000mb
@@ -284,7 +288,8 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
                 INTENT(IN   )               ::             MAVAIL, &
                                                              PBLH, &
                                                             XLAND, &
-                                                              TSK
+                                                              TSK, &
+                                                              hs_wv,dir_wv,tpeak_wv,wlen_wv
 !
       REAL,     DIMENSION( ims:ime )                             , &
                 INTENT(IN   )               ::             PSFCPA
@@ -372,7 +377,7 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
       REAL    ::  ZL,TSKV,DTHVDZ,DTHVM,VCONV,RZOL,RZOL2,RZOL10,ZOL2,ZOL10
       REAL    ::  DTG,PSIX,DTTHX,PSIX10,PSIT,PSIT2,PSIQ,PSIQ2,PSIQ10
       REAL    ::  FLUXC,VSGD,Z0Q,VISC,RESTAR,CZIL,GZ0OZQ,GZ0OZT
-      REAL    ::  ZW, ZN1, ZN2
+      REAL    ::  ZW, ZN1, ZN2, wind_dir,delta_wind_wave,cp_wv,cd_temp,wspd_10,z_0_old
 !
 ! .... paj ...
 !
@@ -382,6 +387,8 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
 !     REAL    :: psih_stable_full,psim_stable_full,psih_unstable_full,psim_unstable_full
       REAL    :: zl2,zl10,z0t
       REAL,     DIMENSION( its:ite )        ::         pq,pq2,pq10
+
+      CHARACTER*256          :: message
 
 CALL wrf_debug ( 200 , 'start SFCLAYREV1D and define variables' )
 
@@ -1032,20 +1039,58 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                 ZNT(I)=MAX(ZNT(I),1.27e-7)
 ! ADD MODIFIED SURFACE EXCHANGE COEFFICIENTS HERE (MSG)
                 ! Calcuate z_0 based on wave properties (modified Drennan et al model) --> https://doi.org/10.5194/acp-19-6681-2019
-!                if ( mod_sfc_exch_coef.GT.0 ) then
-!                        ! Calculate z_0 based on u_star, Cp, wave misalignment, and significant wave height
-!                        temp_0 = cos(0.45*delta_wind_wave) ! angle in cosine must be in radians
-!                        temp_1 = UST(I)/cp
-!                        temp_2 = 3.8*cos(-0.32*delta_wind_wave) ! angle in cosine must be in radians
-!                        ZNT(I) = hs_wave*20*temp_0*(temp_1**temp_2)
-!                        cd_temp = (UST(I)/WSPD(I))**2
-!                        if (cd_temp.gt.2.4e-3) then
-!                                ! Modify surface roughness if the drag coefficient exceeds threshold
-!                                ZNT(I) = ZA(I)/exp((KARMAN**2)/(2.4e-3) + PSIM(I))
-!                        endif
-!                        ZNT(I)=MAX(ZNT(I),1.27e-7) ! Make sure z_0 is greater than zero
-!                        
-!                endif
+                if ( mod_sfc_exch_coef.GT.0 ) then
+                if ( (hs_wv(i).GT.1.E-5) .and. (tpeak_wv(i).GT.1.E-5) .and. (wlen_wv(i).GT.1.E-5) .and. (dir_wv(i).GT.1.E-5)) then ! Make sure the values used in the modified parameterization are valid
+                        ! Save previous roughness length value
+                        z_0_old = ZNT(I)
+                        CALL wrf_debug ( 200 , 'Starting modified surface exchange coefficient scheme (MSG)' )
+                        WRITE(message, '(A, F8.7, A, F8.3, A, F8.3, A, F8.3, A, F8.3)') 'z_0 (old)= ZNT =', ZNT(I), ', hs_wv=',hs_wv(i),', tpeak_wv=',tpeak_wv(i),', wlen_wv=',wlen_wv(i),', dir_wv=',dir_wv(i)
+                        CALL wrf_debug(200,  TRIM(message) )
+                        ! Calculate wind-wave misalignment
+                        wind_dir = atan2(vx(i),ux(i))*180.0/3.141592
+                        if (wind_dir .lt. 0.0) then
+                                wind_dir = wind_dir + 360.0
+                        endif
+                        delta_wind_wave = abs(dir_wv(i)-wind_dir)
+                        if (delta_wind_wave .gt. 180.0) then
+                                delta_wind_wave = 360.0 - delta_wind_wave
+                        endif
+                        WRITE(message, '(A, F8.3, A, F8.3)') 'wind_dir =', wind_dir, ', delta_wind_wave=',delta_wind_wave
+                        CALL wrf_debug(200,  TRIM(message) )
+                        delta_wind_wave = delta_wind_wave*3.141592/180.0
+                        ! Calculate wave speed
+                        cp_wv = wlen_wv(i)/tpeak_wv(i)
+                        WRITE(message, '(A, F8.3)') 'cp_wv =', cp_wv
+                        CALL wrf_debug(200,  TRIM(message) )
+                        ! Calculate z_0 based on u_star, Cp, wave misalignment, and significant wave height
+                        ZNT(I) = hs_wv(i)*20.0*cos(0.45*delta_wind_wave)*((UST(I)/cp_wv)**(3.8*cos(-0.32*delta_wind_wave)))
+                        WRITE(message, '(A, F8.7)') 'z_0 (new before checking c_d) = ', ZNT(I)
+                        CALL wrf_debug(200,  TRIM(message) )
+                        ! Check max surface drag coefficient
+                        wspd_10 = (U10(I)**2.0 + V10(I)**2.0)**0.5
+                        wspd_10 = max(wspd_10,1.0)
+                        cd_temp = (UST(I)/wspd_10)**2.0
+                        WRITE(message, '(A, F8.7)') 'cd_temp=',cd_temp
+                        CALL wrf_debug(200,  TRIM(message) )
+                        if ((cd_temp.gt.2.4e-3) .and. (wspd_10.gt.25.0)) then
+                                ! Modify surface roughness if the drag coefficient and 10-m wind speed exceed threshold
+                                ZNT(I) = ZA(I)/exp((KARMAN**2)/(2.4e-3) + PSIM(I))
+                                ! Alternatively, use z_0 from Donelan parameterization
+                                ! ZNT(I)=z_0_old
+                                WRITE(message, '(A, F8.7)') 'z_0 (new because c_d exceeds limit and wind speed above 25) = ',ZNT(I)
+                                CALL wrf_debug(200,  TRIM(message) )
+                        elseif ( cd_temp .gt. 3.0e-3 ) then
+                                ! Modify surface roughness if the drag coefficient exceeds threshold
+                                ZNT(I)=z_0_old
+                                WRITE(message, '(A, F8.7, A, F8.3)') 'z_0 (new because c_d exceeds limit) = ',ZNT(I),', wspd_10=',wspd_10
+                                CALL wrf_debug(200,  TRIM(message) )
+                        endif
+                        ZNT(I)=MAX(ZNT(I),1.27e-7) ! Make sure z_0 is greater than zero
+                        WRITE(message, '(A, F8.7)') 'z_0 (new - final) = ',ZNT(I)
+                        CALL wrf_debug(200,  TRIM(message) )
+                        CALL wrf_debug ( 200 , 'Finished with modified surface exchange coefficient scheme (MSG)' )
+                endif   
+                endif ! modified z_0 (MSG)
              ENDIF
           ENDIF
           ZL = ZNT(I)

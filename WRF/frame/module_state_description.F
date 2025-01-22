@@ -109,6 +109,7 @@ MODULE module_state_description
   INTEGER, PARAMETER :: ssibscheme = 8
   INTEGER, PARAMETER :: noahmpoptcrop2 = 2
   INTEGER, PARAMETER :: noahmosaicscheme = 1
+  INTEGER, PARAMETER :: nopblscheme = 0
   INTEGER, PARAMETER :: ysuscheme = 1
   INTEGER, PARAMETER :: myjpblscheme = 2
   INTEGER, PARAMETER :: gfsscheme = 3

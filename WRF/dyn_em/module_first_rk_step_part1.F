@@ -892,7 +892,12 @@ BENCH_START(surf_driver_tim)
      &        ,spp_lsm=config_flags%spp_lsm,pattern_spp_lsm=grid%pattern_spp_lsm     & !SPP
      &        ,field_sf=grid%field_sf                                                & !SPP
      &        ,spp_pbl=config_flags%spp_pbl,pattern_spp_pbl=grid%pattern_spp_pbl     & !SPP
-     &                                                           )
+     &        ,mod_sfc_exch_coef=config_flags%mod_sfc_exch_coef               & ! MSG  (modified z_0)
+     &        ,hs_wv=grid%hs_wv   &                                             ! MSG  (modified z_0)
+     &        ,dir_wv=grid%dir_wv   &                                           ! MSG  (modified z_0)
+     &        ,tpeak_wv=grid%tpeak_wv   &                                       ! MSG  (modified z_0)
+     &        ,wlen_wv=grid%wlen_wv   &                                         ! MSG  (modified z_0)
+     &         )
 
 #ifdef WRF_HYDRO
         if(HYDRO_dt .gt. 1 ) call wrf_drv_HYDRO(HYDRO_dt, grid,  &
