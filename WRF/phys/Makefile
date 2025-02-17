@@ -60,6 +60,8 @@ MODULES = \
         module_nonrot_act_disk.o \
         module_nonrot_gad_ge28.o \
         module_nonrot_gad_nrel5.o \
+        module_nonrot_gad_iea15.o \
+        module_nonrot_gad_iea11.o \
         module_nonrot_gad_siem6.o \
         module_nonrot_gad_ves3.o \
         module_gen_act_disk.o \

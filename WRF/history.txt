@@ -1,0 +1,1000 @@
+  400  cd -
+  401  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  402  cd -
+  403  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  404  cd -
+  405  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  406  cd -
+  407  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  408  cd -
+  409  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  410  cd -
+  411  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  412  cd -
+  413  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  414  cd -
+  415  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  416  cd -
+  417  ls -altrh auxH*
+  418  ls -altr auxH*
+  419  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  420  cd -
+  421  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  422  cd -
+  423  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  424  vi namelist.output 
+  425  vi rsl.out.0000
+  426  vi namelist.input
+  427  vi rsl.out.0000
+  428  vi namelist.input
+  429  cd -
+  430  vi rsl.out.0000
+  431  vi rsl.error.0000
+  432  vi namelist.output 
+  433  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  434  pwd
+  435  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  436  cd -
+  437  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  438  cd -
+  439  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  440  pwd
+  441  logout
+  442  cd /projects/clusterwakes/mgomez/US/les/2017-7-27_20_highRes_z
+  443  ls -altrh
+  444  rm rsl.*
+  445  vi run_prepare_ndown.sh 
+  446  ls -altrh
+  447  module load netcdf
+  448  ncdump -h wrfinput_d02_after_ndown
+  449  vi run_prepare_ndown.sh 
+  450  vi namelist.input_oneLES_AFTER_ndown 
+  451  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  452  cd ../../mesoscale/2017-7-27_20/
+  453  ls -altrh wrfout*d03*
+  454  ls -altrh
+  455  pwd
+  456  cd -
+  457  ls -al wrfoutFiles_prec_pnetcdf/
+  458  mv /scratch/mgomez/JIP/US/mesoscale/2017-7-27_20/noTurb/wrfout_d03_2017-07-27_2[1,2,3]* wrfoutFiles_prec_pnetcdf/.
+  459  ls -al wrfoutFiles_prec_pnetcdf
+  460  mv /scratch/mgomez/JIP/US/mesoscale/2017-7-27_20/noTurb/wrfout*d03*-07-28_00* wrfoutFiles_prec_pnetcdf/.
+  461  ls -altrh
+  462  pwd
+  463  vi ~/jupyter/sbatch_jupyter.sh 
+  464  pwd
+  465  logout
+  466  cd /projects/clusterwakes/mgomez/US/les/2017-7-27_20_highRes_z
+  467  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  468  squeue --long --start -u $USER
+  469  squeue --long | grep debug
+  470  squeue --long --start -u $USER
+  471  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  472  logoyt
+  473  logout
+  474  cd /scratch/mgomez/JIP/US/les/2017-7-27_20_highRes_z_2
+  475  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  476  cd ~/jupyter/
+  477  ./auto_lunch_jupyter.sh 
+  478  cd -
+  479  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  480  cd ../2017-7-27_20_highRes_z
+  481  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  482  cd -
+  483  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  484  cd -
+  485  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  486  vi namelist.input
+  487  vi /projects/storm/mgomez/realSims/hurrLaura/newLES/staticLES_dxSmaller_BCs_from_mvngNest/namelist.input
+  488  vi /projects/storm/mgomez/realSims/hurrLaura/newLES/staticLES_dxSmaller_BCs_from_mvngNest/namelist.input_after_ndown_WORKS 
+  489  vi namelist.input
+  490  ls -al namelist.*
+  491  cd -
+  492  vi namelist.input
+  493  sbatch run_wrf.sh 
+  494  ls -altrh log*
+  495  scancel 6918311
+  496  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  497  scancel 6915944
+  498  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  499  pwd
+  500  logout
+  501  cd /projects/storm/mgomez/idealSims/sst_30_skipd01_skipCoLES_ndg/Results/
+  502  ls
+  503  ls -al auxH*d02*
+  504  ln -sf wrfrst_d01_2000-01-06_12:00:26 ./wrfout_test
+  505  module load netcdf
+  506  ncdump -h wrfout_test | grep PH
+  507  cd ~/jupyter/postprocessing/STORM/HurricaneSimulations/Corregidum_Figures/
+  508  ls
+  509  cd ~/jupyter/postprocessing/
+  510  ls
+  511  cd STORM/
+  512  ls
+  513  cd HurricaneSimulations/
+  514  ls
+  515  cd IdealSims/
+  516  ls
+  517  grep '_{1\,{\rm min}}
+  518   grep '_{1\,{\rm min}}' *.ipynb
+  519   grep '_{1\, {\rm min}}' *.ipynb
+  520   grep '{1\, {\rm min}}' *.ipynb
+  521   grep '{1\, {\rm min}' *.ipynb
+  522   grep '{\rm min}' *.ipynb
+  523   grep 'alpha' *.ipynb
+  524  pwd
+  525  cd ~/NumericalModels/WRF/WRF_versions/WRF/dyn_em/
+  526  vi solve_em.F 
+  527  pwd
+  528  logout
+  529  cd /projects/clusterwakes/mgomez/US/les/2017-7-27_20_highRes_z
+  530  cd ..
+  531  ls
+  532  du -hs les_test_era5/
+  533  cp -r les_test_era5 les_test_era5_lg
+  534  cd les_test_era5_lg
+  535  ls -al
+  536  rm log*
+  537  vi namelist.wps
+  538  vi run_w
+  539  vi run_wps.sh 
+  540  vi run_wrf.sh 
+  541  vi run_wps.sh 
+  542  ./geogrid.exe 
+  543  vi run_w
+  544  vi run_wps.sh 
+  545  module purge
+  546  source ~/.wrfenv_intel_new
+  547  module list
+  548  ./geogrid.exe 
+  549  vi run_wps.sh 
+  550  ls -al
+  551  rm met_em*
+  552  sbatch run_wps.sh 
+  553  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  554  vi namelist.wps
+  555  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  556  ./geogrid.exe 
+  557  ls -altrh
+  558  tail metgrid.log.0000
+  559  rm metgrid.log.00*
+  560  sbatch run_wps.sh 
+  561  vi namelist.wps
+  562  vi namelist.input
+  563  vi namelist.wps
+  564  ./geogrid.exe 
+  565  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  566  vi namelist.wps
+  567  ./geogrid.exe 
+  568  ls -altrh geo_em*
+  569  sbatch run_wps.sh 
+  570  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  571  vi namelist.wps
+  572  vi namelist.input
+  573  vi run_wrf.sh 
+  574  vi run_wps.sh 
+  575  ls -al real.exe 
+  576  vi run_wps.sh 
+  577  vi namelist.input
+  578  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  579  sbatch run_wps.sh 
+  580  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  581  vi namelist.input
+  582  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  583  ls -altrh met_em*
+  584  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  585  ls -altrh log*
+  586  seff 6929895
+  587  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  588  vi rsl.error.0000
+  589  echo $WRFIO_NCD_LARGE_FILE_SUPPORT
+  590  vi ~/NumericalModels/WRF/WRF_versions/WRF/configure.wrf
+  591  vi run_wps.sh 
+  592  sbatch run_wps.sh 
+  593  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  594  squeue --long --start -u $USER
+  595  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  596  vi run_wps.sh 
+  597  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  598  squeue --long --start -u $USER
+  599  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  600  vi run_wps.sh 
+  601  sbatch run_wps.sh 
+  602  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  603  squeue --long --start -u $USER
+  604  vi run_wps.sh 
+  605  squeue --long --start -u $USER
+  606  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  607  cd ~/NumericalModels/WRF/
+  608  cd -
+  609  ls -altrh ~/NumericalModels/WRF/WRF*
+  610  ls -altrh ~/NumericalModels/WRF/
+  611  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  612  vi rsl.error.0000
+  613  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  614  ls -altrh | tail
+  615  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  616  scancel 6929981
+  617  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  618  vi rsl.error.0000
+  619  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  620  vi rsl.error.0000
+  621  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  622  vi rsl.error.0000
+  623  while true; do squeue --long | grep $USER; tail --lines=3 rsl.error.0000; ls -altrh | tail; grep 'cfl' rsl.out.0000; grep 'HERE' rsl.out.0000; sleep 30; done
+  624  vi log.wrf.6929987
+  625  vi rsl.error.0000
+  626  pwd
+  627  ls -al *exe
+  628  cd /home/mgomez/NumericalModels/WRF/
+  629  ls
+  630  ls -altrh
+  631  ls -al WRF_test_compile/WRF_versions/WRF/run/*exe
+  632  vi WRF_test_compile/WRF_versions/WRF/configure.wrf
+  633  diff WRF_test_compile/WRF_versions/WRF/configure.wrf WRF_versions_sfcExch/WRF/configure.wrf
+  634  cd WRF_test_compile/WRF_versions/WRF/
+  635  ls 
+  636  vi ~/.wrfenv_cray_new 
+  637  source ~/.wrfenv_cray_new 
+  638  diff configure.wrf ../../../WRF_versions/WRF/configure.wrf
+  639  ls -al configure*
+  640  cp configure.wrf configure.wrf_TEST
+  641  vi configure.wrf_TEST 
+  642  diff configure.wrf ../../../WRF_versions/WRF/configure.wrf
+  643  diff configure.wrf_TEST ../../../WRF_versions/WRF/configure.wrf
+  644  vi configure.wrf_TEST 
+  645  diff configure.wrf_TEST ../../../WRF_versions/WRF/configure.wrf
+  646  vi configure.wrf_TEST 
+  647  ls -al /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf
+  648  vi configure.wrf_TEST 
+  649  pwd
+  650  ./clean -a
+  651  module list
+  652  echo $WRFIO_NCD_LARGE_FILE_SUPPORT
+  653  vi configure.wrf_TEST 
+  654  diff configure.wrf_TEST ../../../WRF_versions/WRF/configure.wrf
+  655  vi configure.wrf_TEST 
+  656  diff configure.wrf_TEST ../../../WRF_versions/WRF/configure.wrf
+  657  vi ../../../WRF_versions/WRF/configure.wrf
+  658  vi configure.wrf_TEST 
+  659  vi ../../../WRF_versions/WRF/configure.wrf
+  660  vi configure.wrf_TEST 
+  661  vi ../../../WRF_versions/WRF/configure.wrf
+  662  vi configure.wrf_TEST 
+  663  vi ../../../WRF_versions/WRF/configure.wrf
+  664  diff configure.wrf_TEST ../../../WRF_versions/WRF/configure.wrf
+  665  pwd
+  666  ./clean -a
+  667  cp configure.wrf_TEST ./configure.wrf
+  668  history | grep compile
+  669  ./compile -j8 em_real >& log.compile &
+  670  vi log.compile
+  671  ./compile -j 8 em_real >& log.compile &
+  672  vi log.compile
+  673  history | grep while
+  674  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  675  ls -altrh frame/
+  676  vi log.compile
+  677  diff configure.wrf_TEST ../../../WRF_versions/WRF/configure.wrf
+  678  ls -altrh ../../../WRF_versions/WRF/log.*
+  679  vi ../../../WRF_versions/WRF/log.compile
+  680  vi log.compile
+  681  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  682  ls -altrh ../../../WRF_versions/WRF/log.*
+  683  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  684  vi log.compile
+  685  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  686  ls -altrh frame/
+  687  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  688  vi log.compile
+  689  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  690  ls -altrh frame/
+  691  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  692  vi log.compile
+  693  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  694  vi log.compile
+  695  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  696  vi log.compile
+  697  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  698  ls -altrh 
+  699  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  700  vi log.compile
+  701  vi ../../../WRF_versions/WRF/log.compile
+  702  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  703  vi log.compile
+  704  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  705  cd -
+  706  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  707  cd /projects/clusterwakes/mgomez/US/les/les_test_era5_lg
+  708  ls -al *exe
+  709  rm ndown.exe real.exe tc.exe wrf.exe
+  710  cd -
+  711  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  712  cd -
+  713  vi run_wps.sh 
+  714  vi ~/.wrfenv_cray_new 
+  715  vi run_wps.sh 
+  716  module list
+  717  vi run_wps.sh 
+  718  vi ~/.wrfnev_cray_new
+  719  vi run_wps.sh 
+  720  vi ~/.wrfenv_cray_new 
+  721  cd -
+  722  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  723  tail log.compile
+  724  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  725  vi log.compile
+  726  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  727  vi log.compile
+  728  vi ../../../WRF_versions/WRF/log.compile
+  729  vi log.compile
+  730  ls /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/lib/libpnetcdf.so
+  731  ls -al /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/lib/libpnetcdf.so
+  732  vi /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/lib/libpnetcdf.so
+  733  cd /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/lib/
+  734  grep 'cxx_11' *
+  735  grep 'cxx_11' */*
+  736  grep 'CXX_11' */*
+  737  ls -al ../
+  738  cd -
+  739  cd /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/
+  740  grep 'cxx_11' */*
+  741  grep 'cxx_11' */*/*
+  742  grep 'cxx_11' */*/*/*
+  743  grep 'cxx_11' *
+  744  grep 'cxx_11' */*
+  745  cd -
+  746  vi configure.wrf_TEST 
+  747  ls -al /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/lib
+  748  vi configure.wrf_TEST 
+  749  ls -al /opt/cray/pe/netcdf/4.9.0.1/CRAYCLANG/14.0/lib
+  750  vi configure.wrf_TEST 
+  751  module spider pnetcdf
+  752  module spider pnetcdf/1.12.2-cray
+  753  module list
+  754  module spider PrgEnv-cray
+  755  module list
+  756  module spider cce
+  757  source ~/.wrfenv_cray_new 
+  758  module load cce/16.0.0
+  759  module list
+  760  ./clean -a
+  761  cp configure.wrf_TEST configure.wrf
+  762  ./compile -j 8 em_real >& log.compile &
+  763  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  764  vi ../../../WRF_versions/WRF/log.compile
+  765  ./clean -a
+  766  ps -u
+  767  module load cce/14.0.4
+  768  cp configure.wrf_TEST configure.wrf
+  769  ./compile -j 8 em_real >& log.compile &
+  770  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  771  vi log.compile
+  772  ./clean -a
+  773  ps -u
+  774  module load cce/16.0.0
+  775  cp configure.wrf_TEST configure.wrf
+  776  ./compile -j 8 em_real >& log.compile &
+  777  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  778  vi log.compile
+  779  ./clean -a
+  780  ps -u
+  781  ./clean -a
+  782  ps -u
+  783  ./clean -a
+  784  ps -u
+  785  ./clean -a
+  786  ps -u
+  787  kill 888078
+  788  ./clean -a
+  789  ps -u
+  790  ./clean -a
+  791  kill 888146 896972 896976 v 896980 898009 898024 898166
+  792  ps -u
+  793  kill 896978 952622 952640 952655 952886
+  794  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  795  ps -u
+  796  ./clean -a
+  797  source ~/.wrfenv_cray_new 
+  798  vi /opt/cray/pe/cce/17.0.0/binutils/x86_64/x86_64-pc-linux-gnu/bin/ld
+  799  vi /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/include/
+  800  vi /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/lib/pkgconfig/
+  801  vi /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf/lib/pkgconfig/pnetcdf.pc 
+  802  cd /nopt/nrel/apps/software/wrf/cray/installs/pnetcdf
+  803  grep 'basic_ostring' *
+  804  grep 'basic_ostring' */*
+  805  grep 'basic_ostring' */*/*
+  806  grep 'basic_ostring' */*/*/*
+  807  grep 'basic_ostringstream' *
+  808  grep 'basic_ostringstream' */*
+  809  grep 'basic_ostringstream' */*/*
+  810  grep 'basic_ostringstream' */*/*/*
+  811  grep 'basic_ostringstream' */*/*/*/*
+  812  cd -
+  813  ./clean -a
+  814  source ~/.wrfenv_cray_new 
+  815  ls -al *exe
+  816  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  817  diff /nopt/nrel/apps/software/wrf/cray/WRF-4.2.2/configure.wrf configure.wrf
+  818  diff /nopt/nrel/apps/software/wrf/cray/WRF-4.2.2/configure.wrf configure.wrf_TEST 
+  819  ls -al /nopt/nrel/apps/software/wrf/cray-env/installs/pnetcdf/lib
+  820  ls -al /opt/cray/pe/hdf5/1.12.2.1/CRAYCLANG/
+  821  ls -al /opt/cray/pe/hdf5/1.12.2.1/crayclang/
+  822  ls -al /opt/cray/pe/netcdf/default/CRAYCLANG/17.0/
+  823  vi /nopt/nrel/apps/software/wrf/intel/configure.wrf
+  824  ls -altrh /nopt/nrel/apps/software/wrf/intel/
+  825  diff /nopt/nrel/apps/software/wrf/intel/configure.wrf /nopt/nrel/apps/software/wrf/intel/configure.wrf-4.3.1 
+  826  cp /nopt/nrel/apps/software/wrf/intel/configure.wrf-4.3.1 ./configure.wrf_INTEL_4.3.1
+  827  ./clean -a
+  828  cp configure.wrf_INTEL_4.3.1 configure.wrf
+  829  vi ~/.wrfenv_intel_new 
+  830  module load wrf/4.2.2-intel
+  831  module purge
+  832  module load wrf/4.2.2-intel
+  833  module list
+  834  module spider wrf
+  835  vi configure.wrf
+  836  module spider netcdf
+  837  vi configure.wrf
+  838  module spider *netcdf*
+  839  module spider '*netcdf*'
+  840  module spider "'*netcdf*'"
+  841  module -r spider '.*netcdf.*'
+  842   module spider netcdf/4.9.2-intel-oneapi-mpi-intel
+  843  module spider netcdf/4.9.2-oneapi-2024.1.0
+  844  vi configure.wrf
+  845  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/
+  846  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/bin/
+  847  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/lib/
+  848  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/module/
+  849  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/module/netcdf/
+  850  module load netcdf/4.9.2-oneapi-2024.1.0
+  851  module purge
+  852  vi ~/.wrfenv_intel_new_02_04_2025
+  853  vi ~/.wrfenv
+  854  source ~/.wrfenv_intel_new_02_04_2025
+  855  vi ~/.wrfenv_intel_new_02_04_2025
+  856  source ~/.wrfenv_intel_new_02_04_2025
+  857  echo $NETCDFPATH
+  858  vi ~/.wrfenv
+  859  echo $NETCDF
+  860  module spider pnetcdf
+  861  module spider pnetcdf-1.13.0
+  862  module -r spider '.*pnetcdf.*'
+  863  ls -l /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf
+  864  ls -l /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0/
+  865  ls -al /nopt/nrel/apps/software/wrf/intel/
+  866  vi /nopt/nrel/apps/software/wrf/intel/wrf-envs 
+  867  ls -altrh /nopt/nrel/apps/software/wrf/intel/
+  868  ls -altrh /nopt/nrel/apps/software/wrf/intel/wrf-test/
+  869  ls -altrh /nopt/nrel/apps/software/wrf/intel/wrf-test/WRF-4.3.1
+  870  ls -altrh /nopt/nrel/apps/software/wrf/intel/wrf-test/WRF-4.3.1/run/*exe
+  871  ls -altrh /nopt/nrel/apps/software/wrf/intel/pnetcdf-1.13.0/
+  872  ls -altrh /nopt/nrel/apps/software/wrf/intel/pnetcdf-1.13.0/src/
+  873  ls -altrh /nopt/nrel/apps/software/wrf/intel/pnetcdf-1.13.0/src/libs/
+  874  ls -altrh /nopt/nrel/apps/software/wrf/intel/pnetcdf-1.13.0/
+  875  ls -altrh /nopt/nrel/apps/software/wrf/intel/pnetcdf-1.12.2
+  876  echo $NETCDF
+  877  module list
+  878  vi ~/.wrfenv_intel_new
+  879  ls -altrh /nopt/nrel/apps/software/wrf/intel/
+  880  ls -altrh /nopt/nrel/apps/software/wrf/intel/installs
+  881  ls -altrh /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf
+  882  ls -altrh /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf/lib/
+  883  vi ~/.wrfenv_intel_new
+  884  module spider intel
+  885   module -r spider '.*intel.*'
+  886   module spider PrgEnv
+  887  vi /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0/bin/pnetcdf-config 
+  888  vi /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0/lib/pkgconfig/
+  889  vi /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0/lib/pkgconfig/pnetcdf.pc 
+  890  module load /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0
+  891  ls -altrh /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf
+  892  ls -altrh /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/module/
+  893  ls -altrh /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/module/netcdf/
+  894  vi /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/module/netcdf/4.9.2-oneapi-2024.1.0 
+  895  vi configure.wrf
+  896  module -r spider ".*oneapi*."
+  897   vi ~/.wrfenv_intel_new
+  898  module load  intel-oneapi-compilers/2024.1.0
+  899  module list
+  900  ls -altrh configure*
+  901  ./configure
+  902  vi configure.wrf_INTEL_4.3.1 
+  903  export NETCDF=/nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf
+  904  ./configure 
+  905  export NETCDF_classic=1
+  906  ./configure 
+  907  vi configure.wrf
+  908  rm configure.wrf
+  909  history | grep configure
+  910  ls -al cp /nopt/nrel/apps/software/wrf/intel/
+  911  ls -al /nopt/nrel/apps/software/wrf/intel/
+  912  ls -altrh /nopt/nrel/apps/software/wrf/intel/
+  913  ls -altrh /nopt/nrel/apps/software/wrf/intel/WRF-4.2.2
+  914  ls -altrh /nopt/nrel/apps/software/wrf/intel/wrf-4.2.2/
+  915  vi /nopt/nrel/apps/software/wrf/intel/wrf-4.2.2/build.log 
+  916  ls -al /nopt/intel/oneapi/
+  917  ls -al /nopt/intel/oneapi/modulefiles
+  918  ls -al /nopt/intel/oneapi/modulefiles/compiler
+  919  ls -al /nopt/intel/oneapi/modulefiles/compiler*
+  920  ls -altrh /nopt/intel/
+  921  ls -altrh /nopt/intel/oneapi/
+  922  ls -altrh /nopt/intel/oneapi/modulefiles
+  923  ls -altrh /nopt/nrel/
+  924  ls -altrh /nopt/nrel/apps/
+  925  ls -altrh /nopt/nrel/apps/m
+  926  ls -altrh /nopt/nrel/apps/modules/
+  927  ls -altrh /nopt/nrel/apps/software/
+  928  ls -altrh /nopt/nrel/apps/software/wrf/
+  929  ls -altrh /nopt/nrel/apps/software/wrf/modules/
+  930  ls -altrh /nopt/nrel/apps/software/wrf/modules/wrf/
+  931  module purge
+  932  module load wrf/4.2.2-intel
+  933  module list
+  934  cp /nopt/nrel/apps/software/wrf/intel/wrf-4.2.2/configure.wrf .
+  935  cp configure.wrf  configure.wrf_wrf-4.2.2
+  936  ./clean -a
+  937  cp configure.wrf_wrf-4.2.2 configure.wrf
+  938  ./compile -j 8 em_real >& log.compile &
+  939  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  940  vi log.compile
+  941  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  942  vi configure.wrf
+  943  module list
+  944  module spider PrgEnv-intel
+  945  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  946  vi log.compile
+  947  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  948  vi log.compile
+  949  vi configure.wrf
+  950  ls -al /nopt/nrel/apps/libraries/08-23/spack/opt/spack/linux-rhel8-icelake/intel-2021.10.0/netcdf-c-4.9.2-twcnffnqrckvlwqn7udxatwmyf26r6es/lib
+  951  vi log.compile
+  952  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  953  vi configure.wrf
+  954  nc-config --version
+  955  vi configure.wrf
+  956  echo $LD_LIBRARY_PATH
+  957  echo $LD_LIBRARY_PATH | grep netcdf
+  958  module list 
+  959  ls -al /nopt/nrel/apps/libraries/08-23/spack/opt/spack/linux-rhel8-icelake/intel-2021.10.0/netcdf/lib
+  960  export LD_LIBRARY_PATH=/nopt/nrel/apps/libraries/08-23/spack/opt/spack/linux-rhel8-icelake/intel-2021.10.0/netcdf/lib:$LD_LIBRARY_PATH
+  961  vi configure.wrf
+  962  ls -al /nopt/nrel/apps/libraries/08-23/spack/opt/spack/linux-rhel8-icelake/intel-2021.10.0/netcdf-fortran-4.6.0-2ptt3qnjy5vtg5s4fvo7l5qyjomufnrt/lib/
+  963  module load netcdf-fortran-4.6.0-2ptt3qnjy5vtg5s4fvo7l5qyjomufnrt
+  964  module spider netcdf
+  965  module -r spider '.*netcdf.*' | grep '4.6
+  966  vi configure.wrf
+  967  echo $NETCDF
+  968  vi configure.wrf
+  969  module list
+  970  vi configure.wrf
+  971  cp configure.wrf configure.wrf_wrf-4.2.2 
+  972  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+  973  ./clean -a
+  974  ps -u
+  975  kill 1437715
+  976  ps -u
+  977  kill 1437780 1495676 1495678 1495679 1495680
+  978  ./clean -a
+  979  ps -u
+  980  kill 1495682 1520664 1520667 1520708 1520713 
+  981  ps -u
+  982  module list
+  983  module spider netcdf/4.9.2-intel-oneapi-mpi-intel
+  984  echo $NETCDF
+  985  ls -al /nopt/nrel/apps/libraries/08-23/spack/opt/spack/linux-rhel8-icelake/intel-2021.10.0/netcdf
+  986  module purge
+  987  module load wrf/4.2.2-intel
+  988  module list
+  989  echo $NETCDF
+  990  vi ~/.wrfenv_intel_new
+  991  source ~/.wrfenv_intel_new
+  992  echo $NETCDF
+  993  module reset
+  994  source ~/.wrfenv_intel_new
+  995  module spider  wrf/4.2.2-intel
+  996  module avail
+  997  module load PrgEnv-intel/8.5.0
+  998  module spider pnetcdf/1.12.2-intel
+  999  pwd
+ 1000  exit
+ 1001  cd /home/mgomez/NumericalModels/WRF/WRF_test_compile/WRF_versions/WRF
+ 1002  ls -al
+ 1003  module list
+ 1004  source ~/.wrfenv_intel_new
+ 1005  echo $NETCDF
+ 1006  ls -al /nopt/nrel/apps/libraries/08-23/spack/opt/spack/linux-rhel8-icelake/intel-2021.10.0/netcdf
+ 1007  ls -al /nopt/nrel/apps/libraries/08-23/spack/opt/spack/linux-rhel8-icelake/intel-2021.10.0/netcdf/lib/
+ 1008  vi configure.wrf
+ 1009  vi configure.wrf_wrf-4.2.2 
+ 1010  vi configure.wrf_INTEL_4.3.1 
+ 1011  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/
+ 1012* vi configure.wrf_INTEL_4.3.1
+ 1013  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/
+ 1014  echo $NETCDF
+ 1015  vi configure.wrf_INTEL_4.3.1
+ 1016  vi ~/.wrfenv_intel_compile 
+ 1017  export NETCDF=/nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf
+ 1018  cp configure.wrf_INTEL_4.3.1 ./configure.wrf
+ 1019  vi configure.wrf
+ 1020  module list
+ 1021  vi configure.wrf
+ 1022  ./compile -j 8 em_real >& log.compile &
+ 1023  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1024  vi log.compile
+ 1025  history | grep NCIO
+ 1026  history | grep NIO
+ 1027  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1028  vi log.compile
+ 1029  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0
+ 1030  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0/include/
+ 1031  vi configure.wrf
+ 1032  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf-1.13.0
+ 1033  module list
+ 1034  ls -al /nopt/nrel/apps/software/wrf/intel/installs
+ 1035  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf
+ 1036  ls -al /nopt/nrel/apps/software/wrf/intel/installs/wps_dep_libs/
+ 1037  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf
+ 1038  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf/include/
+ 1039  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf/bin/
+ 1040  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf/bin/pnetcdf_version 
+ 1041  vi /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf/bin/pnetcdf_version
+ 1042  pnetcdf --version
+ 1043  pnetcdf-config --version
+ 1044  ls -al /nopt/nrel/apps/software/wrf/intel/pnetcdf-1.12.2/
+ 1045  vi /nopt/nrel/apps/software/wrf/intel/configure.wrf
+ 1046  vi configure.wrf
+ 1047  cp configure.wrf configure.wrf_TEST_intel
+ 1048  ./clean -a
+ 1049  module list
+ 1050  module spider pnetcdf/1.12.2-intel
+ 1051  ./compile -j 8 em_real >& log.compile &
+ 1052  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1053  vi log.compile
+ 1054  cp configure.wrf_TEST_intel ./configure.wrf
+ 1055  history | grep export
+ 1056  export WRFIO_NCD_NO_LARGE_FILE_SUPPORT=1
+ 1057  ./compile -j 8 em_real >& log.compile &
+ 1058  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1059  vi log.compile
+ 1060  ls -al /nopt/nrel/apps/software/wrf/intel/installs/pnetcdf /include
+ 1061  ./clean -a
+ 1062  vi configure.wrf_TEST_intel 
+ 1063  vi log.compile
+ 1064  vi configure.wrf_TEST_intel 
+ 1065  vi log.compile
+ 1066  vi configure.wrf_TEST_intel 
+ 1067  ./clean -a
+ 1068  cp configure.wrf_TEST_intel ./configure.wrf
+ 1069  ./compile -j 8 em_real >& log.compile &
+ 1070  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1071  vi log.compile
+ 1072  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1073  vi log.compile
+ 1074  vi configure.wrf_TEST
+ 1075  vi configure.wrf_TEST_intel 
+ 1076  ./clean -a
+ 1077  ps -u
+ 1078  kill 1733532 
+ 1079  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1080  ps -u
+ 1081  kill 1733565 1756663 1756665 1756666 1756667 1756672 1756673 1759735 1759738 1759778 1759783
+ 1082  ps -u
+ 1083  ./clean -a
+ 1084  cp configure.wrf_TEST_intel ./configure.wrf
+ 1085  ./compile -j 8 em_real >& log.compile &
+ 1086  vi configure.wrf
+ 1087  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1088  vi log.compile
+ 1089  ./clean -a
+ 1090  vi log.compile
+ 1091  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1092  vi configure.wrf_wrf-4.2.2 
+ 1093  vi configure.wrf_INTEL_4.3.1 
+ 1094  ./clean -a
+ 1095  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1096  vi configure.wrf_INTEL_4.3.1 
+ 1097  ls -al /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/
+ 1098  vi configure.wrf_INTEL_4.3.1 
+ 1099  ls -al  /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf
+ 1100  ls -al  /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/module/
+ 1101  ls -al  /nopt/nrel/apps/cpu_stack/libraries-intel/06-24/linux-rhel8-sapphirerapids/oneapi-2024.1.0/netcdf/module/netcdf/
+ 1102  module list
+ 1103  module load netcdf/4.9.2-oneapi-2024.1.0
+ 1104  ./compile -j 8 em_real >& log.compile &
+ 1105  vi log.compile
+ 1106  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1107  vi log.compile
+ 1108  vi configure.wrf
+ 1109  vi configure.wrf_wrf-4.2.2 
+ 1110  vi configure.wrf_INTEL_4.3.1 
+ 1111  ./clean -a
+ 1112  ps -u
+ 1113  kill 1833148
+ 1114  ps -u
+ 1115  ./clean -a
+ 1116  ps -u
+ 1117  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1118  ps u-0
+ 1119  ps -u
+ 1120  kill 1833181 1847307 1847309 1847310 1847311 1847312 1847313 1850044 1850048 1850121 1850138 1862207
+ 1121  ps -u
+ 1122  ./clean -a
+ 1123  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1124  vi configure.wrf
+ 1125  module list
+ 1126  ./compile -j 8 em_real >& log.compile &
+ 1127  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1128  vi log.compile
+ 1129  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1130  vi log.compile
+ 1131  vi configure.wrf
+ 1132  vi log.compile
+ 1133  vi configure.wrf_TEST
+ 1134  vi configure.wrf_INTEL_4.3.1 
+ 1135  ./clean -a
+ 1136  ps -u
+ 1137  kill 1868999
+ 1138  ps -u
+ 1139  ./clean -a
+ 1140  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1141  vi configure.wrf
+ 1142  ./compile -j 8 em_real >& log.compile &
+ 1143  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1144  vi log.compile
+ 1145  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1146  vi log.compile
+ 1147  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1148  vi log.compile
+ 1149  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1150  vi log.compile
+ 1151  module list
+ 1152  module spider PrgEnv
+ 1153  module load PrgEnv-intel/8.5.0
+ 1154  vi ~/.wrfenv_intel_compile 
+ 1155  module list
+ 1156  module load module load intel-oneapi-compilers/2023.2.0
+ 1157  module load intel-oneapi-compilers/2023.2.0
+ 1158  module llist
+ 1159  module list
+ 1160  ./clean -a
+ 1161  ps -u
+ 1162  kill 1920318
+ 1163  ps -u
+ 1164  kill 1920351 1957423 1938587 1957849
+ 1165  ps -u
+ 1166  ./clean -a
+ 1167  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1168  ./compile -j 8 em_real >& log.compile &
+ 1169  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1170  vi log.compile
+ 1171  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1172  vi log.compile
+ 1173  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1174  echo $NETCDF
+ 1175  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1176  vi log.compile
+ 1177  ./clean -a
+ 1178  vi configure.wrf_INTEL_4.3.1 
+ 1179  ps -u
+ 1180  kill 1968036
+ 1181  kill 1986164 1989212 1989377 1983266
+ 1182  ps -u
+ 1183  ./clean -a
+ 1184  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1185  ./compile -j 8 em_real >& log.compile &
+ 1186  module lst
+ 1187  module ls
+ 1188  module list
+ 1189  module -r spider ".*intel-oneapi*."
+ 1190  module -r spider "*.intel-oneapi.*"
+ 1191  module -r spider "*.intel.*"
+ 1192  module spider intel
+ 1193  module load intel-oneapi
+ 1194  module list
+ 1195  history | grep module
+ 1196  ./clean -a
+ 1197  history | grep source
+ 1198  vi ~/.wrfenv_intel_new
+ 1199  ./clean -a
+ 1200  module purge
+ 1201  module spider wrf
+ 1202  module load wrf/4.2.2-intel
+ 1203  module load intel-oneapi
+ 1204  module list
+ 1205  ./clean -a
+ 1206  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1207  ./compile -j 8 em_real >& log.compile &
+ 1208  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1209  vi log.compile
+ 1210  vi configure.wrf_INTEL_4.3.1 
+ 1211  ./clean -a
+ 1212  ps -u
+ 1213  kill 2094119 2107573
+ 1214  ps -u
+ 1215  ./clean -a
+ 1216  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1217  ./compile -j 8 em_real >& log.compile &
+ 1218  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1219  vi log.compile
+ 1220  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1221  vi log.compile
+ 1222  vi configure.wrf_INTEL_4.3.1 
+ 1223  ./clean -a
+ 1224  ps -u
+ 1225  kill 2125531 2138368
+ 1226  ps -u
+ 1227  ./clean -a
+ 1228  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1229  ./compile -j 8 em_real >& log.compile &
+ 1230  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1231  vi log.compile
+ 1232  ls -al /nopt/nrel/apps/cpu_stack/base/06-24/linux-rhel8-sapphirerapids/
+ 1233  ls -al /nopt/nrel/apps/cpu_stack/base/06-24/linux-rhel8-sapphirerapids/gcc-12.2.1/
+ 1234  vi log.compile
+ 1235  ls -altrh
+ 1236  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1237  ./clean -a
+ 1238  ps -u
+ 1239  ./clean -a
+ 1240  source ~/.wrfenv_intel_compile 
+ 1241  vi ~/.wrfenv_intel_compile
+ 1242  module list
+ 1243  ./clean -a
+ 1244  cp configure.wrf_INTEL_4.3.1  configure.wrf
+ 1245  ./compile -j 8 em_real >& log.compile &
+ 1246  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1247  vi log.compile
+ 1248  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1249  vi log.compile
+ 1250  ./clean -a
+ 1251  ps -u
+ 1252  kill 2228928
+ 1253  kill 2247121 2248502 2248565
+ 1254  ps -u
+ 1255  ./clean -a
+ 1256  ls -al configure*
+ 1257  vi configure.wrf_TEST
+ 1258  ls -al /opt/cray/pe/hdf5/1.12.2.1/CRAYCLANG/14.0/
+ 1259  module purge
+ 1260  source ~/.wrfenv_cray_new 
+ 1261  vi configure.wrf_TEST
+ 1262  module spider PrgEnv-cray
+ 1263  module spider cce
+ 1264  module load cce/16.0.0
+ 1265  module spider craype
+ 1266  vi log.compile
+ 1267  export WRFIO_NCD_NO_LARGE_FILE_SUPPORT=1
+ 1268  vi ~/.wrfenv_cray_new 
+ 1269  ls -al configure*
+ 1270  cp configure.wrf_TEST configure.wrf
+ 1271  ./compile -j 8 em_real >& log.compile &
+ 1272  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1273  vi log.compile
+ 1274  ls -al /opt/cray/pe/cce/16.0.0/binutils/x86_64/x86_64-pc-linux-gnu/bin/ld
+ 1275  ls -al /opt/cray/pe/cce/16.0.0/binutils/x86_64/x86_64-pc-linux-gnu/bin
+ 1276  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1277  ps -u
+ 1278  ./clean -a
+ 1279  kill 2306909 2317830
+ 1280  ./clean -a
+ 1281  ps -u
+ 1282  kill 2306942 2315135 2315139 2315141 2644488 2644520 2644549 2644564 2644565
+ 1283  ps -u
+ 1284  ./clean -a
+ 1285  ps -u
+ 1286  cd /scratch/mgomez/JIP/US/les/2017-7-27_20_highRes_z_2/
+ 1287  ls -altrh auxH*
+ 1288  tail rsl.error.0000
+ 1289  cd -
+ 1290  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1291  ./clean -a
+ 1292  ps -u
+ 1293  ./clean -a
+ 1294  ps -u
+ 1295  kill 2911340 2911354 2911355 2911359 2920485 2920486 2920487 2923339 2923341 2923432 2923442 
+ 1296  ps -u
+ 1297  ./clean -a
+ 1298  ls /usr/bin/clang
+ 1299  ls /usr/bin/clang/
+ 1300  ls /usr/bin/clang
+ 1301  vi configure.wrf
+ 1302  vi configure.wrf_TEST
+ 1303  ./clean -a
+ 1304  source ~/.wrfenv_cray_new 
+ 1305  vi ~/.wrfenv_cray_new 
+ 1306  ls -al /opt/cray/pe/netcdf/4.9.0.1/CRAYCLANG/14.0
+ 1307* 
+ 1308  vi ~/.wrfenv_cray_new
+ 1309  ls -altrh /opt/cray/pe/netcdf/default/
+ 1310  ls -altrh /opt/cray/pe/netcdf/default/CRAYCLANG/
+ 1311  vi ~/.wrfenv_cray_new 
+ 1312  export NETCDF=/opt/cray/pe/netcdf/default/CRAYCLANG/17.0
+ 1313  vi \$\{NETCDF\}/
+ 1314  ls -al $NETCDF
+ 1315  ls -al \$NETCDF/bin/
+ 1316  ls -altrh /opt/cray/pe/netcdf/
+ 1317  module spider netcdf
+ 1318  module spider -r ".*netcdf*."
+ 1319  module load netcdf
+ 1320  module list
+ 1321  module purge
+ 1322  module list
+ 1323  module load PrgEnv-cray
+ 1324  module list
+ 1325  module spider netcdf
+ 1326  module -r spider '.*netcdf.*'
+ 1327  moduel spider cray-netcdf/4.9.0.9
+ 1328  module spider cray-netcdf/4.9.0.9
+ 1329   module spider cray-netcdf-hdf5parallel/4.9.0.9
+ 1330  module load cray-netcdf-hdf5parallel/4.9.0.9
+ 1331  module list
+ 1332  ls -al /opt/cray/pe/hdf5/default/
+ 1333  ls -al /opt/cray/pe/hdf5/default/CRAYCLANG/
+ 1334  ls -al /opt/cray/pe/hdf5/default/CRAYCLANG/17.0/
+ 1335  ls -al /opt/cray/pe/hdf5/default/CRAYCLANG/17.0/bin/
+ 1336  ls -al /opt/cray/pe/hdf5/default/CRAYCLANG/17.0/lib/
+ 1337  ls -al /opt/cray/pe/hdf5/default/
+ 1338  ls -al /opt/cray/pe/hdf5/default/C
+ 1339  ls -al /opt/cray/pe/hdf5/default/CRAYCLANG/
+ 1340  ls -al /opt/cray/pe/hdf5/default/CRAYCLANG/17.0/
+ 1341  ls -al /opt/cray/pe/hdf5/
+ 1342  module spider cray-netcdf/4.9.0.9
+ 1343  module load cray-hdf5/1.12.2.9 cray-netcdf/4.9.0.9
+ 1344  module list
+ 1345  module spider pnetcdf
+ 1346  module load pnetcdf/1.12.2-cray
+ 1347  module list
+ 1348  vi log.compile
+ 1349  vi ~/.wrfenv_cray_new 
+ 1350  vi log.compile
+ 1351  vi ~/.wrfenv_cray_new 
+ 1352  export WRFIO_NCD_LARGE_FILE_SUPPORT=1
+ 1353  vi ~/.wrfenv_cray_new 
+ 1354  vi log.compile
+ 1355  exho $WRFIO_NCD_NO_LARGE_FILE_SUPPORT
+ 1356  echo $WRFIO_NCD_NO_LARGE_FILE_SUPPORT
+ 1357  unset WRFIO_NCD_NO_LARGE_FILE_SUPPORT
+ 1358  echo $WRFIO_NCD_LARGE_FILE_SUPPORT
+ 1359  ls -al configure.wrf*
+ 1360  cp configure.wrf_TEST configure.wrf
+ 1361  vi configure.wrf
+ 1362  module list
+ 1363  vi configure.wrf
+ 1364  ls -al /opt/cray/pe/
+ 1365  ls -al /opt/cray/pe/parallel-netcdf/
+ 1366  ls -al /opt/cray/pe/parallel-netcdf/default/CRAYCLANG/17.0/
+ 1367  module spider parallel-netcdf
+ 1368  module lost
+ 1369  module list
+ 1370  module unset pnetcdf/1.12.2-cray
+ 1371  module unload pnetcdf/1.12.2-cray
+ 1372  module list
+ 1373  ls -al /opt/cray/pe/parallel-netcdf/
+ 1374  module load cray-parallel-netcdf/1.12.3.9
+ 1375  module spider cray-parallel-netcdf/1.12.3.9
+ 1376  module spider cray-parallel-netcdf
+ 1377  module spider cray-parallel-netcdf/1.12.3.1
+ 1378  module spider wrf/4.2.2-cray
+ 1379  module load cray-parallel-netcdf/1.12.3.9
+ 1380  module -f cray-parallel-netcdf/1.12.3.9
+ 1381  module help
+ 1382  module load --force  cray-parallel-netcdf/1.12.3.9
+ 1383  module --force load  cray-parallel-netcdf/1.12.3.9
+ 1384  module spider wrf
+ 1385  module load wrf/4.2.2-cray
+ 1386  module load cray-parallel-netcdf/1.12.3.9
+ 1387  module list
+ 1388  ls -al /opt/cray/pe/parallel-netcdf/1.12.3.9/CRAYCLANG/17.0/
+ 1389  vi configure.wrf
+ 1390  ./compile -j 8 em_real >& log.compile &
+ 1391  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1392  module list
+ 1393  while true; do grep 'Error' log.compile; tail -n2 log.compile; grep 'success' log.compile; ls -altrh | tail ; sleep 30; done
+ 1394  history | grep module
+ 1395  vi ~/.wrfenv_cray_test
+ 1396  vi log.compile
+ 1397  vi ~/.wrfenv_cray_new 
+ 1398  vi ~/.wrfenv_cray_test
+ 1399  history > history.txt

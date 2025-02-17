@@ -1435,13 +1435,15 @@ CONTAINS
   endif
 
   IF ( coupler_on .and. present(cplmask) .and. present(sst_input) ) THEN
-     
+      print*,'MSG: updating SST in module_surface_driver.F, coupler_on=',coupler_on,',  present(cplmask)=',present(cplmask),' present(sst_input)=',present(sst_input) 
+      print*, 'before updating SST (MSG), ips=',ips,' jps=',jps,' sst_input=',sst_input(ips,jps),' sst=',sst(ips,jps)
      CALL cpl_rcv( id, 'SST',            &
         &              ids, ide, jds, jde, kds, kde, &
         &              ims, ime, jms, jme, kms, kme, &
         &              ips, ipe, jps, jpe, kps, kpe, &
         &              max_edom, cplmask, SST, SST_INPUT )
-     
+      print*, 'after updating SST (MSG), ips=',ips,' jps=',jps,' sst_input=',sst_input(ips,jps),' sst=',sst(ips,jps)
+
      CALL cpl_rcv( id, 'UOCE',            &
         &              ids, ide, jds, jde, kds, kde, &
         &              ims, ime, jms, jme, kms, kme, &

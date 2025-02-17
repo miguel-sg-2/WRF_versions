@@ -9,6 +9,8 @@ USE module_nonrot_gad_ge28 !, ONLY: calc_ct_p_ge28
 USE module_nonrot_gad_nrel5
 USE module_nonrot_gad_siem6
 USE module_nonrot_gad_ves3
+USE module_nonrot_gad_iea15
+USE module_nonrot_gad_iea11
 
 #ifdef DM_PARALLEL
   USE MODULE_DM
@@ -1030,6 +1032,10 @@ endif
                           ct_p = calc_ct_p_siem6(v0t_avg)
                       elseif (turb_type(n) .eq. 30.0) then
                           ct_p = calc_ct_p_ves3(v0t_avg)    
+                      elseif (turb_type(n) .eq. 11.0) then
+                          ct_p = calc_ct_p_iea11(v0t_avg)
+                      elseif (turb_type(n) .eq. 15.0) then
+                          ct_p = calc_ct_p_iea15(v0t_avg)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)
@@ -1106,6 +1112,10 @@ endif
                           ct_p = calc_ct_p_siem6(v0t_avg)
                       elseif (turb_type(n) .eq. 30.0) then
                           ct_p = calc_ct_p_ves3(v0t_avg)    
+                      elseif (turb_type(n) .eq. 11.0) then
+                          ct_p = calc_ct_p_iea11(v0t_avg)
+                      elseif (turb_type(n) .eq. 15.0) then
+                          ct_p = calc_ct_p_iea15(v0t_avg)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)
@@ -1166,6 +1176,10 @@ endif
                           ct_p = calc_ct_p_siem6(v0t_avg)
                       elseif (turb_type(n) .eq. 30.0) then
                           ct_p = calc_ct_p_ves3(v0t_avg)
+                      elseif (turb_type(n) .eq. 11.0) then
+                          ct_p = calc_ct_p_iea11(v0t_avg)
+                      elseif (turb_type(n) .eq. 15.0) then
+                          ct_p = calc_ct_p_iea15(v0t_avg)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)
@@ -1234,6 +1248,10 @@ endif
                           ct_p = calc_ct_p_siem6(v0t_avg)
                       elseif (turb_type(n) .eq. 30.0) then
                           ct_p = calc_ct_p_ves3(v0t_avg)
+                      elseif (turb_type(n) .eq. 11.0) then
+                          ct_p = calc_ct_p_iea11(v0t_avg)
+                      elseif (turb_type(n) .eq. 15.0) then
+                          ct_p = calc_ct_p_iea15(v0t_avg)
                       endif
                       CT = ct_p(1)! *dz(i,k,j)*sigmar/(pi*(radmax*radmax - radmin*radmin))
                       CP = ct_p(2)

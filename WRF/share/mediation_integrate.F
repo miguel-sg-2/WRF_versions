@@ -330,7 +330,7 @@ SUBROUTINE med_before_solve_io ( grid , config_flags )
        ENDIF
 #else
        CALL med_auxinput_in ( grid, ialarm, config_flags )
-       WRITE ( message , FMT='(A,i3,A,i3)' )  'Input data processed for aux input ' , &
+       WRITE ( message , FMT='(A,i3,A,i3)' )  'Input data processed for aux input ' , &   ! MSG: read wrflowinp
           ialarm - first_auxinput + 1, ' for domain ',grid%id
        CALL wrf_debug ( 0 , message )
 #endif
@@ -2001,6 +2001,8 @@ SUBROUTINE med_auxinput_in ( grid , stream, config_flags )
 
    grid%nframes(stream) = grid%nframes(stream) + 1
 
+print*,'MSG: stream=',stream,' auxinput4=',AUXINPUT4_ALARM
+
    SELECT CASE( stream )
 ! registry-generated file of calls to open filename
 !     CASE ( AUXINPUT1_ALARM )
@@ -2364,7 +2366,7 @@ SUBROUTINE open_aux_u ( grid , config_flags, stream, alarm_id, &
 !
 !</DESCRIPTION>
      CALL open_u_dataset ( oid, TRIM(fname), grid ,  &
-                           config_flags , insub , n2, ierr )
+                           config_flags , insub , n2, ierr ) !! MSG: reading  wrflowinp_d01 file here
    ENDIF
    IF ( ierr .NE. 0 ) THEN
      WRITE ( message , '("open_aux_u : error opening ",A," for reading. ",I3)') &

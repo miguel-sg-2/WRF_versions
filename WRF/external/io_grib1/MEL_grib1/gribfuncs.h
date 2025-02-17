@@ -35,6 +35,7 @@ int gribgetbms (char *,BMS_INPUT *,int,unsigned long,char *);
 int gribgetgds (char *,grid_desc_sec *,char *);
 int gribgetpds (char *,PDS_INPUT *,char *);
 int gribhdr2file (GRIB_HDR *,FILE *,char *);
+// int grib_unthin(float *,float *,int *, int *, int *);
 int gribputbds (USER_INPUT,long,short,float *,BDS_HEAD_INPUT *,
 		GRIB_HDR **,char *);
 int gribputgds (GEOM_IN,GDS_HEAD_INPUT *,void **,GRIB_HDR **,char *);
