@@ -783,6 +783,8 @@ endif
 
       IF (wp_opt .EQ. 10) THEN
 
+        theta_turbine(n) = d0t_avg ! Avoid yawing routine
+
         IF ( abs(acc_yaw_err(n)) .GE. yaw_thresh ) THEN ! If acc_yaw_err(n) exceeds threshold, turbine n begins yawing.
                                                         ! During yawing, no new
                                                         ! entries are stored in
