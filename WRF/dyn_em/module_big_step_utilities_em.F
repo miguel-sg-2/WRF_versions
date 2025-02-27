@@ -5842,6 +5842,102 @@ END SUBROUTINE set_tend
 
 !------------------------------------------------------------------------------
 
+SUBROUTINE rk_rayleigh_damp_w_bdy(rw_tendf,               &
+                                 w, c1h, c2h, c1f, c2f,              &
+                                 mut, ph, phb,          &
+                                 damp_bdy, dampcoef_bdy, zdamp_bdy, xydamp_bdy,  dx,              &
+                                 ids, ide, jds, jde, kds, kde,    &
+                                 ims, ime, jms, jme, kms, kme,    &
+                                 its, ite, jts, jte, kts, kte   )
+
+
+!-----------------------------------------------------------------------
+! Begin declarations.
+
+    IMPLICIT NONE
+
+    INTEGER, INTENT( IN )  &
+    :: ids, ide, jds, jde, kds, kde,  &
+       ims, ime, jms, jme, kms, kme,  &
+       its, ite, jts, jte, kts, kte
+
+    REAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( INOUT )  &
+    :: rw_tendf
+
+    REAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN )  &
+    :: w, ph, phb
+
+    REAL, DIMENSION( ims:ime, jms:jme ),  INTENT( IN )  &
+    :: mut
+
+
+    REAL, DIMENSION( kms:kme ) ,  INTENT(IN   )  &
+    :: c1h, c2h, c1f, c2f
+    
+    INTEGER, INTENT( IN ):: damp_bdy
+
+    REAL, INTENT(IN   )   & 
+    :: dampcoef_bdy, zdamp_bdy, xydamp_bdy, dx
+      
+! Local variables. 
+      
+    INTEGER  &
+    :: i_start, i_end, j_start, j_end, k_start, k_end, i, j, k, ktf, k1, k2
+      
+    REAL  &
+    :: pii, dcoef, z, ztop, x_min_dist, y_min_dist, xy_min_dist
+              
+! End declarations.
+!-----------------------------------------------------------------------
+
+    pii = 2.0 * asin(1.0)
+
+    ktf = MIN( kte,   kde-1 )
+
+!-----------------------------------------------------------------------
+! Adjust w to base state.
+
+    DO j = jts, MIN( jte,   jde-1 )
+    DO i = its, MIN( ite,   ide-1 )
+      ! Distance to nearest lateral boundary
+      x_min_dist = MIN(abs(ide-i),abs(i-ids))*dx
+      x_min_dist = MAX(0.1,x_min_dist)
+      y_min_dist = MIN(abs(jde-j),abs(j-jds))*dx
+      y_min_dist = MAX(0.1,y_min_dist)
+      xy_min_dist = MIN(x_min_dist,y_min_dist)
+      xy_min_dist = MAX(0.1,xy_min_dist)
+      ! Add Rayleigh damping if near the domain boundaries
+      IF ( xy_min_dist .le. xydamp_bdy ) THEN
+        DO k = kts, MIN( kte,   kde   )
+          z = ( phb(i,k,j) + ph(i,k,j) ) / g
+          ztop = ( phb(i,kde,j) + ph(i,kde,j) ) / g
+          ! Activate damping layer if above boundary layer
+          if (z .ge. (ztop - zdamp_bdy) ) then
+              if (damp_bdy .eq. 2) then
+                 ! Damping coefficient calculated only as function of distance from lateral boundaries
+                 dcoef = 1.0 - MIN( 1.0, ( xy_min_dist ) / xydamp_bdy ) 
+              else
+                 ! Damping coefficient calculated as function of distance from lateral boundaries and height
+                 dcoef = 1.0 - MIN( 1.0, ( xy_min_dist ) / xydamp_bdy )* MIN( 1.0, ( ztop - z ) / zdamp_bdy )
+              end if
+              ! dcoef = 1.0 - MIN( 1.0, ( xy_min_dist ) / xydamp_bdy )* MIN( 1.0, ( ztop - z ) / zdamp_bdy )
+              dcoef = ( SIN( 0.5 * pii * dcoef ) )**2
+              rw_tendf(i,k,j) = rw_tendf(i,k,j) -  &
+                            (c1f(k)*mut(i,j)+c2f(k)) * ( dcoef * dampcoef_bdy ) * w(i,k,j)
+          end if
+        END DO
+      END IF
+    END DO
+    END DO
+
+! End adjustment of w.
+!-----------------------------------------------------------------------
+
+
+END SUBROUTINE rk_rayleigh_damp_w_bdy
+
+
+
     SUBROUTINE rk_rayleigh_damp( ru_tendf, rv_tendf,              &
                                  rw_tendf, t_tendf,               &
                                  u, v, w, t, t_init,              &

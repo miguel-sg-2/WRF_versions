@@ -14,7 +14,7 @@ MODULE module_em
     horizontal_pressure_gradient, pg_buoy_w, w_damp, perturbation_coriolis, coriolis, curvature, horizontal_diffusion, &
         horizontal_diffusion_3dmp, vertical_diffusion_u, &
  vertical_diffusion_v, vertical_diffusion, vertical_diffusion_3dmp, sixth_order_diffusion, rk_rayleigh_damp, &
-        theta_relaxation, vertical_diffusion_mp, zero_tend, zero_tend2d
+        theta_relaxation, vertical_diffusion_mp, zero_tend, zero_tend2d, rk_rayleigh_damp_w_bdy
 
    USE module_state_description, only: param_first_scalar, p_qr, p_qv, p_qc, p_qg, p_qi, p_qs, tiedtkescheme,ntiedtkescheme, heldsuarez, &
         positivedef, gdscheme, g3scheme, gfscheme, kfetascheme, mskfscheme, monotonic, wenopd_scalar, weno_scalar, weno_mom
@@ -212,7 +212,7 @@ SUBROUTINE rk_tendency ( config_flags, rk_step,                           &
                          ids, ide, jds, jde, kds, kde,                    &
                          ims, ime, jms, jme, kms, kme,                    &
                          its, ite, jts, jte, kts, kte,                    &
-                         max_vert_cfl, max_horiz_cfl)
+                         max_vert_cfl, max_horiz_cfl, damp_bdy, dampcoef_bdy, zdamp_bdy, xydamp_bdy,  dx)
 
    IMPLICIT NONE
 
@@ -323,9 +323,9 @@ SUBROUTINE rk_tendency ( config_flags, rk_step,                           &
    REAL,    INTENT( IN ) :: diff_6th_factor
    INTEGER, INTENT( IN ) :: adv_opt
 
-   INTEGER, INTENT( IN ) :: damp_opt, rad_nudge
+   INTEGER, INTENT( IN ) :: damp_opt, rad_nudge, damp_bdy
 
-   REAL, INTENT( IN ) :: zdamp, dampcoef
+   REAL, INTENT( IN ) :: zdamp, dampcoef, dampcoef_bdy, zdamp_bdy, xydamp_bdy, dx
 
    REAL, INTENT( OUT ) :: max_horiz_cfl
    REAL, INTENT( OUT ) :: max_vert_cfl
@@ -770,6 +770,16 @@ SUBROUTINE rk_tendency ( config_flags, rk_step,                           &
                                        its, ite, jts, jte, kts, kte )
 
     ENDIF
+    
+     if (damp_bdy .gt. 0) then
+           CALL rk_rayleigh_damp_w_bdy(  rw_tendf,               &
+                                  w, c1h, c2h, c1f, c2f,              &
+                                  mut, ph, phb,          &
+                                  damp_bdy, dampcoef_bdy, zdamp_bdy, xydamp_bdy, dx,             &
+                                  ids, ide, jds, jde, kds, kde,    &
+                                  ims, ime, jms, jme, kms, kme,    &
+                                  its, ite, jts, jte, kts, kte   )
+     endif
 
     IF( damp_opt .eq. 2 )                                      &
        CALL rk_rayleigh_damp( ru_tendf, rv_tendf,              &
@@ -782,7 +792,6 @@ SUBROUTINE rk_tendency ( config_flags, rk_step,                           &
                               ids, ide, jds, jde, kds, kde,    &
                               ims, ime, jms, jme, kms, kme,    &
                               its, ite, jts, jte, kts, kte   )
-
     IF( rad_nudge .eq. 1 )                                     &
        CALL theta_relaxation( t_tendf, t, t_init,              &
                               mut, c1h, c2h, ph, phb,          &
