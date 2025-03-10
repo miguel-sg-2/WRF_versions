@@ -1,0 +1,261 @@
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-amd: PrgEnv-amd/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-amd/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+      
+        The PrgEnv-amd modulefile loads the AMD Programming Environment, which
+        includes the AMD LLVM Compiler. This modulefile defines the
+        system paths and environment variables needed to build an application
+        using AMD LLVM for supported Cray systems.
+      
+        This module loads the following products:
+      
+      	craype
+      	cray-dsmml
+      	cray-mpich
+      	cray-libsci
+      
+      
+      
+      *NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+      
+      
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-aocc: PrgEnv-aocc/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-aocc/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+      
+        The PrgEnv-aocc modulefile loads the AMD Programming Environment, which
+        includes the AMD AOCC Compiler. This modulefile defines the
+        system paths and environment variables needed to build an application
+        using AMD AOCC for supported Cray systems.
+      
+        This module loads the following products:
+      
+      	craype
+      	cray-dsmml
+      	cray-mpich
+      	cray-libsci
+      
+      
+      
+      *NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+      
+      
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-cray: PrgEnv-cray/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-cray/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+      
+        The PrgEnv-cray modulefile loads the Cray Programming Environment, which
+        includes the Cray Compiling Environment (CCE). This modulefile defines the
+        system paths and environment variables needed to build an application
+        using CCE for supported Cray systems.
+      
+        This module loads the following products:
+      
+      	craype
+      	cray-dsmml
+      	cray-mpich
+      	cray-libsci
+      
+      
+      
+      *NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+      
+      
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-cray-amd: PrgEnv-cray-amd/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-cray-amd/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+      
+        The PrgEnv-cray-amd modulefile loads the mixed CRAY/AMD Programming 
+        Environment, which uses the AMD Clang C/C++ compiler and the 
+        Cray Compiling Environment (CCE) Fortran compiler.
+      
+        This module loads the following products:
+      
+      	cce
+      	craype
+      	cray-dsmml
+      	cray-mpich
+      	cray-libsci
+      
+      
+      
+        *NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+      
+      
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-gnu: PrgEnv-gnu/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-gnu/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+      
+        The PrgEnv-gnu modulefile loads the GNU Programming Environment, which
+        includes the GNU compiler suite. This modulefile defines the
+        system paths and environment variables needed to build an application
+        using GNU for supported Cray systems.
+      
+        This module loads the following products:
+      
+      	craype
+      	cray-dsmml
+      	cray-mpich
+      	cray-libsci
+      
+      
+      
+      *NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+      
+      
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-gnu-amd: PrgEnv-gnu-amd/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-gnu-amd/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+      
+        The PrgEnv-gnu-amd modulefile loads the mixed GNU/AMD Programming 
+        Environment, which uses the AMD Clang C/C++ compiler and the 
+        GNU compiler suite Fortran compiler.
+      
+        This module loads the following products:
+      
+      	gcc
+      	craype
+      	cray-dsmml
+      	cray-mpich
+      	cray-libsci
+      
+      
+      
+        *NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+      
+      
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-intel: PrgEnv-intel/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-intel/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+          The PrgEnv-intel modulefile loads the Intel Programming Environment, 
+          which includes the Intel compiler suite. 
+          This modulefile defines the system paths and environment variables 
+          needed to build an application using Intel for supported 
+          Cray systems.    
+        
+          This module loads the following modules:
+           - cray-dsmml
+           - cray-mpich
+           - cray-libsci
+       
+          NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-nvhpc: PrgEnv-nvhpc/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-nvhpc/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+      
+        The PrgEnv-nvhpc modulefile loads the  Programming Environment, which
+        includes the NVIDIA HPC compiler suite. This modulefile defines the
+        system paths and environment variables needed to build an application
+        using NVHPC for supported Cray systems.
+      
+        This module loads the following products:
+      
+      	craype
+      	cray-dsmml
+      	cray-mpich
+      	cray-libsci
+      
+      
+      
+      *NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+      
+      
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  PrgEnv-nvidia: PrgEnv-nvidia/8.3.3
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    This module can be loaded directly: module load PrgEnv-nvidia/8.3.3
+
+    Additional variants of this module can also be loaded after loading the following modules:
+
+ 
+    Help:
+          The PrgEnv-nvidia modulefile loads the Nvidia Programming Environment, 
+          which includes the NVIDIA compiler suite. 
+          This modulefile defines the system paths and environment variables 
+          needed to build an application using Nvidia for supported 
+          Cray systems.    
+        
+          This module loads the following modules:
+           - cray-dsmml
+           - cray-mpich
+           - cray-libsci
+       
+          NOTE: This list is defined in /etc/cray-pe.d/cray-pe-configuration.sh.
+
+
+ 
+
