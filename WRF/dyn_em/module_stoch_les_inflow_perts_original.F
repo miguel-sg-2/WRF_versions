@@ -183,26 +183,39 @@
           END DO
        END DO  
 
-
-! 1) find maximum pblh for each tile
-! 2) find the avearge of pblh based on the max at each patch
-! 3) Cap the upper bound of the pblh
+!       pblh = 1200.0 !50 W/m^2
+       pblh = 1000.0 !NEUTRAL
+       pblh = 400 ! Weakly stable simulations
+! 1) Compute average pblh on each tile. 2) Find the domain max and min of all patch averages.
+! 3) Compute the average of the global max and min values and use on all patches
+! 4) Cap upper and lower bounds.
+! Something smarter will be needed for complex terrain.
 
        IF (m_pblh_opt .EQ. 1 ) THEN 
 
-          pblh = 0.0
+          mpblhpsum = 0.0
+          mpblhpavg = 0.0
+          counter = 0.0
           DO j=j_start, j_end
              DO i=i_start, i_end
-                if (m_pblh(i,j) .gt. pblh) then 
-                        pblh = m_pblh(i,j)
-                        
-                end if
-                !mpblhpsum = mpblhpsum + m_pblh(i,j)
-                !counter = counter + 1.0
+                mpblhpsum = mpblhpsum + m_pblh(i,j)
+                counter = counter + 1.0
              END DO
           END DO
-          pblh = MAX(100.0,MIN(pblh,1000.0))
 
+#ifdef DM_PARALLEL
+
+mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
+
+#endif
+              
+          counter = float(ide-ids)*float(jde-jds) ! One fewer since m_pblh is at mass points
+
+          mpblhdavg = mpblhdsum/counter
+          
+          pblh = MAX(100.0,MIN(mpblhdavg,3000.0))
+                   
+!          print*,'its,mpblhdsum,counter,mpblhdavg ',its,mpblhdsum,counter,mpblhdavg
 
        ENDIF 
 
@@ -322,8 +335,8 @@ vwsgpsumdsum  = wrf_dm_sum_real(vwsgpsum)
 !
 !       north = 1
 !       east = 0
-       south = 1
-       west = 1
+!       south = 0
+!       west = 1
 
        print*,'Applying perturbations to the following boundary(ies):'
        IF (north .EQ. 1) print*,'north'
@@ -561,7 +574,7 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
           IF (its .LE. ids + ngc_h*ncells_h) THEN 
 
              DO k = k_pert_start, k_pert_end
-
+  
                 n = (k-1)/ngc_v+1
 
                 DO j = MAX(jts,jds + ngc_h*ncells_h*(west - south - nsew)), MIN(jte,jde - 1 - ngc_h*ncells_h*(west - north - nsew))
@@ -576,14 +589,9 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
 
                       IF ( m .LE. ncells_h ) THEN
 
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) then
+                         pert_t(i,k,j) =  (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag !Output variable only, for debugging.
 
-                             pert_t(i,k,j) =  (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag !Output variable only, for debugging.
-
-                             t(i,k,j) = t(i,k,j) + (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
@@ -613,13 +621,9 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
   
                       IF ( m .LE. ncells_h ) THEN
 
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) then
+                         pert_t(i,k,j) = (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
-                             pert_t(i,k,j) = (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-
-                             t(i,k,j) = t(i,k,j) + (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
@@ -649,13 +653,12 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
 
                       IF ( m .LE. ncells_h ) THEN    
 
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) then
+!    print*,'i,(i-1)/ngc_h+1,j,m,pys',i,(i-1)/ngc_h+1,j,m
+!    print*,'k,n,pys',k,n,pys(((i-1)/ngc_h+1),n,m)
 
-                             pert_t(i,k,j) = (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
+                        pert_t(i,k,j) = (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
-                             t(i,k,j) = t(i,k,j) + (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
@@ -684,13 +687,10 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
                       m = (jde-j-1)/ngc_h+1
 
                       IF ( m .LE. ncells_h ) THEN
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) then
+  
+                         pert_t(i,k,j) = (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
-                             pert_t(i,k,j) = (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-
-                             t(i,k,j) = t(i,k,j) + (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
