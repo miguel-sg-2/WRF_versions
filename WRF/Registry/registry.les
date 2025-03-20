@@ -51,6 +51,13 @@ rconfig integer m_pblh_opt      namelist,dynamics       max_domains     0       
 rconfig real    ec_cpm          namelist,dynamics       1               0.7     -       "Specify Eckert number to modify perturbations in CPM-JDM"
 #
 
+## Rayleigh curtain
+rconfig integer   damp_bdy                 namelist,dynamics     max_domains    0       h    "flag to activate Rayleigh damping in lateral boundaries"              ""      ""
+rconfig   real    dampcoef_bdy             namelist,dynamics     max_domains    0.      h    "dampcoef at domain boundaries"                                        ""      ""
+rconfig   real    zdamp_bdy                namelist,dynamics     max_domains    0.      h    "zdamp depth at domain boundaries"                                     ""      ""
+rconfig   real    xydamp_bdy               namelist,dynamics     max_domains    0.      h    "damp depth in horizontal direction at domain boundaries"              ""      ""
+#
+
 
 halo      HALO_EM_NBA_MIJ	dyn_em 8:nba_mij
 period    PERIOD_EM_NBA_MIJ   	dyn_em 3:nba_mij

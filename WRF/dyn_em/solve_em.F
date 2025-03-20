@@ -843,7 +843,8 @@ BENCH_START(rk_tend_tim)
                          ,grid%i_start(ij), grid%i_end(ij)                                                     &
                          ,grid%j_start(ij), grid%j_end(ij)                                                     &
                          ,k_start, k_end                                                                       &
-                         ,max_vert_cfl_tmp(ij), max_horiz_cfl_tmp(ij)                                         )
+                         ,max_vert_cfl_tmp(ij), max_horiz_cfl_tmp(ij) & 
+                         ,config_flags%damp_bdy ,config_flags%dampcoef_bdy, config_flags%zdamp_bdy, config_flags%xydamp_bdy, config_flags%dx      )
      END DO
      !$OMP END PARALLEL DO
 BENCH_END(rk_tend_tim)

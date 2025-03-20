@@ -398,6 +398,27 @@ IF ( ( config_flags%m_pblh_opt .EQ. 1 ) .AND. ( config_flags%km_opt .EQ. 4 ) ) T
 
 ENDIF
 
+
+IF ( ( config_flags%m_pblh_opt .EQ. 2 ) ) THEN
+
+         !$OMP PARALLEL DO   &
+         !$OMP PRIVATE ( ij )
+         DO ij = 1 , grid%num_tiles
+
+           CALL calc_m_pblh(grid%m_pblh, grid%t_2, grid%rdz,                 &
+                                 ids, ide, jds, jde, kds, kde,               &
+                                 ims, ime, jms, jme, kms, kme,               &
+                                 grid%i_start(ij), grid%i_end(ij),           &
+                                 grid%j_start(ij), grid%j_end(ij),           &
+                                 k_start    , k_end)
+
+
+        ENDDO
+         !$OMP END PARALLEL DO
+
+ENDIF
+
+
 IF (  config_flags%les_pert_opt .GT. 0 ) THEN
 
    IF (  config_flags%les_pert_opt .EQ. 1 ) THEN

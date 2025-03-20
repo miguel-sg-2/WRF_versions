@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include "dprints.h"		/* for dprints */
 #include "gribfuncs.h"		/* prototypes */
 /*
@@ -23,6 +25,7 @@
 *     1>  error; errmsg is filled;
 ************************************************************************
 */
+/*
 #if PROTOTYPE_NEEDED
 int    gribhdr2file ( GRIB_HDR *gh, FILE *stream, char *errmsg)
 #else
@@ -48,7 +51,7 @@ int    gribhdr2file ( gh, stream, errmsg)
   return stat;
   
 }
-
+*/
 
 /*
 *
@@ -220,3 +223,51 @@ BYE:
 * END OF FUNCTION
 */
 }
+
+/*
+*
+************************************************************************
+* A.  FUNCTION  gribhdr2file
+*       write out the Grib message stored in GRIB_HDR struct to stream;
+*       if the 'shuffle' flag is set, write each individual section out, else
+*       write 'entire_msg' all at once;
+*
+*    INTERFACE:
+*       int    gribhdr2file (gh, fn, errmsg)
+*
+*    ARGUMENTS (I=input, O=output, I&O=input and output):
+*      (I) GRIB_HDR *gh    holds the GRIB message to be written out
+*      (I) FILE *stream    open strem to write to
+*      (O) char *errmsg    array returned empty unless error occurred;
+*
+*     RETURN CODE:
+*     0>  no errors,  GRIB file successfully created;
+*     1>  error; errmsg is filled;
+************************************************************************
+*/
+#if PROTOTYPE_NEEDED
+int    gribhdr2file ( GRIB_HDR *gh, FILE *stream, char *errmsg)
+#else
+int    gribhdr2file ( gh, stream, errmsg)
+                        GRIB_HDR *gh;
+                        FILE *stream;
+                        char *errmsg;
+#endif
+{
+  int fd;
+  int stat;
+  char *func= "gribhdr2file";
+
+  fd = fileno(stream);
+  if (fd == -1)
+    {
+      DPRINT1 ("%s: Invalid file stream encountered.\n", func);
+      return 1;
+
+    }
+
+  stat = gribhdr2filed ( gh, fd, errmsg);
+  return stat;
+
+}
+

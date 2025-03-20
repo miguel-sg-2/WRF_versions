@@ -489,8 +489,10 @@ CONTAINS
          DO jext = 1, grid%num_ext_model_couple_dom
             llmust_store = llmust_store .OR. cpl_toreceive( grid%id, jext, cpl_get_fldid( 'SST' ) )
          END DO
+         print*, 'before receiving SST (MSG), ips=',ips,' jps=',jps,' sst_input=',grid%sst_input(ips,jps),' sst=',grid%sst(ips,jps)
          IF( llmust_store )   grid%sst_input(ips:ipe,jps:jpe) = grid%sst(ips:ipe,jps:jpe)   ! store SST into SST_INPUT 
-         
+         print*, 'after receiving SST (MSG), ips=',ips,' jps=',jps,' sst_input=',grid%sst_input(ips,jps),' sst=',grid%sst(ips,jps)
+
          grid%just_read_auxinput4 = .FALSE.  ! the work as been done and not me done again until we reread data from AUXINPUT4
       
       END IF

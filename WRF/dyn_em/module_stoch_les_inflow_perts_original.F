@@ -48,134 +48,6 @@
     END SUBROUTINE force_down_meso_pblh
 
 !=======================================================================
-
-
-SUBROUTINE calc_m_pblh(m_pblh, t, rdz, ids, ide, jds, jde, kds, kde,      &
-                          ims, ime, jms, jme, kms, kme,      &
-                          its, ite, jts, jte, kts, kte)
-
-    IMPLICIT NONE
-#ifdef DM_PARALLEL
-    INCLUDE 'mpif.h'
-#endif
-
-    REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN    ) :: t      ! potential temperature               [k]
-    REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN    ) :: rdz    ! inverse vertical grid spacing       [1/m]
-
-    INTEGER, INTENT( IN )  &
-    :: ids, ide, jds, jde, kds, kde,  &
-       ims, ime, jms, jme, kms, kme,  &
-       its, ite, jts, jte, kts, kte
-
-    REAL , DIMENSION( ims:ime, jms:jme ), INTENT( OUT ) :: m_pblh
-
-    REAL , DIMENSION( ims:ime, kms:kme, jms:jme ) :: t_grad      ! vertical gradient of potential temperature               [k]
-    REAL, DIMENSION( its:ite, kts:kte, jts:jte ) :: z  ! height above surface at midpoint levels   
-    REAL :: temp_max_grad_t
-    INTEGER :: i, j, k, l, m, n               ! loop variables
-    INTEGER :: k_max_grad_t
-    INTEGER :: i_start, i_end, j_start, j_end ! patch endpoints
-
-#ifdef DM_PARALLEL
-    INTEGER :: ierr
-    INTEGER :: tag
-    INTEGER :: master
-    INTEGER :: status(MPI_STATUS_SIZE)
-#endif
-
-#ifdef DM_PARALLEL
-    master = 0
-    tag    = 0
-#endif
-
-! END DECLARATIONS
-
-       i_start = its
-       i_end   = MIN(ite,ide-1)
-       j_start = jts
-       j_end   = MIN(jte,jde-1)
-
-! Get height above the surface
-       DO j=j_start, j_end
-          DO i=i_start, i_end
-             z(i,kts,j)= 1.0/rdz(i,kts,j)
-             DO k=kts+1,kte-1
-                z(i,k,j) = z(i,k-1,j) + 1.0/rdz(i,k,j)
-                t_grad(i,k,j) = 0.0
-             END DO
-          END DO
-       END DO
-
-! Calcualte vertical gradient in theta
-       DO j=j_start, j_end
-          DO i=i_start, i_end
-             DO k=kts+1,kte-1
-                t_grad(i,k,j) = (t(i,k,j) - t(i,k-1,j))*rdz(i,k,j)
-             END DO
-          END DO
-       END DO
-! Find maximum in grad theta
-       DO j=j_start, j_end
-          DO i=i_start, i_end
-             m_pblh(i,j) = 0.0
-             k_max_grad_t = 1
-             temp_max_grad_t = 0.0
-             ! Find height level with max theta gradient 
-             DO k=kts+1,kte-1
-                if ( (t_grad(i,k,j) .gt. temp_max_grad_t) .and. (z(i,k,j) .gt. 50) .and. (z(i,k,j) .lt. 2000) ) then
-                        temp_max_grad_t = t_grad(i,k,j)
-                        k_max_grad_t = k
-                        m_pblh(i,j) = 0.9*z(i,k,j) ! 90 percent of height because the max gradient is likely above the pblh
-                end if
-             END DO
-             ! Save PBLH
-             m_pblh(i,j) = max(100.,m_pblh(i,j))
-             m_pblh(i,j) = min(1500.,m_pblh(i,j))
-
-          END DO
-       END DO
-
-
-! Only keep pblh from boundary grid points
-
-       IF ( its .EQ. ids ) THEN 
-         DO i=i_start, i_end
-          DO j=j_start, j_end
-             m_pblh(i,j) = m_pblh(ids,j)
-          END DO
-         END DO
-       ENDIF
-
-       IF ( ite .EQ. ide ) THEN
-         DO i=i_start, i_end
-          DO j=j_start, j_end
-             m_pblh(i,j) = m_pblh(ide,j)
-          END DO
-         END DO
-       ENDIF
-
-       IF ( jts .EQ. jds ) THEN
-         DO i=i_start, i_end
-          DO j=j_start, j_end
-             m_pblh(i,j) = m_pblh(i,jds)
-          END DO
-         END DO
-       ENDIF
-
-       IF ( jte .EQ. jde ) THEN
-         DO i=i_start, i_end
-          DO j=j_start, j_end
-             m_pblh(i,j) = m_pblh(i,jde)
-          END DO
-         END DO
-       ENDIF
-
-
-END SUBROUTINE calc_m_pblh
-
- 
-!=======================================================================
-
  
     SUBROUTINE calc_pert_t( les_pert_opt,                      &
                             m_pblh_opt,                        &
@@ -206,13 +78,12 @@ END SUBROUTINE calc_m_pblh
     REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN    ) :: u      ! zonal wind component                [m/s]
     REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN    ) :: v      ! meridional wind component           [m/s]
     REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN    ) :: rdz    ! inverse vertical grid spacing       [1/m]
-    REAL , DIMENSION( ims:ime, jms:jme ),          INTENT( INOUT ) :: m_pblh ! PBL height from messoscale PBL scheme [m]
-
+    REAL , DIMENSION( ims:ime, jms:jme ),          INTENT( IN    ) :: m_pblh ! PBL height from messoscale PBL scheme [m]
 
     INTEGER , DIMENSION( kms:kme ), INTENT( INOUT ) :: prtseed         ! 1D variable to store variable-length seed array
 
     INTEGER,         INTENT( IN    ) :: les_pert_opt                   ! which perturbation option to use
-    INTEGER,         INTENT( IN    ) :: m_pblh_opt                     ! whether to use (1) mesoscale PBL height or not (0), or (2) estiamte pblh from the vertical gradient in the theta inflow profile
+    INTEGER,         INTENT( IN    ) :: m_pblh_opt                     ! whether to use (1) mesoscale PBL height or not (0)
     REAL,            INTENT( INOUT ) :: prttms                         ! time since last perturbation refresh
     REAL,            INTENT( INOUT ) :: prtdt                          ! time scale to refresh perturbations
     REAL,            INTENT( INOUT ) :: prtz                           ! height over swhich to apply perturbations
@@ -312,42 +183,46 @@ END SUBROUTINE calc_m_pblh
           END DO
        END DO  
 
+!       pblh = 1200.0 !50 W/m^2
+       pblh = 1000.0 !NEUTRAL
+       pblh = 400 ! Weakly stable simulations
+! 1) Compute average pblh on each tile. 2) Find the domain max and min of all patch averages.
+! 3) Compute the average of the global max and min values and use on all patches
+! 4) Cap upper and lower bounds.
+! Something smarter will be needed for complex terrain.
 
-! 1) find maximum pblh for each tile
-! 2) find the avearge of pblh based on the max at each patch
-! 3) Cap the upper bound of the pblh
+       IF (m_pblh_opt .EQ. 1 ) THEN 
 
-       IF (m_pblh_opt .GT. 0 ) THEN 
-
-          pblh = 0.0
+          mpblhpsum = 0.0
+          mpblhpavg = 0.0
+          counter = 0.0
           DO j=j_start, j_end
              DO i=i_start, i_end
-                if (m_pblh(i,j) .gt. pblh) then 
-                        pblh = m_pblh(i,j)
-                        
-                end if
-                !mpblhpsum = mpblhpsum + m_pblh(i,j)
-                !counter = counter + 1.0
+                mpblhpsum = mpblhpsum + m_pblh(i,j)
+                counter = counter + 1.0
              END DO
           END DO
-          pblh = MAX(100.0,MIN(pblh,1000.0))
 
+#ifdef DM_PARALLEL
+
+mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
+
+#endif
+              
+          counter = float(ide-ids)*float(jde-jds) ! One fewer since m_pblh is at mass points
+
+          mpblhdavg = mpblhdsum/counter
+          
+          pblh = MAX(100.0,MIN(mpblhdavg,3000.0))
+                   
+!          print*,'its,mpblhdsum,counter,mpblhdavg ',its,mpblhdsum,counter,mpblhdavg
 
        ENDIF 
 
-       IF (m_pblh_opt .EQ. 0) THEN
-           DO j=j_start, j_end
-              DO i=i_start, i_end
-                 m_pblh(i,j)=1000.0
-              END DO
-           END DO
-           pblh = 1000.0
-       ENDIF
        print*,'pblh',pblh
 
-
 !       prtz = 1.0*pblh
-       prtz = 1.0*pblh !jdm TEST 09142017
+       prtz = 0.9*pblh !jdm TEST 09142017
        h_wg = 1.10*pblh 
        h_ws = 0.05*pblh
        sf2 = 4.0*prtz/27.0 !maximum value of sf(z) = z*(1-z/h)^2 
@@ -460,8 +335,8 @@ vwsgpsumdsum  = wrf_dm_sum_real(vwsgpsum)
 !
 !       north = 1
 !       east = 0
-       south = 1
-       west = 1
+!       south = 0
+!       west = 1
 
        print*,'Applying perturbations to the following boundary(ies):'
        IF (north .EQ. 1) print*,'north'
@@ -699,7 +574,7 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
           IF (its .LE. ids + ngc_h*ncells_h) THEN 
 
              DO k = k_pert_start, k_pert_end
-
+  
                 n = (k-1)/ngc_v+1
 
                 DO j = MAX(jts,jds + ngc_h*ncells_h*(west - south - nsew)), MIN(jte,jde - 1 - ngc_h*ncells_h*(west - north - nsew))
@@ -714,14 +589,9 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
 
                       IF ( m .LE. ncells_h ) THEN
 
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if ( (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) ) then
+                         pert_t(i,k,j) =  (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag !Output variable only, for debugging.
 
-                             pert_t(i,k,j) =  (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag !Output variable only, for debugging.
-
-                             t(i,k,j) = t(i,k,j) + (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pxs(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
@@ -751,13 +621,9 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
   
                       IF ( m .LE. ncells_h ) THEN
 
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if ( (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) ) then
+                         pert_t(i,k,j) = (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
-                             pert_t(i,k,j) = (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-
-                             t(i,k,j) = t(i,k,j) + (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pxe(((j-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
@@ -787,13 +653,12 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
 
                       IF ( m .LE. ncells_h ) THEN    
 
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if ( (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) ) then
+!    print*,'i,(i-1)/ngc_h+1,j,m,pys',i,(i-1)/ngc_h+1,j,m
+!    print*,'k,n,pys',k,n,pys(((i-1)/ngc_h+1),n,m)
 
-                             pert_t(i,k,j) = (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
+                        pert_t(i,k,j) = (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
-                             t(i,k,j) = t(i,k,j) + (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pys(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
@@ -822,13 +687,10 @@ counter = wrf_dm_sum_real(num_pts_in_sum)
                       m = (jde-j-1)/ngc_h+1
 
                       IF ( m .LE. ncells_h ) THEN
-                         ! Only add perturbations if within the pblh at the current i,j location
-                         if ( (z(i,k,j) .lt. m_pblh(i,j)) .and. (z(i,k,j) .lt. pblh) ) then
+  
+                         pert_t(i,k,j) = (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
-                             pert_t(i,k,j) = (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-
-                             t(i,k,j) = t(i,k,j) + (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
-                         end if! check height
+                         t(i,k,j) = t(i,k,j) + (pye(((i-1)/ngc_h+1),n,m)-0.5)*sf(k)*2.0*tpertmag
 
                       ENDIF
 
@@ -895,7 +757,7 @@ END SUBROUTINE calc_pert_t
     REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( INOUT ) :: ru_tendf  ! zonal wind component                []
     REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( INOUT ) :: rv_tendf  ! meridional wind component           []
     REAL , DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN    ) :: rdz    ! inverse vertical grid spacing       [1/m]
-    REAL , DIMENSION( ims:ime, jms:jme ),          INTENT( INOUT ) :: m_pblh ! PBL height from messoscale PBL scheme [m]
+    REAL , DIMENSION( ims:ime, jms:jme ),          INTENT( IN    ) :: m_pblh ! PBL height from messoscale PBL scheme [m]
 
     REAL , DIMENSION( ims:ime, jms:jme ),          INTENT( IN    ) :: muu
     REAL , DIMENSION( ims:ime, jms:jme ),          INTENT( IN    ) :: muv
@@ -1008,7 +870,7 @@ END SUBROUTINE calc_pert_t
 ! 4) Cap upper and lower bounds.
 ! Something smarter will be needed for complex terrain.
 
-       IF (m_pblh_opt .GT. 0 ) THEN 
+       IF (m_pblh_opt .EQ. 1 ) THEN 
 
           mpblhpsum = 0.0
           mpblhpavg = 0.0
@@ -1036,12 +898,7 @@ mpblhdsum  = wrf_dm_sum_real(mpblhpsum)
 
        ENDIF 
        IF (m_pblh_opt .EQ. 0) THEN
-           DO j=j_start, j_end
-              DO i=i_start, i_end
-                 m_pblh(i,j)=1000.0
-              END DO
-           END DO
-           pblh = 1000.0
+           pblh = 1000
        ENDIF
        print*,'pblh',pblh
 

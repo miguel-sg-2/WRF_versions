@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "dprints.h"		/* Debug printing & function prototypes*/
 #include "gribfuncs.h"		/* function prototypes */

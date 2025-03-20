@@ -1441,7 +1441,8 @@ CONTAINS
         &              ims, ime, jms, jme, kms, kme, &
         &              ips, ipe, jps, jpe, kps, kpe, &
         &              max_edom, cplmask, SST, SST_INPUT )
-     
+      print*, 'after updating SST (MSG), ips=',ips,' jps=',jps,' sst_input=',sst_input(ips,jps),' sst=',sst(ips,jps)
+
      CALL cpl_rcv( id, 'UOCE',            &
         &              ids, ide, jds, jde, kds, kde, &
         &              ims, ime, jms, jme, kms, kme, &

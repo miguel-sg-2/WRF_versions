@@ -551,6 +551,7 @@ SUBROUTINE wrf_open_for_read_begin( FileName , grid, SysDepInfo, &
   INTEGER           :: Comm_compute , Comm_io
 
   CALL wrf_debug( DEBUG_LVL, 'module_io.F: in wrf_open_for_read_begin' )
+ print*,'MSG SysDepInfo=',SysDepInfo
 
   Comm_compute = grid%communicator
   Comm_io = grid%iocommunicator

@@ -16,4 +16,5 @@
 configure.wrf*
 *.backup
 *.f90
-log.compile*
+run/namelist.*
+log*
