@@ -1066,12 +1066,18 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                         inv_wave_age = UST(I)/cp_wv
                         inv_wave_age=MAX(inv_wave_age,1.27e-7) ! make wave age is greater than zero
                         ! Calculate z_0
-                        if (log10(inv_wave_age)>-1) then
-                                ! Young waves, so use regular Drennan et al. (2003) model
+                        if (mod_sfc_exch_coef .eq. 1) then
+                                ! Regular Drennan et al. (2003) model
                                 ZNT(I) = hs_wv(i)*3.35*(inv_wave_age**3.4)
-                        else ! swell dominate areas, so use modified Drennan et al. model
-                                ! Calculate z_0 based on u_star, Cp, wave misalignment, and significant wave height
-                                ZNT(I) = hs_wv(i)*20.0*cos(0.45*deltaDir_wind_wave)*((inv_wave_age)**(3.8*cos(-0.32*deltaDir_wind_wave)))
+                        else if (mod_sfc_exch_coef .eq. 2) then
+                                ! Modified Drennan et al. model
+                                if (log10(inv_wave_age)>-1) then
+                                        ! Young waves, so use regular Drennan et al. (2003) model
+                                        ZNT(I) = hs_wv(i)*3.35*(inv_wave_age**3.4)
+                                else ! swell dominate areas, so use modified Drennan et al. model
+                                        ! Calculate z_0 based on u_star, Cp, wave misalignment, and significant wave height
+                                        ZNT(I) = hs_wv(i)*20.0*cos(0.45*deltaDir_wind_wave)*((inv_wave_age)**(3.8*cos(-0.32*deltaDir_wind_wave)))
+                                endif
                         endif
                         if ( isnan(ZNT(I)) ) then
                                 print*,hs_wv(i),cos(0.45*deltaDir_wind_wave),inv_wave_age,cos(-0.32*deltaDir_wind_wave) 
