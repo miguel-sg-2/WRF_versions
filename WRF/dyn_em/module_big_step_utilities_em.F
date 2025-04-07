@@ -5924,6 +5924,7 @@ SUBROUTINE rk_rayleigh_damp_w_bdy(rw_tendf,               &
               dcoef = ( SIN( 0.5 * pii * dcoef ) )**2
               rw_tendf(i,k,j) = rw_tendf(i,k,j) -  &
                             (c1f(k)*mut(i,j)+c2f(k)) * ( dcoef * dampcoef_bdy ) * w(i,k,j)
+                    CALL wrf_debug ( 200 , 'Rayleigh damping for w-velocity near domain boundaries (MSG)' )
           end if
         END DO
       END IF
