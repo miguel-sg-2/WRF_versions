@@ -377,7 +377,7 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
       REAL    ::  ZL,TSKV,DTHVDZ,DTHVM,VCONV,RZOL,RZOL2,RZOL10,ZOL2,ZOL10
       REAL    ::  DTG,PSIX,DTTHX,PSIX10,PSIT,PSIT2,PSIQ,PSIQ2,PSIQ10
       REAL    ::  FLUXC,VSGD,Z0Q,VISC,RESTAR,CZIL,GZ0OZQ,GZ0OZT
-      REAL    ::  ZW, ZN1, ZN2, wind_dir,deltaDir_wind_wave,cp_wv,cd_temp,inv_wave_age,wspd_10,relSpd_wind_wave,z_0_old,z_0_max,transition_func
+      REAL    ::  ZW, ZN1, ZN2,wind_dir,deltaDir_wind_wave,cp_wv,cd_temp,inv_wave_age,wspd_10,relSpd_wind_wave,z_0_old,z_0_max,transition_func,omega,a_cr,c_l,z_0_eff
 !
 ! .... paj ...
 !
@@ -1078,6 +1078,17 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                                         ! Calculate z_0 based on u_star, Cp, wave misalignment, and significant wave height
                                         ZNT(I) = hs_wv(i)*20.0*cos(0.45*deltaDir_wind_wave)*((inv_wave_age)**(3.8*cos(-0.32*deltaDir_wind_wave)))
                                 endif
+                        else if (mod_sfc_exch_coef .eq. 3) then
+                                ! Drennan et al. model with sea spray
+                                ! Drennan et al. (2003) surface roughness
+                                ZNT(I) = hs_wv(i)*3.35*(inv_wave_age**3.4)
+                                ! Include sea spray effects from Makin (2005) https://doi.org/10.1007/s10546-004-3647-x
+                                a_cr = 0.64 ! based on terminal velocity of droplets and u_star_crit = 1.55
+                                c_l = 10.0 ! proportionality constant
+                                omega = max(1.27e-7,a_cr/(KARMAN*UST(I)))
+                                omega = min(1.0,omega)
+                                z_0_eff = (c_l*UST(I)*UST(I)/9.81)*((9.81*ZNT(I)/(c_l*UST(I)*UST(I)))**(1.0/omega))
+                                ZNT(I) = z_0_eff
                         endif
                         if ( isnan(ZNT(I)) ) then
                                 print*,hs_wv(i),cos(0.45*deltaDir_wind_wave),inv_wave_age,cos(-0.32*deltaDir_wind_wave) 
@@ -1097,12 +1108,12 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                         !WRITE(message, '(A, F8.7)') 'cd_temp=u_star x u_star/UV10 x UV10=',cd_temp
                         !CALL wrf_debug(200,  TRIM(message) )
                         ZNT(I)=MAX(ZNT(I),1.27e-7)
-                        cd_temp = (KARMAN**2)/( (log(10/ZNT(I)) - PSIM(I))**2.0 )
+                        cd_temp = (KARMAN**2)/( (log(10/ZNT(I)))**2.0 ) ! Assuming neutral conditions
                         WRITE(message, '(A, F9.7)') 'cd_temp=(k/(log zz -psi))squared=',cd_temp
                         CALL wrf_debug(200,  TRIM(message) )
                         ! Cap the surface exchange coefficient
                         !if ((cd_temp.gt.2.4e-3) .and. (relSpd_wind_wave.gt.25.0)) then
-                        if (relSpd_wind_wave.gt.20.0) then
+                        if ((relSpd_wind_wave.gt.20.0) .and. (mod_sfc_exch_coef .le. 2)) then
                                 ! Transition function
                                 if (relSpd_wind_wave.gt.25.0) then
                                         transition_func = 1.0
@@ -1125,11 +1136,11 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                         endif
                         ! Check drag coefficient
                         ZNT(I)=MAX(ZNT(I),1.27e-7)
-                        cd_temp = (KARMAN**2)/( (log(10/ZNT(I)) - PSIM(I))**2.0 )
+                        cd_temp = (KARMAN**2)/( (log(10/ZNT(I)))**2.0 )  ! Assuming neutral conditions
                         WRITE(message, '(A, F9.7)') 'second time -- cd_temp=(k/(log zz -psi))squared=',cd_temp
                         CALL wrf_debug(200,  TRIM(message) )
                         if ( cd_temp .gt. 5.0e-3 ) then
-                                ZNT(I) = ZA(I)/exp(KARMAN/sqrt(5.0e-3) + PSIM(I))
+                                ZNT(I) = ZA(I)/exp(KARMAN/sqrt(5.0e-3))  ! Assuming neutral conditions
                                 WRITE(message, '(A, F9.7)') 'z_0 (new because cd above threshold) = ',ZNT(I)
                                 CALL wrf_debug(200,  TRIM(message) )
                         endif
