@@ -377,7 +377,7 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
       REAL    ::  ZL,TSKV,DTHVDZ,DTHVM,VCONV,RZOL,RZOL2,RZOL10,ZOL2,ZOL10
       REAL    ::  DTG,PSIX,DTTHX,PSIX10,PSIT,PSIT2,PSIQ,PSIQ2,PSIQ10
       REAL    ::  FLUXC,VSGD,Z0Q,VISC,RESTAR,CZIL,GZ0OZQ,GZ0OZT
-      REAL    ::  ZW, ZN1, ZN2,wind_dir,deltaDir_wind_wave,cp_wv,cd_temp,inv_wave_age,wspd_10,relSpd_wind_wave,z_0_old,z_0_max,transition_func,omega,a_cr,c_l,z_0_eff
+      REAL    ::  ZW, ZN1, ZN2,wind_dir,deltaDir_wind_wave,cp_wv,cd_temp,inv_wave_age,wave_age,wspd_10,relSpd_wind_wave,z_0_old,z_0_max,transition_func,omega,a_cr,c_l,z_0_eff
 !
 ! .... paj ...
 !
@@ -1089,67 +1089,83 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                                 omega = min(1.0,omega)
                                 z_0_eff = (c_l*UST(I)*UST(I)/9.81)*((9.81*ZNT(I)/(c_l*UST(I)*UST(I)))**(1.0/omega))
                                 ZNT(I) = z_0_eff
-                        endif
-                        if ( isnan(ZNT(I)) ) then
-                                print*,hs_wv(i),cos(0.45*deltaDir_wind_wave),inv_wave_age,cos(-0.32*deltaDir_wind_wave) 
-                        endif
-                        WRITE(message, '(A, F14.10)') 'z_0 (new before checking c_d) = ', ZNT(I)
-                        CALL wrf_debug(200,  TRIM(message) )
-                        ! Wind speed at 10 m
-                        wspd_10 = (U10(I)**2.0 + V10(I)**2.0)**0.5
-                        wspd_10 = max(wspd_10,0.5)
-                        ! Calculate relative speed between wind and wave
-                        relSpd_wind_wave = abs(wspd_10 - cp_wv*cos(deltaDir_wind_wave))
-                        relSpd_wind_wave = max(relSpd_wind_wave,1.27e-7)
-                        WRITE(message, '(A, F9.3)') 'relSpd_wind_wave=',relSpd_wind_wave
-                        CALL wrf_debug(200,  TRIM(message) )
-                        ! Check max surface drag coefficient
-                        !cd_temp = (UST(I)/relSpd_wind_wave)**2.0
-                        !WRITE(message, '(A, F8.7)') 'cd_temp=u_star x u_star/UV10 x UV10=',cd_temp
-                        !CALL wrf_debug(200,  TRIM(message) )
-                        ZNT(I)=MAX(ZNT(I),1.27e-7)
-                        cd_temp = (KARMAN**2)/( (log(10/ZNT(I)))**2.0 ) ! Assuming neutral conditions
-                        WRITE(message, '(A, F9.7)') 'cd_temp=(k/(log zz -psi))squared=',cd_temp
-                        CALL wrf_debug(200,  TRIM(message) )
-                        ! Cap the surface exchange coefficient
-                        !if ((cd_temp.gt.2.4e-3) .and. (relSpd_wind_wave.gt.25.0)) then
-                        if ((relSpd_wind_wave.gt.20.0) .and. (mod_sfc_exch_coef .le. 2)) then
-                                ! Transition function
-                                if (relSpd_wind_wave.gt.25.0) then
-                                        transition_func = 1.0
+                        else if (mod_sfc_exch_coef .eq. 4) then
+                                ! Liu et al (10.1175/JTECH-D-20-0133.1) model
+                                a_cr = 0.64 ! based on terminal velocity of droplets and u_star_crit = 1.55
+                                wave_age = max(1.27e-7,1.0/inv_wave_age)
+                                omega = max(1.27e-7,a_cr/(KARMAN*UST(I)))
+                                omega = min(1.0,omega)
+                                if (wave_age .ge. 35) then
+                                        c_l = 17.6
+                                        ZNT(I) = (UST(I)*UST(I)/9.81)*(c_l**(1.0-1.0/omega))*(0.008**(1.0/omega))
                                 else
-                                        transition_func = relSpd_wind_wave*(1.0-0.0)/(25.0-20.0) - 20.0/(25.0-20.0)
+                                        c_l = 0.085*(wave_age**1.5)
+                                        ZNT(I) = (UST(I)*UST(I)/9.81)*(c_l**(1.0-1.0/omega))*((0.03*wave_age*exp(-0.14*wave_age))**(1.0/omega))
                                 endif
-                                ! Cap surface roughness so that drag coefficient remains below 2.4e-3
-                                z_0_max = ZA(I)/exp(KARMAN/sqrt(2.4e-3) + PSIM(I))
-                                ! Transition in between Drennan et al. models and Donelan et al.
-                                ZNT(I) = (1.0 - transition_func)*ZNT(I) + transition_func*z_0_max
-                                ! Alternatively, use z_0 from Donelan parameterization
-                                ! ZNT(I)=z_0_old
-                                WRITE(message, '(A, F9.7)') 'z_0 (new because wind speed above 25) = ',ZNT(I)
-                                CALL wrf_debug(200,  TRIM(message) )
-                        !elseif ( cd_temp .gt. 3.0e-3 ) then
-                        !        ! Modify surface roughness if the drag coefficient exceeds threshold
-                        !        ZNT(I)=z_0_old
-                        !        WRITE(message, '(A, F8.7, A, F8.3)') 'z_0 (new because c_d exceeds limit) = ',ZNT(I),', relSpd_wind_wave=',relSpd_wind_wave
-                        !        CALL wrf_debug(200,  TRIM(message) )
                         endif
-                        ! Check drag coefficient
-                        ZNT(I)=MAX(ZNT(I),1.27e-7)
-                        cd_temp = (KARMAN**2)/( (log(10/ZNT(I)))**2.0 )  ! Assuming neutral conditions
-                        WRITE(message, '(A, F9.7)') 'second time -- cd_temp=(k/(log zz -psi))squared=',cd_temp
-                        CALL wrf_debug(200,  TRIM(message) )
-                        if ( cd_temp .gt. 5.0e-3 ) then
-                                ZNT(I) = ZA(I)/exp(KARMAN/sqrt(5.0e-3))  ! Assuming neutral conditions
-                                WRITE(message, '(A, F9.7)') 'z_0 (new because cd above threshold) = ',ZNT(I)
+                        ! Check Cd so that it does not exceed threshold if using mod_sfc_exch_coef=1 or mod_sfc_exch_coef=2
+                        if (mod_sfc_exch_coef .le. 2) then
+                                if ( isnan(ZNT(I)) ) then
+                                        print*,hs_wv(i),cos(0.45*deltaDir_wind_wave),inv_wave_age,cos(-0.32*deltaDir_wind_wave) 
+                                endif
+                                WRITE(message, '(A, F14.10)') 'z_0 (new before checking c_d) = ', ZNT(I)
                                 CALL wrf_debug(200,  TRIM(message) )
-                        endif
+                                ! Wind speed at 10 m
+                                wspd_10 = (U10(I)**2.0 + V10(I)**2.0)**0.5
+                                wspd_10 = max(wspd_10,0.5)
+                                ! Calculate relative speed between wind and wave
+                                relSpd_wind_wave = abs(wspd_10 - cp_wv*cos(deltaDir_wind_wave))
+                                relSpd_wind_wave = max(relSpd_wind_wave,1.27e-7)
+                                WRITE(message, '(A, F9.3)') 'relSpd_wind_wave=',relSpd_wind_wave
+                                CALL wrf_debug(200,  TRIM(message) )
+                                ! Check max surface drag coefficient
+                                !cd_temp = (UST(I)/relSpd_wind_wave)**2.0
+                                !WRITE(message, '(A, F8.7)') 'cd_temp=u_star x u_star/UV10 x UV10=',cd_temp
+                                !CALL wrf_debug(200,  TRIM(message) )
+                                ZNT(I)=MAX(ZNT(I),1.27e-7)
+                                cd_temp = (KARMAN**2)/( (log(10/ZNT(I)) - PSIM(I))**2.0 )
+                                WRITE(message, '(A, F9.7)') 'cd_temp=(k/(log zz -psi))squared=',cd_temp
+                                CALL wrf_debug(200,  TRIM(message) )
+                                ! Cap the surface exchange coefficient
+                                !if ((cd_temp.gt.2.4e-3) .and. (relSpd_wind_wave.gt.25.0)) then
+                                if (relSpd_wind_wave.gt.20.0) then
+                                        ! Transition function
+                                        if (relSpd_wind_wave.gt.25.0) then
+                                                transition_func = 1.0
+                                        else
+                                                transition_func = relSpd_wind_wave*(1.0-0.0)/(25.0-20.0) - 20.0/(25.0-20.0)
+                                        endif
+                                        ! Cap surface roughness so that drag coefficient remains below 2.4e-3
+                                        z_0_max = ZA(I)/exp(KARMAN/sqrt(2.4e-3) + PSIM(I))
+                                        ! Transition in between Drennan et al. models and Donelan et al.
+                                        ZNT(I) = (1.0 - transition_func)*ZNT(I) + transition_func*z_0_max
+                                        ! Alternatively, use z_0 from Donelan parameterization
+                                        ! ZNT(I)=z_0_old
+                                        WRITE(message, '(A, F9.7)') 'z_0 (new because wind speed above 25) = ',ZNT(I)
+                                        CALL wrf_debug(200,  TRIM(message) )
+                                !elseif ( cd_temp .gt. 3.0e-3 ) then
+                                !        ! Modify surface roughness if the drag coefficient exceeds threshold
+                                !        ZNT(I)=z_0_old
+                                !        WRITE(message, '(A, F8.7, A, F8.3)') 'z_0 (new because c_d exceeds limit) = ',ZNT(I),', relSpd_wind_wave=',relSpd_wind_wave
+                                !        CALL wrf_debug(200,  TRIM(message) )
+                                endif
+                                ! Check drag coefficient
+                                ZNT(I)=MAX(ZNT(I),1.27e-7)
+                                cd_temp = (KARMAN**2)/( (log(10/ZNT(I)) - PSIM(I))**2.0 )
+                                WRITE(message, '(A, F9.7)') 'second time -- cd_temp=(k/(log zz -psi))squared=',cd_temp
+                                CALL wrf_debug(200,  TRIM(message) )
+                                if ( cd_temp .gt. 5.0e-3 ) then
+                                        ZNT(I) = ZA(I)/exp(KARMAN/sqrt(5.0e-3) + PSIM(I))
+                                        WRITE(message, '(A, F9.7)') 'z_0 (new because cd above threshold) = ',ZNT(I)
+                                        CALL wrf_debug(200,  TRIM(message) )
+                                endif
+                        endif ! Check Cd
                         ZNT(I)=MAX(ZNT(I),1.27e-7) ! Make sure z_0 is greater than zero
                         ZNT(I)=MIN(ZNT(I),0.05) ! Make sure z_0 is not excesively large in case any of the previous filters did not catch it
                         WRITE(message, '(A, F14.10)') 'z_0 (new - final) = ',ZNT(I)
                         CALL wrf_debug(200,  TRIM(message) )
                         CALL wrf_debug ( 200 , 'Finished with modified surface exchange coefficient scheme (MSG)' )
-                endif   
+                endif ! check wave parameters  
                 endif ! modified z_0 (MSG)
              ENDIF
           ENDIF
