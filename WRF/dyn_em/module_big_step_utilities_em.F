@@ -787,7 +787,7 @@ END SUBROUTINE calc_ww_cp
 SUBROUTINE calc_cq ( moist, cqu, cqv, cqw, n_moist, &
                      ids, ide, jds, jde, kds, kde,  &
                      ims, ime, jms, jme, kms, kme,  &
-                     its, ite, jts, jte, kts, kte  )
+                     its, ite, jts, jte, kts, kte, no_mp_effect  )
 
    IMPLICIT NONE
    
@@ -798,6 +798,8 @@ SUBROUTINE calc_cq ( moist, cqu, cqv, cqw, n_moist, &
                                        its, ite, jts, jte, kts, kte
 
    INTEGER ,          INTENT(IN   ) :: n_moist
+
+   INTEGER, INTENT(IN   ) :: no_mp_effect
    
 
    REAL, DIMENSION( ims:ime, kms:kme , jms:jme , n_moist ), INTENT(IN   ) :: moist
@@ -832,7 +834,11 @@ SUBROUTINE calc_cq ( moist, cqu, cqv, cqw, n_moist, &
               ENDDO
             ENDDO
             DO i=its,itf
-              cqu(i,k,j) = 1./(1.+0.5*qtot(i))
+              if (no_mp_effect .gt. 0) then
+                 cqu(i,k,j) = 1.
+              else
+                 cqu(i,k,j) = 1./(1.+0.5*qtot(i))
+              endif
             ENDDO
         ENDDO
         ENDDO
@@ -848,7 +854,11 @@ SUBROUTINE calc_cq ( moist, cqu, cqv, cqw, n_moist, &
               ENDDO
             ENDDO
             DO i = its,itf
-               cqv(i,k,j) = 1./(1.+0.5*qtot(i))
+              if (no_mp_effect .gt. 0) then
+                 cqv(i,k,j) = 1.
+              else
+                 cqv(i,k,j) = 1./(1.+0.5*qtot(i)) 
+              endif
             ENDDO
           ENDDO
         ENDDO
@@ -864,7 +874,11 @@ SUBROUTINE calc_cq ( moist, cqu, cqv, cqw, n_moist, &
               ENDDO
             ENDDO
             DO i = its,itf
-              cqw(i,k,j) = 0.5*qtot(i)
+              if (no_mp_effect .gt. 0) then
+                 cqw(i,k,j) = 0.
+              else
+                 cqw(i,k,j) = 0.5*qtot(i)
+              endif
             ENDDO
         ENDDO
         ENDDO

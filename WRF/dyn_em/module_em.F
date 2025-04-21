@@ -170,7 +170,7 @@ SUBROUTINE rk_step_prep  ( config_flags, rk_step,           &
    CALL calc_cq ( moist, cqu, cqv, cqw, n_moist, &
                   ids, ide, jds, jde, kds, kde,  &
                   ims, ime, jms, jme, kms, kme,  &
-                  its, ite, jts, jte, kts, kte  )
+                  its, ite, jts, jte, kts, kte,  config_flags%no_mp_effect )
 
    CALL calc_alt ( alt, al, alb,                 &
                    ids, ide, jds, jde, kds, kde, &

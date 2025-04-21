@@ -18,3 +18,4 @@ configure.wrf*
 *.f90
 run/namelist.*
 log*
+*fseeko*
