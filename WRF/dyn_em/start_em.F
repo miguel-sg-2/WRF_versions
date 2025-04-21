@@ -618,15 +618,15 @@
        z_temp_pblh = 50.0
        ! Find PBLH within layer
        DO k = kts+2,min(config_flags%pertz_gp_initial,kte-1)
-           IF ( 9.81*(grid%t_2(i,k+1,j) - grid%t_2(i,k,j))/(grid%ph_2(i,k+1,j) + grid%phb_2(i,k+1,j) - grid%ph_2(i,k,j) - grid%phb_2(i,k,j) ) .gt. max_grad_theta) THEN
-                max_grad_theta = 9.81*(grid%t_2(i,k+1,j) - grid%t_2(i,k,j))/(grid%ph_2(i,k+1,j) + grid%phb_2(i,k+1,j) - grid%ph_2(i,k,j) - grid%phb_2(i,k,j) )
-                z_temp_pblh = 0.9*(grid%ph_2(i,k,j) + grid%phb_2(i,k,j))/9.81
+           IF ( 9.81*(grid%t_2(i,k+1,j) - grid%t_2(i,k,j))/(grid%ph_2(i,k+1,j) + grid%phb(i,k+1,j) - grid%ph_2(i,k,j) - grid%phb(i,k,j) ) .gt. max_grad_theta) THEN
+                max_grad_theta = 9.81*(grid%t_2(i,k+1,j) - grid%t_2(i,k,j))/(grid%ph_2(i,k+1,j) + grid%phb(i,k+1,j) - grid%ph_2(i,k,j) - grid%phb(i,k,j) )
+                z_temp_pblh = 0.9*(grid%ph_2(i,k,j) + grid%phb(i,k,j))/9.81
                 k_top_pert = k-1
            ENDIF
        ENDDO ! k for pblh
        ! Add perturbations
        DO k = kts,k_top_pert
-           IF ( ((grid%ph_2(i,k,j) + grid%phb_2(i,k,j))/9.81) .lt. z_temp_pblh ) THEN
+           IF ( ((grid%ph_2(i,k,j) + grid%phb(i,k,j))/9.81) .lt. z_temp_pblh ) THEN
            IF ( grid%imask_nostag(i,j) .EQ. 1 ) THEN
              call random_number (rand_t)
              grid%t_2(i,k,j)=grid%t_2(i,k,j)+config_flags%amp_pert_initial*((rand_t*2)-1)
