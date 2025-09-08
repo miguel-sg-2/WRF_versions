@@ -1,0 +1,185 @@
+ &time_control
+ run_days                            = 0,
+ run_hours                           = 30,
+ run_minutes                         = 00,
+ run_seconds                         = 00,
+ start_year                          = 2000, 2000, 2000,
+ start_month                         = 01,   01,   01, 
+ start_day                           = 01,   01,   01,
+ start_hour                          = 06,   00,   14, !! 15,15, 
+ start_minute                        = 00,   00,   30, !! 00,45,
+ start_second                        = 00,   03,   00, !! 00,01,
+ end_year                            = 2000, 2000, 2000, 
+ end_month                           = 01,   01,   01,
+ end_day                             = 01,   01,   01,
+ end_hour                            = 20,   20,   20, 
+ end_minute                          = 00,   00,   00, 
+ end_second                          = 00,   00,   00,
+ history_interval_m                  = 1800, 9000, 9000, 
+ history_interval_s                  = 00,   00,   00,
+ frames_per_outfile                  = 1,    1,    1,
+ restart                             = .true.,
+ restart_interval_s                  = 1800,           ! CHANGE THIS IN REAL SIMULATIONS TO -> 10
+ io_form_history                     = 2
+ io_form_restart                     = 2
+ io_form_input                       = 2
+ io_form_boundary                    = 2
+ iofields_filename                   = "io_nest","io_nest","io_nest"
+ ignore_iofields_warning             = .true.,
+ auxhist24_outname                   = "auxHist24_d<domain>_<date>"
+ auxhist24_interval_s                = 10, 30,  600,     ! CHANGE THIS IN TO -> 30,30 after spinup
+ frames_per_auxhist24                = 1,    1,    1,
+ io_form_auxhist24                   = 2
+ override_restart_timers             = .true.,
+ write_hist_at_0h_rst                = .true.,
+ /
+
+ &domains
+ interp_method_type = 3,
+ time_step                           = 0,!1   ! 00:00:01.00 TIME STEP SPECIFICATION DEPENDING ON STABILITY CONDITION
+ time_step_fract_num                 = 1,!0
+ time_step_fract_den                 = 100,!1
+ max_dom                             = 1,
+ s_we                                = 1,     1,    1,
+ e_we                                = 300, 586, !841,   831,  1431,   ! 436,435,1731
+ s_sn                                = 1,     1,    1,
+ e_sn                                = 250, 444, ! 601,   591,  281,    ! 225,301,1091
+ s_vert                              = 1,     1,    1,
+ e_vert                              = 67,    67,   67,
+ vert_refine_method                  =  0,    0,   0,   2,
+ dx                                  =  7,  7,   7, 
+ dy                                  =  7,  7,   7,
+ ztop                                = 3500,  3500, 3500,  
+ grid_id                             = 1,     2,    3, 
+ parent_id                           = 0,     1,    2,
+ i_parent_start                      = 0,     5,   214,   ! 172, 214
+ j_parent_start                      = 0,     5,   100,    ! 102, 50
+ parent_grid_ratio                   = 1,     1,   10,     ! 14,10
+ parent_time_step_ratio              = 1,     1,   10,     ! 14,10
+ feedback                            = 0, ! 1 for two-way nest
+ smooth_option                       = 0,
+ eta_levels(1:67)                    = 1,0.99788267,0.99573976,0.99357098,0.99137602,0.98915458,0.98690635,0.98463103,0.98232829,0.97999782,0.97763931,0.97525242,0.97283683,0.97039221,0.96791823,0.96541455,0.96288082,0.96031671,0.95772186,0.95509592,0.95243854,0.94974937,0.94702803,0.94427416,0.94148739,0.93866735,0.93581366,0.93292595,0.93000382,0.92659177,0.92287211,0.91881735,0.91439762,0.90958044,0.90433051,0.89860949,0.89237571,0.88558397,0.87818521,0.87012623,0.86134936,0.85179215,0.84138698,0.83006073,0.81773436,0.80432254,0.78973323,0.77386726,0.75661792,0.73787055,0.71750213,0.6953809,0.67136602,0.64530729,0.61704486,0.58640917,0.55326074,0.51673787,0.47680926,0.43320972,0.3856516,0.33383586,0.27745434,0.21619301,0.14973622,0.077772184,0.0
+! eta_levels(68:134)                  = 1,0.99788267,0.99573976,0.99357098,0.99137602,0.98915458,0.98690635,0.98463103,0.98232829,0.97999782,0.97763931,0.97525242,0.97283683,0.97039221,0.96791823,0.96541455,0.96288082,0.96031671,0.95772186,0.95509592,0.95243854,0.94974937,0.94702803,0.94427416,0.94148739,0.93866735,0.93581366,0.93292595,0.93000382,0.92659177,0.92287211,0.91881735,0.91439762,0.90958044,0.90433051,0.89860949,0.89237571,0.88558397,0.87818521,0.87012623,0.86134936,0.85179215,0.84138698,0.83006073,0.81773436,0.80432254,0.78973323,0.77386726,0.75661792,0.73787055,0.71750213,0.6953809,0.67136602,0.64530729,0.61704486,0.58640917,0.55326074,0.51673787,0.47680926,0.43320972,0.3856516,0.33383586,0.27745434,0.21619301,0.14973622,0.077772184,0.0
+! max_ts_locs               =     1,
+! max_ts_level              =     50,
+ /
+
+ &physics
+ mp_physics                          = 0,     0,     0,
+ ra_lw_physics                       = 0,     0,     0,     
+ ra_sw_physics                       = 0,     0,     0,     
+ radt                                = 0,     0,     0,     
+ sf_sfclay_physics                   = 1,     1,     1, ! USE OPTION 1
+ sf_surface_physics                  = 0,     0,     0,
+ bl_pbl_physics                      = 0,     0,     0, ! USE 1 == YSU FOR NESTED LES-CPM 
+ bldt                                = 0,     0,     0,
+ cu_physics                          = 0,     0,     0,
+ cudt                                = 0,     0,     0,
+ isfflx                              = 1,           ! == 1 TO SPECIFY COOLING RATE
+!!!! Generalized actuator disk !!! CHANGE/CHECK GAD
+ wp_opt                              = 0,     3,     0, ! Use option 3
+ turbine_opt                         = 50,
+ n_turbines                          = 1,     ! 40 for aligned, 38 for staggered
+ n_timeseries                        = 600,
+ n_tmeturb                           = 600,   ! greater or  equal to n_turbines*n_timeseries
+ windturb_spec                       = "TurbineLocs_GAD.txt",
+ turb_loc_in_latlon                  = .false.,
+!!!!!!
+/
+
+ &fdda
+ /
+
+ &dynamics
+ hybrid_opt                          = 0, 
+ rk_ord                              = 3,
+ diff_opt                            = 2,      2,      2,    
+ km_opt                              = 2,      2,      2,
+ sfs_opt                             = 2,      2,      2,  !! USING NBA SGS CLOSURE      
+ damp_opt                            = 3, ! was 2 in idealized sims
+ zdamp                               = 1000,   1000,    1000,
+ dampcoef                            = 0.2,    0.2,  0.003,
+ khdif                               = 9.0,    0.7,    0.0,
+ kvdif                               = 0.1,    0.1,     0.,
+ c_s                                 = 0.18,   0.18,   0.18,
+ c_k                                 = 0.10,   0.10,   0.10,
+ mix_isotropic                       = 1,      1,      0,
+ smdiv                               = 0.1,    0.1,    0.1,
+ emdiv                               = 0.01,   0.01,   0.01,
+ epssm                               = 0.1,    0.1,    0.1,
+ tke_heat_flux                       = 0,      0,      0,
+! tke_drag_coefficient                = 0.01,   0.01,   0.01,
+ time_step_sound                     = 6,      6,      6,
+ h_mom_adv_order                     = 5,      5,      5,
+ v_mom_adv_order                     = 3,      3,      3,
+ h_sca_adv_order                     = 5,      5,      5,
+ v_sca_adv_order                     = 3,      3,      3,
+ mix_full_fields                     = .true.,.true., .true.,
+ non_hydrostatic                     = .true.,.true., .true.,
+ pert_coriolis                       = .true.,.true., .true.,
+ use_theta_m                         = 0,
+ w_damping                           = 1, 
+!! Surface layer !!
+ spec_init_perts                     = .true.,
+ spec_ideal                          = 1,       ! 1 == idealized surface layer is ON
+ spec_hfx                            = 0,  
+ spec_sf_heatrate                    = 0.00001,
+ spec_z0                             = 0.1,
+ spec_lat                            = 40,
+!!!!!!!!!!!!!!!!!!!
+ 
+!! Cell Perturbation Method !!   CHANGE CPM AFTER RUNNING SPIN-UP OF DOMAIN 01
+! initial_pert                        = .true., .false., .false.,
+! amp_pert_initial                    = 1.0,     0.50,    0.0,
+! pertz_gp_initial                    = 50,
+! cell_pert                           = .false., .false.,  .false.,
+! cell_pert_amp                       = 0.6,     0.50,    0.0,     ! CHANGE DEPENDING ON STABILITY CONDITION AND PARENT DOMAIN U
+! pert_timestep                       = .false., .false.,  .false.,
+! pert_nts                            = 1325,     212,      0.0,     ! CHANGE DEPENDING ON STABILITY CONDITION AND PARENT DOMAIN U
+! cell_zbottom                        = 1,       4,       0,  
+! cell_ztop                           = 50,      55,      00, 
+! cell_pert_2d                        = .false.,
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!! Reduced advection scheme
+upwind_adv3 = 0.8, 0.8,0.8,0.8,
+upwind_adv5 = 0.8, 0.8,0.8,0.8,
+!
+
+!! Cell Perturbation Method - JDM !!
+ les_pert_opt                        = 0,      0,      1,     1,     1,
+ m_pblh_opt                          = 0,      0,      0,     1,     1,
+ ec_cpm                              = 0.4, ! changed from 0.9 to 0.4 at 14:00
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!! Tracers !!!!
+ tracer_opt = 2, 2,
+!!!!!!!!!!!!!!!
+
+ /
+
+ &bdy_control
+ periodic_x                          = .true., .false.,.false., 
+ symmetric_xs                        = .false.,.false.,.false.,
+ symmetric_xe                        = .false.,.false.,.false.,
+ open_xs                             = .false.,.false.,.false.,
+ open_xe                             = .false.,.false.,.false.,
+ periodic_y                          = .true., .false.,.false.,
+ symmetric_ys                        = .false.,.false.,.false.,
+ symmetric_ye                        = .false.,.false.,.false.,
+ open_ys                             = .false.,.false.,.false.,
+ open_ye                             = .false.,.false.,.false.,
+ nested                              = .false.,.true.,.true.,
+ /
+
+ &grib2
+ /
+
+ &namelist_quilt
+ nio_tasks_per_group = 0,
+ nio_groups = 1,
+ /
+
+ &ideal
+ ideal_case = 9
+ /

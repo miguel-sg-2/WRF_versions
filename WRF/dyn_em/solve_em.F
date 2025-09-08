@@ -281,6 +281,31 @@ SUBROUTINE solve_em ( grid , config_flags  &
    ALLOCATE (max_vert_cfl_tmp(grid%num_tiles))
    ALLOCATE (max_horiz_cfl_tmp(grid%num_tiles))
 
+
+   !!! Start: add tracer -- MSG
+   IF ( config_flags%tracer_opt == 2 ) THEN
+        DO ij = 1, grid%num_tiles
+          its = grid%i_start(ij)
+          ite = grid%i_end(ij)
+          jts = grid%j_start(ij)
+          jte = grid%j_end(ij)
+          kts = k_start
+          ktf = k_end
+          DO i = its, ite
+            DO j = jts, jte
+                if ( (i==150) .and. (j==125)  ) then
+                     tracer(i, kts, j, P_tr17_1) = 1. + tracer(i, kts, j, P_tr17_1)
+                end if
+                if ( (i==155) .and. (j==130)  ) then
+                     tracer(i, kts, j, P_tr17_2) = 1. + tracer(i, kts, j, P_tr17_2)
+                end if
+            ENDDO
+          ENDDO
+        ENDDO
+
+   ENDIF
+   !!! End: add tracer -- MSG
+
   !
   ! Calculate current time in seconds since beginning of model run.
   !   Unfortunately, ESMF does not seem to have a way to return
