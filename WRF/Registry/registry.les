@@ -58,6 +58,24 @@ rconfig   real    zdamp_bdy                namelist,dynamics     max_domains    
 rconfig   real    xydamp_bdy               namelist,dynamics     max_domains    0.      h    "damp depth in horizontal direction at domain boundaries"              ""      ""
 #
 
+## Eddy recycling (MSG)
+# General parameters
+rconfig   real    alpha_ewma              namelist,dynamics     1    0.1    h    "alpha coefficient in Exponentially Weighted Moving Average"            ""      ""
+rconfig   integer    k_max_er             namelist,dynamics     1    2      h    "max vertical level to perform eddy recycling"            ""      ""
+rconfig   integer    eddy_recycle         namelist,dynamics     max_domains    0      h    "Turn on (1) or off (0) eddy recycling"            ""      ""
+# South Boundary
+rconfig   integer    j_sample_south       namelist,dynamics     1    8      h    "j-index to sample plane with fluctuations for eddy recycling"            ""      ""
+rconfig   integer    j_insert_south       namelist,dynamics     1    10     h    "j-index to insert plane with fluctuations for eddy recycling"            ""      ""
+state   real    t_avg_south   ik    misc            1       -       rh      "t_avg_south"        ""      "K"
+state   real    t_flct_south   ik    misc            1       -       rh      "t_flct_south"        ""      "K"
+state   real    u_avg_south   ik    misc            1       -       rh      "u_avg_south"        ""      "m s-1"
+state   real    u_flct_south   ik    misc            1       -       rh      "u_flct_south"        ""      "m s-1"
+state   real    v_avg_south   ik    misc            1       -       rh      "v_avg_south"        ""      "m s-1"
+state   real    v_flct_south   ik    misc            1       -       rh      "v_flct_south"        ""      "m s-1"
+state   real    w_avg_south   ik    misc            1       -       rh      "w_avg_south"        ""      "m s-1"
+state   real    w_flct_south   ik    misc            1       -       rh      "w_flct_south"        ""      "m s-1"
+##
+
 
 halo      HALO_EM_NBA_MIJ	dyn_em 8:nba_mij
 period    PERIOD_EM_NBA_MIJ   	dyn_em 3:nba_mij

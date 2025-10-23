@@ -64,6 +64,8 @@ CONTAINS
     USE module_stoch_les_inflow_perts !JDM
 !!
 
+    USE module_eddy_recycling ! MSG: eddy recycling
+
 !! ADDED BY MSG FOR GAD
     USE module_wind_param_driver
 !!
@@ -472,6 +474,28 @@ IF (  config_flags%les_pert_opt .GT. 0 ) THEN
 
 ENDIF
 !!! End CPM-JDM
+
+
+!!!! Eddy recycling MSG !!!!!!!
+IF (  config_flags%eddy_recycle .EQ. 1 ) THEN
+
+    !$OMP PARALLEL DO   &
+    !$OMP PRIVATE ( ij )
+    DO ij = 1 , grid%num_tiles
+
+              CALL fluctuations_southBndry( grid%t_2, grid%u_2, grid%v_2, grid%w_2,                                  &
+                                            grid%t_avg_south,grid%u_avg_south,grid%v_avg_south,grid%w_avg_south,     &
+                                            grid%t_flct_south,grid%u_flct_south,grid%v_flct_south,grid%w_flct_south,        &
+                                            config_flags%alpha_ewma, config_flags%j_sample_south, config_flags%j_insert_south,config_flags%k_max_er, &
+                                            ids, ide, jds, jde, kds, kde,               &
+                                            ims, ime, jms, jme, kms, kme,               &
+                                            grid%i_start(ij), grid%i_end(ij), grid%j_start(ij), grid%j_end(ij), k_start, k_end )
+    ENDDO
+    !$OMP END PARALLEL DO
+END IF
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 #ifdef DM_PARALLEL
 #  include "HALO_EM_TKE_C.inc"
