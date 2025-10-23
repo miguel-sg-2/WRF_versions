@@ -33,7 +33,8 @@ SUBROUTINE fluctuations_southBndry( t, u, v, w,               &
                            ims, ime, jms, jme, kms, kme,        &
                            its, ite, jts, jte, kts, kte         )
  !-----------------------------------------------------------------------
- ! DESCRIBE FUNCTION HERE
+ ! Function to estiamte moving average, estiamte fluctuation quantities,
+ ! and directly add the fluctuation quantities to inflow conditions
  !-----------------------------------------------------------------------
  IMPLICIT NONE
 #ifdef DM_PARALLEL
@@ -76,15 +77,15 @@ SUBROUTINE fluctuations_southBndry( t, u, v, w,               &
 ! Get fluctuation quantities only if patch is in sampling plane
 if (has_south_plane) then
  ! Get moving average (vectorized)
- t_avg_south(:,:) = ewma(t(:,j_sample_south,:), t_avg_south(:,:), alpha_ewma)
- u_avg_south(:,:) = ewma(u(:,j_sample_south,:), u_avg_south(:,:), alpha_ewma)
- v_avg_south(:,:) = ewma(v(:,j_sample_south,:), v_avg_south(:,:), alpha_ewma)
- w_avg_south(:,:) = ewma(w(:,j_sample_south,:), w_avg_south(:,:), alpha_ewma)
+ t_avg_south(:,:) = ewma(t(:,:,j_sample_south), t_avg_south(:,:), alpha_ewma)
+ u_avg_south(:,:) = ewma(u(:,:,j_sample_south), u_avg_south(:,:), alpha_ewma)
+ v_avg_south(:,:) = ewma(v(:,:,j_sample_south), v_avg_south(:,:), alpha_ewma)
+ w_avg_south(:,:) = ewma(w(:,:,j_sample_south), w_avg_south(:,:), alpha_ewma)
  ! Get fluctuation quantities (vectorized)
- t_flct_south(:,:) = t(:,j_sample_south,:) - t_avg_south(:,:)
- u_flct_south(:,:) = u(:,j_sample_south,:) - u_avg_south(:,:)
- v_flct_south(:,:) = v(:,j_sample_south,:) - v_avg_south(:,:)
- w_flct_south(:,:) = w(:,j_sample_south,:) - w_avg_south(:,:)
+ t_flct_south(:,:) = t(:,:,j_sample_south) - t_avg_south(:,:)
+ u_flct_south(:,:) = u(:,:,j_sample_south) - u_avg_south(:,:)
+ v_flct_south(:,:) = v(:,:,j_sample_south) - v_avg_south(:,:)
+ w_flct_south(:,:) = w(:,:,j_sample_south) - w_avg_south(:,:)
  ! Zero-out fluctuations above k_max_er
  IF (k_max_er .lt. kte) then
    t_flct_south(:, k_max_er:kte) = 0.0
@@ -121,15 +122,131 @@ end if
 ! Add fluctuations to south boundary
  has_south_boundary = ((j_insert_south .GE. jms) .AND. (j_insert_south .LE. jme))
  if (has_south_boundary) then
-   t(:,j_insert_south,:) = t(:,j_insert_south,:) + t_flct_south(:,:)
-   u(:,j_insert_south,:) = u(:,j_insert_south,:) + u_flct_south(:,:)
-   v(:,j_insert_south,:) = v(:,j_insert_south,:) + v_flct_south(:,:)
-   w(:,j_insert_south,:) = w(:,j_insert_south,:) + w_flct_south(:,:)
+   t(:,:,j_insert_south) = t(:,:,j_insert_south) + t_flct_south(:,:)
+   u(:,:,j_insert_south) = u(:,:,j_insert_south) + u_flct_south(:,:)
+   v(:,:,j_insert_south) = v(:,:,j_insert_south) + v_flct_south(:,:)
+   w(:,:,j_insert_south) = w(:,:,j_insert_south) + w_flct_south(:,:)
  end if
 
 
 END SUBROUTINE fluctuations_southBndry
 !!======================================================================
+
+
+
+!!=======================================================================
+SUBROUTINE fluctuations_southBndry_tends( t, u, v, w,               &
+                           t_tendf, ru_tendf, rv_tendf, rw_tendf,   &
+                           mut,muu,muv,c1h,c1f,c2h,c2f,   &
+                           t_avg_south,u_avg_south,v_avg_south,w_avg_south, &
+                           t_flct_south,u_flct_south,v_flct_south,w_flct_south, &
+                           alpha_ewma, j_sample_south, j_insert_south, k_max_er, &
+                           ids, ide, jds, jde, kds, kde,        &
+                           ims, ime, jms, jme, kms, kme,        &
+                           its, ite, jts, jte, kts, kte         )
+ !-----------------------------------------------------------------------
+ ! Function to estiamte moving average, estiamte fluctuation quantities,
+ ! and nudge flow at the inflow toward turbulent conditions
+ !-----------------------------------------------------------------------
+ IMPLICIT NONE
+#ifdef DM_PARALLEL
+    INCLUDE 'mpif.h'
+#endif
+ ! Variables coming and/or out
+ INTEGER, INTENT( IN ) :: ids, ide, jds, jde, kds, kde,  &
+                          ims, ime, jms, jme, kms, kme,  &
+                          its, ite, jts, jte, kts, kte
+ INTEGER, INTENT( IN ) :: j_sample_south,j_insert_south,k_max_er
+ REAL,  INTENT( IN ) :: alpha_ewma
+ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( IN ) :: t,u,v,w
+ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ), INTENT( INOUT ) :: t_tendf, ru_tendf, rv_tendf, rw_tendf
+ REAL, DIMENSION( ims:ime, jms:jme ),  INTENT( IN )  :: mut, muu, muv
+ REAL, DIMENSION( kms:kme ) ,  INTENT( IN ) :: c1h, c2h, c1f, c2f
+ REAL, DIMENSION( ims:ime, kms:kme ), INTENT( INOUT ) :: t_avg_south,u_avg_south,v_avg_south,w_avg_south, &
+                                                          t_flct_south,u_flct_south,v_flct_south,w_flct_south
+ ! Local variables
+ INTEGER :: i,k, ierr, local_rank, root, global_rank_flag
+ LOGICAL :: has_south_plane,has_south_boundary
+ REAL :: dcoef, dampcoef
+#ifdef DM_PARALLEL
+    INTEGER :: status(MPI_STATUS_SIZE)
+#endif
+!! Done with declarations !!
+
+ ! Determine which rank owns j_sample_south
+ CALL MPI_Comm_rank(MPI_COMM_WORLD, local_rank, ierr)
+ has_south_plane = ((j_sample_south .GE. jms) .AND. (j_sample_south .LE. jme))
+#ifdef DM_PARALLEL
+ ! Local flag: store rank if owns j_sample_south, else -1
+ IF (has_south_plane) THEN
+    global_rank_flag = local_rank
+ ELSE
+    global_rank_flag = -1
+ END IF
+ ! Allreduce with MAX to find root
+ CALL MPI_Allreduce(global_rank_flag, root, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD, ierr)
+#else
+ root = 0
+#endif
+
+! Get fluctuation quantities only if patch is in sampling plane
+if (has_south_plane) then
+ ! Get moving average (vectorized)
+ t_avg_south(:,:) = ewma(t(:,:,j_sample_south), t_avg_south(:,:), alpha_ewma)
+ u_avg_south(:,:) = ewma(u(:,:,j_sample_south), u_avg_south(:,:), alpha_ewma)
+ v_avg_south(:,:) = ewma(v(:,:,j_sample_south), v_avg_south(:,:), alpha_ewma)
+ w_avg_south(:,:) = ewma(w(:,:,j_sample_south), w_avg_south(:,:), alpha_ewma)
+ ! Get fluctuation quantities (vectorized)
+ t_flct_south(:,:) = t(:,:,j_sample_south) - t_avg_south(:,:)
+ u_flct_south(:,:) = u(:,:,j_sample_south) - u_avg_south(:,:)
+ v_flct_south(:,:) = v(:,:,j_sample_south) - v_avg_south(:,:)
+ w_flct_south(:,:) = w(:,:,j_sample_south) - w_avg_south(:,:)
+ ! Zero-out fluctuations above k_max_er
+ IF (k_max_er .lt. kte) then
+   t_flct_south(:, k_max_er:kte) = 0.0
+   u_flct_south(:, k_max_er:kte) = 0.0
+   v_flct_south(:, k_max_er:kte) = 0.0
+   w_flct_south(:, k_max_er:kte) = 0.0
+ end if
+end if
+
+! Broadcast fluctuation quantities to all MPI ranks
+#ifdef DM_PARALLEL
+ CALL MPI_BCAST(t_flct_south, SIZE(t_flct_south), MPI_REAL, root, MPI_COMM_WORLD, ierr)
+ CALL MPI_BCAST(u_flct_south, SIZE(u_flct_south), MPI_REAL, root, MPI_COMM_WORLD, ierr)
+ CALL MPI_BCAST(v_flct_south, SIZE(v_flct_south), MPI_REAL, root, MPI_COMM_WORLD, ierr)
+ CALL MPI_BCAST(w_flct_south, SIZE(w_flct_south), MPI_REAL, root, MPI_COMM_WORLD, ierr)
+#endif
+
+! Nudge flow conditions at south boundary toward turbulent state
+ has_south_boundary = ((j_insert_south .GE. jms) .AND. (j_insert_south .LE. jme))
+ if (has_south_boundary) then
+   dcoef = (SIN( 0.5 * 3.14 * 1.0 ) )**2
+   dampcoef = 0.1
+   DO i = its, ite
+     DO k = kts, MIN(k_max_er,kte-1)
+       t_tendf(i,k,j_insert_south) = t_tendf(i,k,j_insert_south) +                                           &
+                                      (c1h(k)*mut(i,j_insert_south)+c2h(k)) * ( dcoef * dampcoef ) *           &
+                                      ( t_flct_south(i,k) )
+       ru_tendf(i,k,j_insert_south) = ru_tendf(i,k,j_insert_south) +                                           &
+                                      (c1h(k)*muu(i,j_insert_south)+c2h(k)) * ( dcoef * dampcoef ) *           &
+                                      ( u_flct_south(i,k) )
+       rv_tendf(i,k,j_insert_south) = rv_tendf(i,k,j_insert_south) +                                           &
+                                      (c1h(k)*muv(i,j_insert_south)+c2h(k)) * ( dcoef * dampcoef ) *           &
+                                      ( v_flct_south(i,k) )
+       rw_tendf(i,k,j_insert_south) = rw_tendf(i,k,j_insert_south) +                                           &
+                                      (c1f(k)*mut(i,j_insert_south)+c2f(k)) * ( dcoef * dampcoef ) *           &
+                                      ( w_flct_south(i,k) )
+   
+     END DO
+   END DO
+
+ end if
+
+
+END SUBROUTINE fluctuations_southBndry_tends
+!!======================================================================
+
 
 
 
