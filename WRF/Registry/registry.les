@@ -64,7 +64,7 @@ rconfig   real    alpha_ewma              namelist,dynamics     1    0.0003    h
 rconfig   integer    k_max_er             namelist,dynamics     1    2      h    "max vertical level to perform eddy recycling"            ""      ""
 rconfig   integer    eddy_recycle         namelist,dynamics     max_domains    0      h    "Turn on (1 or 2) or off (0) eddy recycling"            ""      ""
 # South Boundary
-rconfig   integer    j_sample_south       namelist,dynamics     1    8      h    "j-index to sample plane with fluctuations for eddy recycling"            ""      ""
+rconfig   integer    j_sample_south       namelist,dynamics     1    20     h    "j-index to sample plane with fluctuations for eddy recycling"            ""      ""
 rconfig   integer    j_insert_south       namelist,dynamics     1    10     h    "j-index to insert plane with fluctuations for eddy recycling"            ""      ""
 state   real    t_avg_south   ik    misc            1       -       rh      "t_avg_south"        ""      "K"
 state   real    t_flct_south   ik    misc            1       -       rh      "t_flct_south"        ""      "K"
