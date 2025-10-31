@@ -18,6 +18,8 @@ rconfig integer cell_nbcy       namelist,dynamics       max_domains     3       
 rconfig integer cell_zbottom         namelist,dynamics       max_domains     4       -       "z-grid point where the perturbation start"
 rconfig integer cell_ztop         namelist,dynamics       max_domains     4       -       "z-grid point where the perturbations end"
 state   real    Pxy          ikj          dyn_em                         1        -       -      "Pxy" "Potential temperature perturbation field" "K"
+# Stop CPM after a given number of timesteps
+rconfig integer end_cpm                 namelist,dynamics       max_domains     6000000      -       "CPM turns off after this number of timesteps"
 # time-varying parameters for the cell perturbation method
 rconfig logical cell_tvcp             namelist,dynamics       max_domains    .false.  -      "flag to activate time-varying cell perturbation parameters"
 state   integer kpert_tvcp      -     dyn_em                  max_domains     -       i5r    "kpert_tvcp" "time-varying maximum vertical grid point to perturb" "-"

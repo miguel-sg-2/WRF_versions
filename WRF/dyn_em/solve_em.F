@@ -3379,7 +3379,7 @@ BENCH_END(bc_end_tim)
 ! ********************************* START ************************************
 !*****************************************************************************
 IF ( config_flags%cell_pert .AND. config_flags%pert_timestep ) THEN
-  IF ( MOD(grid%itimestep, config_flags%pert_nts) .EQ. 0. ) THEN
+        IF ( ( MOD(grid%itimestep, config_flags%pert_nts) .EQ. 0. ) .AND. (config_flags%end_cpm .GT. grid%itimestep) ) THEN
     PRINT *, 'MSG IS RUNNING CELL PERT'
     PRINT *,'MOD=', MOD(grid%itimestep, config_flags%pert_nts)
     PRINT *,'Time step=', grid%itimestep
