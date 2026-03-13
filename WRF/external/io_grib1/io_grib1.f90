@@ -168,7 +168,7 @@ subroutine ext_gr1_ioinit(SysDepInfo,Status)
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -354,7 +354,7 @@ subroutine ext_gr1_ioexit(Status)
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -514,7 +514,7 @@ SUBROUTINE ext_gr1_open_for_read_begin ( FileName , Comm_compute, Comm_io, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -807,7 +807,7 @@ SUBROUTINE ext_gr1_open_for_read_commit( DataHandle , Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -980,7 +980,7 @@ SUBROUTINE ext_gr1_open_for_read ( FileName , Comm_compute, Comm_io, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -1153,7 +1153,7 @@ SUBROUTINE ext_gr1_open_for_write_begin(FileName, Comm, IOComm, SysDepInfo, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -1352,7 +1352,7 @@ SUBROUTINE ext_gr1_open_for_write_commit( DataHandle , Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -1519,7 +1519,7 @@ subroutine ext_gr1_inquiry (Inquiry, Result, Status)
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -1681,7 +1681,7 @@ SUBROUTINE ext_gr1_inquire_opened ( DataHandle, FileName , FileStat, Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -1852,7 +1852,7 @@ SUBROUTINE ext_gr1_ioclose ( DataHandle, Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -2037,7 +2037,7 @@ SUBROUTINE ext_gr1_write_field( DataHandle , DateStrIn , VarName , &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -2684,7 +2684,7 @@ SUBROUTINE ext_gr1_read_field ( DataHandle , DateStr , VarName , Field , &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -2979,7 +2979,7 @@ SUBROUTINE ext_gr1_get_next_var ( DataHandle, VarName, Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -3131,7 +3131,7 @@ subroutine ext_gr1_end_of_frame(DataHandle, Status)
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -3280,7 +3280,7 @@ SUBROUTINE ext_gr1_iosync ( DataHandle, Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -3435,7 +3435,7 @@ SUBROUTINE ext_gr1_inquire_filename ( DataHandle, FileName , FileStat, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -3609,7 +3609,7 @@ SUBROUTINE ext_gr1_get_var_info ( DataHandle , VarName , NDim , &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -3764,7 +3764,7 @@ SUBROUTINE ext_gr1_set_time ( DataHandle, DateStr, Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -3927,7 +3927,7 @@ SUBROUTINE ext_gr1_get_next_time ( DataHandle, DateStr, Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -4083,7 +4083,7 @@ SUBROUTINE ext_gr1_get_previous_time ( DataHandle, DateStr, Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -4242,7 +4242,7 @@ SUBROUTINE ext_gr1_get_var_ti_real ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -4416,7 +4416,7 @@ SUBROUTINE ext_gr1_get_var_ti_real8 ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -4589,7 +4589,7 @@ SUBROUTINE ext_gr1_get_var_ti_double ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -4764,7 +4764,7 @@ SUBROUTINE ext_gr1_get_var_ti_integer ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -4938,7 +4938,7 @@ SUBROUTINE ext_gr1_get_var_ti_logical ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -5112,7 +5112,7 @@ SUBROUTINE ext_gr1_get_var_ti_char ( DataHandle,Element,  Varname, Data,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -5281,7 +5281,7 @@ SUBROUTINE ext_gr1_put_var_ti_real ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -5444,7 +5444,7 @@ SUBROUTINE ext_gr1_put_var_ti_double ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -5607,7 +5607,7 @@ SUBROUTINE ext_gr1_put_var_ti_real8 ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -5770,7 +5770,7 @@ SUBROUTINE ext_gr1_put_var_ti_integer ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -5933,7 +5933,7 @@ SUBROUTINE ext_gr1_put_var_ti_logical ( DataHandle,Element,  Varname, Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -6097,7 +6097,7 @@ SUBROUTINE ext_gr1_put_var_ti_char ( DataHandle,Element,  Varname, Data,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -6265,7 +6265,7 @@ SUBROUTINE ext_gr1_get_var_td_double ( DataHandle,Element,  DateStr, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -6440,7 +6440,7 @@ SUBROUTINE ext_gr1_get_var_td_real ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -6615,7 +6615,7 @@ SUBROUTINE ext_gr1_get_var_td_real8 ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -6790,7 +6790,7 @@ SUBROUTINE ext_gr1_get_var_td_integer ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -6965,7 +6965,7 @@ SUBROUTINE ext_gr1_get_var_td_logical ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -7140,7 +7140,7 @@ SUBROUTINE ext_gr1_get_var_td_char ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -7308,7 +7308,7 @@ SUBROUTINE ext_gr1_put_var_td_double ( DataHandle, Element, DateStr, Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -7475,7 +7475,7 @@ SUBROUTINE ext_gr1_put_var_td_integer ( DataHandle,Element,  DateStr, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -7641,7 +7641,7 @@ SUBROUTINE ext_gr1_put_var_td_real ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -7807,7 +7807,7 @@ SUBROUTINE ext_gr1_put_var_td_real8 ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -7971,7 +7971,7 @@ SUBROUTINE ext_gr1_put_var_td_logical ( DataHandle,Element,  DateStr, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -8137,7 +8137,7 @@ SUBROUTINE ext_gr1_put_var_td_char ( DataHandle,Element,  DateStr,Varname, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -8313,7 +8313,7 @@ SUBROUTINE ext_gr1_get_dom_ti_real ( DataHandle,Element,   Data, Count, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -8486,7 +8486,7 @@ SUBROUTINE ext_gr1_get_dom_ti_real8 ( DataHandle,Element,   Data, Count, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -8659,7 +8659,7 @@ SUBROUTINE ext_gr1_get_dom_ti_integer ( DataHandle,Element,   Data, Count, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -8830,7 +8830,7 @@ SUBROUTINE ext_gr1_get_dom_ti_logical ( DataHandle,Element,   Data, Count, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -9002,7 +9002,7 @@ SUBROUTINE ext_gr1_get_dom_ti_char ( DataHandle,Element,   Data,  Status )
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -9163,7 +9163,7 @@ SUBROUTINE ext_gr1_get_dom_ti_double ( DataHandle,Element,   Data, Count, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -9343,7 +9343,7 @@ SUBROUTINE ext_gr1_put_dom_ti_real ( DataHandle,Element,   Data, Count,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -9533,7 +9533,7 @@ SUBROUTINE ext_gr1_put_dom_ti_real8 ( DataHandle,Element,   Data, Count,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -9696,7 +9696,7 @@ SUBROUTINE ext_gr1_put_dom_ti_integer ( DataHandle,Element,   Data, Count,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -9875,7 +9875,7 @@ SUBROUTINE ext_gr1_put_dom_ti_logical ( DataHandle,Element,   Data, Count,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -10038,7 +10038,7 @@ SUBROUTINE ext_gr1_put_dom_ti_char ( DataHandle,Element,   Data,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -10201,7 +10201,7 @@ SUBROUTINE ext_gr1_put_dom_ti_double ( DataHandle,Element, Data, Count, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -10371,7 +10371,7 @@ SUBROUTINE ext_gr1_get_dom_td_real ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -10545,7 +10545,7 @@ SUBROUTINE ext_gr1_get_dom_td_real8 ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -10719,7 +10719,7 @@ SUBROUTINE ext_gr1_get_dom_td_integer ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -10893,7 +10893,7 @@ SUBROUTINE ext_gr1_get_dom_td_logical ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -11067,7 +11067,7 @@ SUBROUTINE ext_gr1_get_dom_td_char ( DataHandle,Element, DateStr,  Data,  &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -11228,7 +11228,7 @@ SUBROUTINE ext_gr1_get_dom_td_double ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -11410,7 +11410,7 @@ SUBROUTINE ext_gr1_put_dom_td_real8 ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -11575,7 +11575,7 @@ SUBROUTINE ext_gr1_put_dom_td_integer ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -11740,7 +11740,7 @@ SUBROUTINE ext_gr1_put_dom_td_logical ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -11905,7 +11905,7 @@ SUBROUTINE ext_gr1_put_dom_td_char ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -12065,7 +12065,7 @@ SUBROUTINE ext_gr1_put_dom_td_double ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -12230,7 +12230,7 @@ SUBROUTINE ext_gr1_put_dom_td_real ( DataHandle,Element, DateStr,  Data, &
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202
@@ -12399,7 +12399,7 @@ SUBROUTINE gr1_build_string (string, Element, Value, Count, Status)
   integer, parameter  :: WRF_WARN_MORE_DATA_IN_FILE  = -1023    
   integer, parameter  :: WRF_WARN_DATE_LT_LAST_DATE  = -1024
 
-! For HDF5 only
+! For 1 only
   integer, parameter  :: WRF_HDF5_ERR_FILE                 = -200
   integer, parameter  :: WRF_HDF5_ERR_MD                   = -201
   integer, parameter  :: WRF_HDF5_ERR_TIME                 = -202

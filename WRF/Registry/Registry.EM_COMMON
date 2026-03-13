@@ -3339,3 +3339,10 @@ xpose XPOSE_SPECTRAL_NUDGING dyn_em dif_analysis,dif_xxx,dif_yyy
 package   no_fft_used    fft_used==0                  -             -
 package   any_fft_used   fft_used==1                  -             state:t_xxx,u_xxx,ru_xxx,v_xxx,rv_xxx,w_xxx,ww_xxx,ph_xxx,dum_yyy,fourd_xxx
 
+## Localized heat flux
+rconfig   real    hfx_patch_cx      namelist,physics    max_domains    -1      rh      "hfx_patch_cx"      "X center of HFX patch (m)"       "m"
+rconfig   real    hfx_patch_cy      namelist,physics    max_domains    -1      rh      "hfx_patch_cy"      "Y center of HFX patch (m)"       "m"
+rconfig   real    hfx_patch_radius  namelist,physics    max_domains    -1      rh      "hfx_patch_radius"  "Radius of HFX patch (m)"         "m"
+rconfig   real    hfx_patch_value   namelist,physics    max_domains    0.0      rh      "hfx_patch_value"   "HFX value in patch (W m-2)"      "W m-2"
+rconfig   integer hfx_patch_domain  namelist,physics    max_domains    1       h       "hfx_patch_domain"  "Domain to apply HFX patch"       ""
+

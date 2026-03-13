@@ -298,8 +298,9 @@ CONTAINS
      &          ,SDA_HFX, SDA_QFX, HFX_BOTH, QFX_BOTH, QNORM, fasdas  &  !fasdas
      &          ,spp_lsm,pattern_spp_lsm,field_sf                     &  !SPP
      &          ,spp_pbl,pattern_spp_pbl                              &  !SPP
-     &          ,XLAIDYN                                              &
-     &                                                             )
+     &          ,XLAIDYN,                                              &
+                     hfx_patch_cx,hfx_patch_cy,hfx_patch_radius,   &
+                     hfx_patch_value, hfx_patch_domain                                                            )
 
 #if ( ! NMM_CORE == 1 )
    USE module_state_description, ONLY : SFCLAYSCHEME              &
@@ -1310,6 +1311,9 @@ CONTAINS
 !-------------------------------------------------
 ! End of Noah-mosaic related variables 
 !-------------------------------------------------     
+           REAL, INTENT(IN) :: hfx_patch_cx, hfx_patch_cy, hfx_patch_radius, hfx_patch_value
+      INTEGER, INTENT(IN) :: hfx_patch_domain
+
      
 !--------fds (06/2010)---------------------------------------------
      REAL,  DIMENSION( ims:ime, kms:kme, jms:jme ),               &
@@ -2099,7 +2103,9 @@ CONTAINS
                ids,ide, jds,jde, kds,kde,                          &
                ims,ime, jms,jme, kms,kme,                          &
                i_start(ij),i_end(ij), j_start(ij),j_end(ij), kts,kte,    &
-               ustm,ck,cka,cd,cda,isftcflx,iz0tlnd, scm_force_flux    )
+               ustm,ck,cka,cd,cda,isftcflx,iz0tlnd, scm_force_flux, &
+                     hfx_patch_cx,hfx_patch_cy,hfx_patch_radius,   &
+                     hfx_patch_value, hfx_patch_domain          )
 #if ( EM_CORE==1)
            DO j = j_start(ij),j_end(ij)
            DO i = i_start(ij),i_end(ij)
@@ -5831,6 +5837,9 @@ TICE2TSK_IF2COLD,XICE_THRESHOLD,                                   &
                                                 WSPD_SEA,         &
                                                 ZOL_SEA
 
+      REAL :: hfx_patch_cx, hfx_patch_cy, hfx_patch_radius, hfx_patch_value
+      INTEGER :: hfx_patch_domain,scm_force_flux
+
 ! INTENT(IN) to SFCLAY; unchanged by the call
       ! ISFFLX
       ! SVP1,SVP2,SVP3,SVPT0
@@ -5917,7 +5926,9 @@ TICE2TSK_IF2COLD,XICE_THRESHOLD,                                   &
                  ids,ide, jds,jde, kds,kde,                    &
                  ims,ime, jms,jme, kms,kme,                    &
                  its,ite, jts,jte, kts,kte,                    &
-                 ustm,ck,cka,cd,cda,isftcflx,iz0tlnd           )
+                 ustm,ck,cka,cd,cda,isftcflx,iz0tlnd,scm_force_flux, &
+                 hfx_patch_cx,hfx_patch_cy,hfx_patch_radius,   &
+                     hfx_patch_value, hfx_patch_domain)
 !
 !Restore land-point values calculated by SSiB (fds 12/2010)
      IF (itimestep .gt. 1 .and. sf_surface_physics .EQ. 8) then
@@ -6007,7 +6018,9 @@ TICE2TSK_IF2COLD,XICE_THRESHOLD,                                   &
                  ids,ide, jds,jde, kds,kde,                    &
                  ims,ime, jms,jme, kms,kme,                    &
                  its,ite, jts,jte, kts,kte,                    & ! 0
-                 ustm_sea,ck_sea,cka_sea,cd_sea,cda_sea,isftcflx,iz0tlnd )
+                 ustm_sea,ck_sea,cka_sea,cd_sea,cda_sea,isftcflx,iz0tlnd,scm_force_flux, &
+                 hfx_patch_cx,hfx_patch_cy,hfx_patch_radius,   &
+                     hfx_patch_value, hfx_patch_domain) 
 !
      DO j = JTS , JTE
         DO i = ITS, ITE

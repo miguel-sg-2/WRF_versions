@@ -24,7 +24,9 @@ CONTAINS
                      ids,ide, jds,jde, kds,kde,                    &
                      ims,ime, jms,jme, kms,kme,                    &
                      its,ite, jts,jte, kts,kte,                    &
-                     ustm,ck,cka,cd,cda,isftcflx,iz0tlnd,scm_force_flux           )
+                     ustm,ck,cka,cd,cda,isftcflx,iz0tlnd,scm_force_flux, & 
+                     hfx_patch_cx,hfx_patch_cy,hfx_patch_radius,   &
+                     hfx_patch_value, hfx_patch_domain          )
 !-------------------------------------------------------------------
       IMPLICIT NONE
 !-------------------------------------------------------------------
@@ -190,6 +192,8 @@ CONTAINS
 
       INTEGER,  OPTIONAL,  INTENT(IN )   ::     ISFTCFLX, IZ0TLND
       INTEGER,  OPTIONAL,  INTENT(IN )   ::     SCM_FORCE_FLUX
+      REAL, INTENT(IN) :: hfx_patch_cx, hfx_patch_cy, hfx_patch_radius, hfx_patch_value
+      INTEGER, INTENT(IN) :: hfx_patch_domain
 ! LOCAL VARS
 
       REAL,     DIMENSION( its:ite ) ::                       U1D, &
@@ -241,6 +245,8 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
                 USTM(ims,j),CK(ims,j),CKA(ims,j),                  &
                 CD(ims,j),CDA(ims,j)                               &
 #endif
+                ,hfx_patch_cx,hfx_patch_cy,hfx_patch_radius,   &
+                     hfx_patch_value, hfx_patch_domain &
                                                                    )
       ENDDO
 
@@ -262,7 +268,9 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
                      ims,ime, jms,jme, kms,kme,                    &
                      its,ite, jts,jte, kts,kte,                    &
                      isftcflx, iz0tlnd,scm_force_flux,                            &
-                     ustm,ck,cka,cd,cda                            )
+                     ustm,ck,cka,cd,cda, &
+                     hfx_patch_cx,hfx_patch_cy,hfx_patch_radius,   &
+                     hfx_patch_value, hfx_patch_domain             )
 !-------------------------------------------------------------------
       IMPLICIT NONE
 !-------------------------------------------------------------------
@@ -340,6 +348,8 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
       INTEGER,  OPTIONAL,  INTENT(IN )   ::     ISFTCFLX, IZ0TLND
       INTEGER,  OPTIONAL,  INTENT(IN )   ::     SCM_FORCE_FLUX
 
+            REAL, INTENT(IN) :: hfx_patch_cx, hfx_patch_cy, hfx_patch_radius, hfx_patch_value
+      INTEGER, INTENT(IN) :: hfx_patch_domain
 ! LOCAL VARS
 
       REAL,     DIMENSION( its:ite )        ::                 ZA, &
@@ -382,6 +392,7 @@ CALL wrf_debug ( 200 , 'loop to call SFCLAYREV1D' )
 !     REAL    :: psih_stable_full,psim_stable_full,psih_unstable_full,psim_unstable_full
       REAL    :: zl2,zl10,z0t
       REAL,     DIMENSION( its:ite )        ::         pq,pq2,pq10
+      REAL :: dist
 
 CALL wrf_debug ( 200 , 'start SFCLAYREV1D and define variables' )
 
@@ -1079,7 +1090,18 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
         ELSEIF(XLAND(I)-1.5.LT.0.)THEN                                       
           HFX(I)=FLHC(I)*(THGB(I)-THX(I))                                
           HFX(I)=AMAX1(HFX(I),-250.) 
-        ENDIF                                                                  
+        ENDIF                        
+!---------------------------------------------------------------
+!       Apply localized heat flux patch (idealized LES)
+!---------------------------------------------------------------
+        IF ( hfx_patch_value .NE. 0.0) THEN ! PRESENT(hfx_patch_value) .AND. PRESENT(J) ) THEN
+          dist = SQRT( ((REAL(I)-0.5)*DX - hfx_patch_cx)**2   &
+                     + ((REAL(J)-0.5)*DX - hfx_patch_cy)**2 )
+          IF ( dist .LE. hfx_patch_radius ) THEN
+            HFX(I) = HFX(I) + hfx_patch_value* 0.5*(1.0+COS(3.14*dist/hfx_patch_radius))
+          ENDIF
+        ENDIF
+
   400 CONTINUE                                                                 
 
   405 CONTINUE                                                                 

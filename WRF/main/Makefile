@@ -14,7 +14,8 @@ include ../configure.wrf
 
 $(SOLVER)_wrf : wrf.o ../main/module_wrf_top.o
 	$(RANLIB) $(RLFLAGS) $(LIBWRFLIB)
-	$(LD) -o wrf.exe $(LDFLAGS) wrf.o ../main/module_wrf_top.o $(LIBWRFLIB) $(LIB) 
+	$(LD) -o wrf.exe $(LDFLAGS) wrf.o ../main/module_wrf_top.o -Wl,--whole-archive $(LIBWRFLIB) -Wl,--no-whole-archive -Wl,--allow-multiple-definition $(LIB)
+	# $(LD) -o wrf.exe $(LDFLAGS) wrf.o ../main/module_wrf_top.o -Wl,--whole-archive $(LIBWRFLIB) -Wl,--no-whole-archive $(LIB) # $(LIBWRFLIB) $(LIB) 
 
 $(SOLVER)_wrfplus : wrf.o ../main/module_wrf_top.o
 	$(RANLIB) $(RLFLAGS) $(LIBWRFLIB)
@@ -26,7 +27,8 @@ $(SOLVER)_wrf_SST_ESMF : wrf_ESMFMod.o wrf_SST_ESMF.o ../main/module_wrf_top.o
 
 $(SOLVER)_ideal : module_initialize ideal_$(SOLVER).o
 	$(RANLIB) $(RLFLAGS) $(LIBWRFLIB)
-	$(LD) -o ideal.exe $(LDFLAGS) ideal_$(SOLVER).o ../dyn_$(SOLVER)/module_initialize_$(IDEAL_CASE).o $(LIBWRFLIB) $(LIB)
+	$(LD) -o ideal.exe $(LDFLAGS) ideal_$(SOLVER).o ../dyn_$(SOLVER)/module_initialize_$(IDEAL_CASE).o -Wl,--whole-archive $(LIBWRFLIB) -Wl,--no-whole-archive -Wl,--allow-multiple-definition $(LIB)
+	# $(LD) -o ideal.exe $(LDFLAGS) ideal_$(SOLVER).o ../dyn_$(SOLVER)/module_initialize_$(IDEAL_CASE).o $(LIBWRFLIB) $(LIB)
 
 $(SOLVER)_real : module_initialize ndown_$(SOLVER).o tc_$(SOLVER).o real_$(SOLVER).o
 	$(RANLIB) $(RLFLAGS) $(LIBWRFLIB)
