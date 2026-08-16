@@ -1405,6 +1405,10 @@ CONTAINS
    INTEGER                                             ::   spp_lsm_loc
 
    real,    optional,  dimension(ims:ime,jms:jme ),intent(inout) :: XLAIDYN
+
+   INTEGER :: idom, hpatch_dom
+   REAL    :: hpatch_val, hpatch_cx, hpatch_cy, hpatch_rad
+   REAL    :: pdist, xdist, ydist
 !
 !------------------------------------------------------------------
 ! Initialize local variables
@@ -4126,6 +4130,43 @@ CONTAINS
 
      ENDDO
      !$OMP END PARALLEL DO
+
+!-----------------------------------------------------------------
+! Idealized localized surface heat-flux patch.
+! Added AFTER the LSM so Noah does not overwrite it; this is the
+! final HFX that feeds the PBL scheme.
+!-----------------------------------------------------------------
+   idom = 1
+   IF ( PRESENT(id) ) idom = id
+   CALL nl_get_hfx_patch_domain( idom, hpatch_dom )
+   CALL nl_get_hfx_patch_value ( idom, hpatch_val )
+   CALL nl_get_hfx_patch_cx    ( idom, hpatch_cx  )
+   CALL nl_get_hfx_patch_cy    ( idom, hpatch_cy  )
+   CALL nl_get_hfx_patch_radius( idom, hpatch_rad )
+   print*,'hpatch_dom = ',hpatch_dom
+   print*,'hpatch_val = ',hpatch_val
+   print*,'hpatch_cx = ',hpatch_cx
+   print*,'hpatch_rad = ',hpatch_rad
+
+   IF ( hpatch_val .NE. 0.0 .AND. hpatch_rad .GT. 0.0 ) THEN
+     !$OMP PARALLEL DO PRIVATE(ij,i,j,xdist,ydist,pdist)
+     print*,'Entering loop to add hfx'
+     DO ij = 1, num_tiles
+       DO j = j_start(ij), j_end(ij)
+         DO i = i_start(ij), i_end(ij)
+           xdist = (REAL(i)-0.5)*dx - hpatch_cx
+           ydist = (REAL(j)-0.5)*dx - hpatch_cy      ! assumes dy = dx
+           pdist = SQRT( xdist*xdist + ydist*ydist )
+           IF ( pdist .LE. hpatch_rad ) THEN
+             HFX(i,j) = HFX(i,j) + hpatch_val *                    &
+                        0.5*(1.0 + COS(3.14159265*pdist/hpatch_rad))
+             print*,'Adding ',HFX(i,j),' W m-2 heat flux at i=',i,', j=',j
+           ENDIF
+         ENDDO
+       ENDDO
+     ENDDO
+     !$OMP END PARALLEL DO
+   ENDIF
 
  430 CONTINUE
 

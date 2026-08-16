@@ -1099,6 +1099,7 @@ CALL wrf_debug ( 200 , 'Many things happened up to this point in SFCLAYREV1D' )
                      + ((REAL(J)-0.5)*DX - hfx_patch_cy)**2 )
           IF ( dist .LE. hfx_patch_radius ) THEN
             HFX(I) = HFX(I) + hfx_patch_value* 0.5*(1.0+COS(3.14*dist/hfx_patch_radius))
+            ! print*,'Adding a heatflux ', hfx_patch_value* 0.5*(1.0+COS(3.14*dist/hfx_patch_radius)),' to i='I,' j=',J
           ENDIF
         ENDIF
 
